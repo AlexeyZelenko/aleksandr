@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@nuxtjs/firebase": "^6.1.1",
-    "core-js": "^3.6.5",
-    "firebase": "^7.21.1",
-    "nuxt": "^2.14.6",
+    "core-js": "^ 3.9.1",
+    "firebase": "^9.0.0-beta.2",
+    "nuxt": "^ 2.15.3",
     "nuxt-sweetalert2": "^1.0.0",
     "vue-plyr": "^7.0.0",
     "vue-sweetalert2": "^4.1.1"

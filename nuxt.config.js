@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
-  ssr: false,
+  ssr: true,
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -22,15 +22,13 @@ export default {
   css: [
   ],
 
-  // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '~/plugins/vue-plyr', mode: 'client' }
+    { src: '~/plugins/vue-plyr', mode: 'client' },
+    { src: '~/plugins/firebase.js' }
   ],
 
-  // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
 
-  // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
@@ -38,7 +36,6 @@ export default {
     '@nuxtjs/vuetify'
   ],
 
-  // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     [
       'vue-sweetalert2/nuxt',
@@ -47,25 +44,6 @@ export default {
         cancelButtonColor: '#ff7674'
       }
     ],
-    [
-      '@nuxtjs/firebase',
-      {
-        config: {
-          apiKey: 'AIzaSyCbqbD8YMtX8uoJHsEgwKk4UvYwLPODYk4',
-          authDomain: 'oleksandr-3787c.firebaseapp.com',
-          projectId: 'oleksandr-3787c',
-          storageBucket: 'oleksandr-3787c.appspot.com',
-          messagingSenderId: '623016667362',
-          appId: '1:623016667362:web:26fb4984975eff32d456bb'
-        },
-        services: {
-          database: true,
-          storage: true,
-          firestore: true,
-          auth: true // Just as example. Can be any other service.
-        }
-      }
-    ]
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
