@@ -64,7 +64,7 @@
                           allowfullscreen
                           allowtransparency
                           allow="autoplay"
-                        ></iframe>
+                        />
                       </div>
                     </vue-plyr>
 
@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'trees',
+  name: 'Trees',
   data () {
     return {
       videoList: [

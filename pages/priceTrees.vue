@@ -2,24 +2,24 @@
   <v-simple-table>
     <template v-slot:default>
       <thead>
-      <tr>
-        <th class="text-left">
-          Послуга
-        </th>
-        <th class="text-left">
-          Ціна
-        </th>
-      </tr>
+        <tr>
+          <th class="text-left">
+            Послуга
+          </th>
+          <th class="text-left">
+            Ціна
+          </th>
+        </tr>
       </thead>
       <tbody>
-      <tr
-        v-for="item in services"
-        :key="item.name"
-        class="text-left"
-      >
-        <td>{{ item.name }}</td>
-        <td>{{ item.cost }} грн</td>
-      </tr>
+        <tr
+          v-for="item in services"
+          :key="item.name"
+          class="text-left"
+        >
+          <td>{{ item.name }}</td>
+          <td>{{ item.cost }} грн</td>
+        </tr>
       </tbody>
     </template>
   </v-simple-table>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: 'priceTrees',
+  name: 'PriceTrees',
   data () {
     return {
       services: [

@@ -19,7 +19,7 @@
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
 
-              <v-spacer></v-spacer>
+              <v-spacer />
 
               <v-btn
                 dark
@@ -37,7 +37,7 @@
               </v-btn>
             </v-card-title>
 
-            <v-spacer></v-spacer>
+            <v-spacer />
 
             <v-card-title class="white--text pl-12 pt-12">
               <div class="display-1 pl-12 pt-12">
@@ -74,7 +74,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-divider inset></v-divider>
+          <v-divider inset />
 
           <v-list-item>
             <v-list-item-icon>
@@ -96,7 +96,7 @@
 
 <script>
 export default {
-  name: 'contacts'
+  name: 'Contacts'
 }
 </script>
 

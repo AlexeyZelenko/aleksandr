@@ -45,7 +45,7 @@
       >
         <v-card>
           <v-card-title class="text-h5">
-            {{elevation.title}}
+            {{ elevation.title }}
           </v-card-title>
           <v-img
             class="white--text align-end"
