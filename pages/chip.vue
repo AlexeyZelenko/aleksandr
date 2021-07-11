@@ -35,7 +35,8 @@
                   small
                 >
                   <div>
-                    <div>{{ message.message }}</div>
+                    <div> {{ message.message }} </div>
+                    <div></div>
                   </div>
                 </v-timeline-item>
               </v-timeline>

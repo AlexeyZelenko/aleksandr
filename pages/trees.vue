@@ -17,7 +17,7 @@
         </v-card-subtitle>
 
         <v-card-text class="text--primary">
-          <div>Це безкоштовно!!!</div>
+          <div>Це безкоштовно</div>
         </v-card-text>
 
         <v-card-actions>
