@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
   auth: {
@@ -9,6 +10,10 @@ export default {
     },
     ssr: false // default
   },
+  mode: 'universal',
+  ...(!isDev && {
+    modern: 'client'
+  }),
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: true,
 

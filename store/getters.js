@@ -8,5 +8,18 @@ export default {
   GET_ADMIN_ENTRANCE: s => s.adminEntrance,
   GET_InfoUser: s => s.InfoUser,
   locale: s => s.locale,
-  error: s => s.error
+  error: s => s.error,
+  getSongs (state) {
+    return state.Songs
+  },
+  categories: s => s.categories,
+  sortedSongs: s => s.sortedSongs,
+  selected: s => s.selected,
+  Songs: s => s.Songs,
+  user: s => s.user,
+  userEntrance: s => s.userEntrance,
+  adminEntrance: s => s.adminEntrance,
+  listUsers: s => s.listUsers,
+  InfoUser: s => s.InfoUser,
+  userId: s => s.userId
 }

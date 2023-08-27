@@ -17,10 +17,10 @@
           />
 
           <v-select
-            v-model="theme"
+            v-model="category"
             chips
             label="- Тема -"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            :items="['Поклоніння', 'Прославління', 'Хвала', 'Інше']"
             variant="outlined"
           />
           <v-select
@@ -34,7 +34,7 @@
             v-model="tonality"
             chips
             label="- Тональність -"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            :items="['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'H']"
             variant="outlined"
           />
 
@@ -113,7 +113,7 @@ export default {
         return 'Назва пісні не повина мати цифри'
       }
     ],
-    theme: null,
+    category: null,
     language: null,
     tonality: null,
     youtubeLink: null,
@@ -166,7 +166,7 @@ export default {
       const data = {
         singer: this.singer,
         nameSong: this.nameSong,
-        theme: this.theme,
+        category: this.category,
         language: this.language,
         tonality: this.tonality,
         youtubeLink: this.youtubeLink,
@@ -191,7 +191,7 @@ export default {
       const seen = false
       const singer = songData.singer
       const nameSong = songData.nameSong
-      const theme = songData.theme
+      const category = songData.category
       const language = songData.language
       const tonality = songData.tonality
       const youtubeLink = songData.youtubeLink
@@ -203,7 +203,7 @@ export default {
         singer,
         seen,
         nameSong,
-        theme,
+        category,
         language,
         tonality,
         youtubeLink,
