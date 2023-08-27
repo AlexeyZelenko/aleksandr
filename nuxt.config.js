@@ -7,7 +7,7 @@ export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     titleTemplate: '%s',
-    title: 'Олександр-STORM',
+    title: 'SONGS',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -24,7 +24,8 @@ export default {
 
   plugins: [
     { src: '~/plugins/vue-plyr', mode: 'client' },
-    { src: '~/plugins/firebase.js' }
+    { src: '~/plugins/firebase.js' },
+    { src: '~/plugins/TiptapVuetify', mode: 'client' }
   ],
 
   components: true,
@@ -43,7 +44,7 @@ export default {
         confirmButtonColor: '#41b882',
         cancelButtonColor: '#ff7674'
       }
-    ],
+    ]
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -67,5 +68,14 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    transpile: ['vuetify/lib', 'tiptap-vuetify']
   }
+
+  // link: [
+  //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+  //   // Iconfonts for Vuetify. You need to leave only which one you use
+  //   { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' },
+  //   { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css' },
+  //   { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.4.95/css/materialdesignicons.min.css' }
+  // ]
 }

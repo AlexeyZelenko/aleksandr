@@ -138,6 +138,16 @@ export default {
           icon: 'mdi-contacts',
           title: 'Контакти',
           to: '/contacts'
+        },
+        {
+          icon: 'mdi-contacts',
+          title: 'Пісні',
+          to: '/songs'
+        },
+        {
+          icon: 'mdi-contacts',
+          title: 'Додати',
+          to: '/addSong'
         }
       ],
       items2: [

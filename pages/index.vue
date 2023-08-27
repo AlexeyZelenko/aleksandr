@@ -92,6 +92,16 @@ export default {
         title: 'Вирубка фруктових дерев',
         src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
         link: '/trees'
+      },
+      {
+        title: 'Пісні',
+        src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
+        link: '/songs'
+      },
+      {
+        title: 'Додати',
+        src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
+        link: '/addSongs'
       }
     ],
     arrayCover: [
@@ -101,6 +111,12 @@ export default {
       'https://drive.google.com/uc?export=view&id=13JKitjfCgysOyZhGHwMLgJ5Ch2s7DkY_'
     ],
     arrayCover3: [
+      'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
+    ],
+    arrayCover4: [
+      'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
+    ],
+    arrayCover5: [
       'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
     ]
   }),
@@ -113,6 +129,12 @@ export default {
     },
     Cover3 () {
       return this.arrayCover3[Math.floor(Math.random() * this.arrayCover3.length)]
+    },
+    Cover4 () {
+      return this.arrayCover3[Math.floor(Math.random() * this.arrayCover4.length)]
+    },
+    Cover5 () {
+      return this.arrayCover3[Math.floor(Math.random() * this.arrayCover4.length)]
     }
   }
 }
