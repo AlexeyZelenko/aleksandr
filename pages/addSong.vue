@@ -71,6 +71,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Swal from 'sweetalert2'
 import {
   Blockquote,
   Bold,
@@ -139,25 +141,91 @@ export default {
       HardBreak
     ]
   }),
+  computed: {
+    ...mapGetters([
+      'SONGS'
+    ])
+  },
+  mounted () {
+    this.initialize()
+    this.bindCountDocument()
+  },
   methods: {
+    ...mapActions([
+      'bindCountDocument'
+    ]),
+    initialize () {
+      this.songs = this.SONGS
+    },
     submit () {
-      if (this.textSong) {
-        // console.log('textSong', this.textSong)
+      if (this.description) {
+        // console.log('description', this.description)
         // const result = this.textSong.split('\n')
-        // console.log('textSong', result)
+        // console.log('result', result)
       }
-      // const data = {
-      //   singer: this.singer,
-      //   nameSong: this.nameSong,
-      //   theme: this.theme,
-      //   language: this.language,
-      //   tonality: this.tonality,
-      //   youtubeLink: this.youtubeLink,
-      //   textSong: this.textSong,
-      //   description: this.description
-      // }
-      //
+      const data = {
+        singer: this.singer,
+        nameSong: this.nameSong,
+        theme: this.theme,
+        language: this.language,
+        tonality: this.tonality,
+        youtubeLink: this.youtubeLink,
+        textSong: this.textSong,
+        description: this.description
+      }
+
       // console.log(data)
+      this.save(data)
+    },
+    save (songData) {
+      this.addSong(songData)
+    },
+    async addSong (songData) {
+      Swal.fire({
+        title: 'Идет загрузка...',
+        text: '',
+        imageUrl: '352.gif',
+        showConfirmButton: false
+      })
+      const createdAt = Date.now()
+      const seen = false
+      const singer = songData.singer
+      const nameSong = songData.nameSong
+      const theme = songData.theme
+      const language = songData.language
+      const tonality = songData.tonality
+      const youtubeLink = songData.youtubeLink
+      const textSong = songData.textSong
+      const description = songData.description
+
+      const docRef = await this.$fireStore.collection('songs').add({
+        createdAt,
+        singer,
+        seen,
+        nameSong,
+        theme,
+        language,
+        tonality,
+        youtubeLink,
+        textSong,
+        description
+      })
+      try {
+        const docAdded = await docRef
+        await this.$fireStore.doc('songs/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+      } catch (err) {
+        return err
+      }
+
+      Swal.close()
+
+      Swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: 'Пісня додана',
+        showConfirmButton: false,
+        timer: 2000
+      })
     }
   }
 }

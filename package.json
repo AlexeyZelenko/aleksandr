@@ -13,9 +13,12 @@
     "deploy hosting": "firebase deploy --only hosting"
   },
   "dependencies": {
-    "@nuxtjs/firebase": "^8.2.0",
+    "@nuxtjs/firebase": "^6.1.1",
+    "@nuxtjs/pwa": "^3.0.2",
+    "@nuxtjs/style-resources": "1.0.0",
     "core-js": "^3.9.1",
-    "firebase": "^9.6.2",
+    "firebase": "^7.21.1",
+    "firebase-admin": "^9.2.0",
     "nuxt": "^2.15.3",
     "nuxt-sweetalert2": "^1.0.0",
     "tiptap-vuetify": "^2.24.0",

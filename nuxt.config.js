@@ -1,6 +1,14 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  auth: {
+    persistence: 'local', // default
+    initialize: {
+      onAuthStateChangedMutation: 'ON_AUTH_STATE_CHANGED_MUTATION',
+      onAuthStateChangedAction: 'onAuthStateChangedAction'
+    },
+    ssr: false // default
+  },
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: true,
 
@@ -24,7 +32,6 @@ export default {
 
   plugins: [
     { src: '~/plugins/vue-plyr', mode: 'client' },
-    { src: '~/plugins/firebase.js' },
     { src: '~/plugins/TiptapVuetify', mode: 'client' }
   ],
 
@@ -34,7 +41,32 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyCbqbD8YMtX8uoJHsEgwKk4UvYwLPODYk4',
+          authDomain: 'oleksandr-3787c.firebaseapp.com',
+          databaseURL: 'https://oleksandr-3787c-default-rtdb.europe-west1.firebasedatabase.app',
+          projectId: 'oleksandr-3787c',
+          storageBucket: 'oleksandr-3787c.appspot.com',
+          messagingSenderId: '623016667362',
+          appId: '1:623016667362:web:26fb4984975eff32d456bb'
+        },
+        services: {
+          auth: true,
+          firestore: true,
+          functions: true,
+          storage: true,
+          realtimeDb: true,
+          messaging: true,
+          performance: true,
+          analytics: true,
+          remoteConfig: true
+        }
+      }
+    ]
   ],
 
   modules: [
@@ -69,13 +101,13 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: ['vuetify/lib', 'tiptap-vuetify']
-  }
+  },
 
-  // link: [
-  //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-  //   // Iconfonts for Vuetify. You need to leave only which one you use
-  //   { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' },
-  //   { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css' },
-  //   { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.4.95/css/materialdesignicons.min.css' }
-  // ]
+  link: [
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    // Iconfonts for Vuetify. You need to leave only which one you use
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' },
+    { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css' },
+    { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.4.95/css/materialdesignicons.min.css' }
+  ]
 }

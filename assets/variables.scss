@@ -1,4 +1,27 @@
-// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
-//
-// The variables you want to modify
- $font-size-root: 20px;
+@import '~vuetify/src/styles/styles.sass';
+
+//$material-light: ( cards: blue );
+
+$padding: 8px;
+$margin: 8px;
+
+$green-bg: #26ae68;
+$green-bg-hover: #31c375;
+$green-color: #3e9538;
+
+$radius: 4px;
+
+$text-button-color: white;
+
+//table.v-table tbody td:first-child, table.v-table tbody td:not(:first-child), table.v-table tbody th:first-child, table.v-table tbody th:not(:first-child), table.v-table thead td:first-child, table.v-table thead td:not(:first-child), table.v-table thead th:first-child, table.v-table thead th:not(:first-child) {
+//  padding: 5px
+//}
+
+
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .v-data-table > .v-data-table__wrapper > table > thead > tr > td, .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td {
+  font-size: 0.875rem;
+  min-height: 50px;
+  height: auto;
+  padding: 10px;
+  margin: 10px
+}
