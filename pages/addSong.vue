@@ -91,6 +91,8 @@ import {
   TiptapVuetify,
   Underline
 } from 'tiptap-vuetify'
+import { parseTextSong } from '../helpers/utils'
+
 export default {
   name: 'AddSong',
   components: {
@@ -158,10 +160,13 @@ export default {
       this.songs = this.SONGS
     },
     submit () {
-      if (this.description) {
+      if (this.textSong) {
         // console.log('description', this.description)
         // const result = this.textSong.split('\n')
         // console.log('result', result)
+        this.parseTextSong = parseTextSong(this.textSong)
+        /*eslint-disable */
+        console.log('parseTextSong', this.parseTextSong)
       }
       const data = {
         singer: this.singer,
