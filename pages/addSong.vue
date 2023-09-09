@@ -1,5 +1,14 @@
 <template>
   <div>
+    <template>
+      <div>
+        <v-breadcrumbs :items="breadcrumbs">
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </v-breadcrumbs>
+      </div>
+    </template>
     <div>Додати пісню</div>
     <template>
       <v-sheet width="300" class="mx-auto">
@@ -41,7 +50,7 @@
           <v-text-field
             v-model="youtubeLink"
             label="Посилання на відео з youtube"
-            prepend-icon="mdi-map-marker"
+            prepend-icon="mdi-television-play"
             variant="solo"
           />
 
@@ -141,6 +150,23 @@ export default {
       HorizontalRule,
       Paragraph,
       HardBreak
+    ],
+    breadcrumbs: [
+      {
+        text: 'Головна',
+        disabled: false,
+        href: '/'
+      },
+      {
+        text: 'Пісні',
+        disabled: false,
+        href: 'songs'
+      },
+      {
+        text: 'Додати пісню',
+        disabled: true,
+        href: 'addSong'
+      }
     ]
   }),
   computed: {

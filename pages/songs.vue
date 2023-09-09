@@ -1,5 +1,14 @@
 <template>
   <div>
+    <template>
+      <div>
+        <v-breadcrumbs :items="breadcrumbs">
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </v-breadcrumbs>
+      </div>
+    </template>
     <div>Songs</div>
     <v-card
       class="mx-auto"
@@ -23,7 +32,6 @@
     <!--        Categories-->
     <v-row class="change_categories">
       <v-select
-        :key="name"
         :selected="selected"
         style="z-index: 3"
 
@@ -100,7 +108,19 @@ export default {
   data: () => ({
     loaded: false,
     loading: false,
-    selectedStar: [2]
+    selectedStar: [2],
+    breadcrumbs: [
+      {
+        text: 'Головна',
+        disabled: false,
+        href: '/'
+      },
+      {
+        text: 'Пісні',
+        disabled: true,
+        href: 'songs'
+      }
+    ]
   }),
   computed: {
     ...mapGetters([
