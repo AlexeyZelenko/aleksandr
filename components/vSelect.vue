@@ -1,0 +1,104 @@
+<template>
+  <div class="v-select">
+    <p
+      class="title"
+      @click="areOptionsVisible = !areOptionsVisible"
+    >
+      {{ selected }}
+    </p>
+    <div
+      v-if="areOptionsVisible || isExpanded"
+      class="options"
+    >
+      <p
+        v-for="option in options"
+        :key="option.value"
+        @click="selectOption(option)"
+      >
+        {{ option.name }}
+      </p>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'VSelect',
+  props: {
+    // options: {
+    //   type: Array,
+    //   default () {
+    //     return []
+    //   }
+    // },
+    selected: {
+      type: String,
+      default: ''
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      areOptionsVisible: false,
+      options: [
+        { name: 'Поклоніння', value: 'worship' },
+        { name: 'Прославління', value: 'glorification' },
+        { name: 'Хвала', value: 'praise' },
+        { name: 'Інше', value: 'other' }
+      ]
+    }
+  },
+  mounted () {
+    document.addEventListener('click', this.hideSelect.bind(this), true)
+  },
+  beforeDestroy () {
+    document.removeEventListener('click', this.hideSelect)
+  },
+  methods: {
+    selectOption (option) {
+      // eslint-disable-next-line no-console
+      console.log('option', option)
+      this.$emit('select', option)
+      this.areOptionsVisible = false
+    },
+    hideSelect () {
+      this.areOptionsVisible = false
+    }
+
+  }
+}
+</script>
+
+<style>
+  .v-select {
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    text-align: left;
+    margin: 25px auto;
+  }
+  .title {
+    border: solid 1px #aeaeae;
+    padding: 8px;
+  }
+  .v-select p {
+    margin: 0;
+  }
+
+  .options {
+    border: solid 1px #aeaeae;
+    background: #636262;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+  }
+
+  .options p:hover {
+    background: #785050;
+  }
+</style>
