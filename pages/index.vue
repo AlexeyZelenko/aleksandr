@@ -16,52 +16,24 @@
               outlined
               color="yellow"
               nuxt
-              to="/about"
+              to="/songs"
             >
-              Про мене
+              Пісні
             </v-btn>
             <v-btn
               class="ma-2"
               outlined
               color="yellow"
               nuxt
-              to="/contacts"
+              to="/addSong"
             >
-              Контакти
+              Додати пісню
             </v-btn>
           </v-img>
         </v-card>
         <div>
           <logo />
         </div>
-      </v-col>
-    </v-row>
-    <v-row justify="space-around">
-      <v-col
-        v-for="elevation in elevations"
-        :key="elevation.title"
-        cols="12"
-        md="4"
-      >
-        <v-card>
-          <v-card-title class="text-h5">
-            {{ elevation.title }}
-          </v-card-title>
-          <v-img
-            class="white--text align-end"
-            height="300px"
-            :src="elevation.src"
-          >
-            <v-btn
-              class="ma-2"
-              color="green"
-              nuxt
-              :to="elevation.link"
-            >
-              детальніше
-            </v-btn>
-          </v-img>
-        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -77,64 +49,20 @@ export default {
     VuetifyLogo
   },
   data: () => ({
-    elevations: [
-      {
-        title: 'Вантажоперевезення',
-        src: 'https://drive.google.com/uc?export=view&id=13JKitjfCgysOyZhGHwMLgJ5Ch2s7DkY_',
-        link: '/inspire'
-      },
-      {
-        title: 'Тріска для копчення',
-        src: 'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf',
-        link: '/chip'
-      },
-      {
-        title: 'Вирубка фруктових дерев',
-        src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
-        link: '/trees'
-      },
-      {
-        title: 'Пісні',
-        src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
-        link: '/songs'
-      },
-      {
-        title: 'Додати',
-        src: 'https://drive.google.com/uc?export=view&id=1Y42x6uaZjWBvMy8XhLSipZrYsoS09au3',
-        link: '/addSongs'
-      }
-    ],
     arrayCover: [
-      'https://drive.google.com/uc?export=view&id=1CLUg5PIEDS91Y0RZywyEmR2_jmObrUca'
-    ],
-    arrayCover2: [
-      'https://drive.google.com/uc?export=view&id=13JKitjfCgysOyZhGHwMLgJ5Ch2s7DkY_'
-    ],
-    arrayCover3: [
-      'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
-    ],
-    arrayCover4: [
-      'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
-    ],
-    arrayCover5: [
-      'https://drive.google.com/uc?export=view&id=1VaLfVyfEymKFLugIx0lzcxpNqDUHJYMf'
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2F1616771447_24-p-baraban-krasivo-30.jpg?alt=media&token=0e729d58-f09b-40d2-920f-618991ab1e95',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2F391ebb2c69448ece46c429da8e8853c1.jpg?alt=media&token=ab9b1bde-d5c2-4f4f-b06b-0e46cb83894f',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2F60-muzikalen-instrument-b.jpg?alt=media&token=8a12b3d6-3843-4724-863a-2160c540cc7a',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2Fbarabany-palochki-makro-chiorno-beloe.jpg?alt=media&token=bf5645a9-ff05-4bdf-8f4f-832109d4feb9',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2Fd691b8c27fdbe5aa9c9ee33a9610f514.jpeg?alt=media&token=cda56cab-e1a7-418b-af1c-b63d8677d124',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2Fdrummer-playing-drums-on-stage-gm499754206-80419285-1024x576-1.jpg?alt=media&token=d479922e-aad4-4bf9-9014-625e448f9c63',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2Fpiano-hand-piano-keys.jpg?alt=media&token=93478e07-dbc5-4603-91d1-f8acd9e0e4da',
+      'https://firebasestorage.googleapis.com/v0/b/oleksandr-3787c.appspot.com/o/Site_foto%2Fpiano-keys-wallpaper-preview.jpg?alt=media&token=ce5bd93c-e271-4f42-b22b-b960982524f1'
     ]
   }),
   computed: {
     Cover () {
       return this.arrayCover[Math.floor(Math.random() * this.arrayCover.length)]
-    },
-    Cover2 () {
-      return this.arrayCover2[Math.floor(Math.random() * this.arrayCover2.length)]
-    },
-    Cover3 () {
-      return this.arrayCover3[Math.floor(Math.random() * this.arrayCover3.length)]
-    },
-    Cover4 () {
-      return this.arrayCover3[Math.floor(Math.random() * this.arrayCover4.length)]
-    },
-    Cover5 () {
-      return this.arrayCover3[Math.floor(Math.random() * this.arrayCover4.length)]
     }
   }
 }

@@ -26,13 +26,13 @@ export default {
     const SONGS = await getters.getSongs
 
     const sortedSongs = []
-    await SONGS.map((item) => {
+    await SONGS.forEach((item) => {
       if (item.category === category.name) {
         sortedSongs.push(item)
       }
     })
     const selected = category.name
     commit('SORT_SONGS', sortedSongs)
-    commit('SELECT_SONGS', selected)
+    commit('SELECT_CATEGORY_SONGS', selected)
   }
 }

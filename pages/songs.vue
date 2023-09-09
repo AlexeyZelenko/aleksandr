@@ -24,10 +24,11 @@
     <v-row class="change_categories">
       <v-select
         :key="name"
-        :options="categories"
         :selected="selected"
         style="z-index: 3"
-        @select="sortByCategories"
+
+        :options="categories"
+        @select="sortCategory"
       />
     </v-row>
 
@@ -37,12 +38,15 @@
     >
       <v-list two-line>
         <v-list-item-group
-          v-model="selected"
+          v-model="selectedStar"
           active-class="pink--text"
           multiple
         >
           <template v-for="(item, index) in filteredSongs">
-            <v-list-item :key="item.nameSong">
+            <v-list-item
+              :key="item.nameSong"
+              @click="songClick(item.id)"
+            >
               <template v-slot:default="{ active }">
                 <v-list-item-content>
                   <v-list-item-title v-text="item.nameSong" />
@@ -76,7 +80,7 @@
             </v-list-item>
 
             <v-divider
-              v-if="index < items.length - 1"
+              v-if="index < filteredSongs.length - 1"
               :key="index"
             />
           </template>
@@ -90,42 +94,13 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  components: {
+    vSelect: () => import('~/components/vSelect.vue')
+  },
   data: () => ({
     loaded: false,
     loading: false,
-    selected: [2],
-    items: [
-      {
-        action: '15 min',
-        headline: 'Brunch this weekend?',
-        subtitle: 'I\'ll be in your neighborhood doing errands this weekend. Do you want to hang out?',
-        title: 'Ali Connors'
-      },
-      {
-        action: '2 hr',
-        headline: 'Summer BBQ',
-        subtitle: 'Wish I could come, but I\'m out of town this weekend.',
-        title: 'me, Scrott, Jennifer'
-      },
-      {
-        action: '6 hr',
-        headline: 'Oui oui',
-        subtitle: 'Do you have Paris recommendations? Have you ever been?',
-        title: 'Sandra Adams'
-      },
-      {
-        action: '12 hr',
-        headline: 'Birthday gift',
-        subtitle: 'Have any ideas about what we should get Heidi for her birthday?',
-        title: 'Trevor Hansen'
-      },
-      {
-        action: '18hr',
-        headline: 'Recipe to try',
-        subtitle: 'We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
-        title: 'Britta Holt'
-      }
-    ]
+    selectedStar: [2]
   }),
   computed: {
     ...mapGetters([
@@ -158,25 +133,20 @@ export default {
     }
   },
   mounted () {
-    this.USER_ID_ACTIONS()
     this.userEntrance()
     this.bindCountDocument()
-    this.initialize()
   },
   methods: {
     ...mapActions([
       'bindCountDocument',
       'userEntrance',
-      'USER_ID_ACTIONS'
+      'sortByCategories'
     ]),
-    initialize () {
-      this.songs = this.SONGS
-    },
     songClick (id) {
       this.$router.push({ name: 'song', query: { song: id } })
     },
-    sortByCategories (category) {
-      this.$store.dispatch('categories/sortByCategories', category)
+    sortCategory (category) {
+      this.sortByCategories(category)
     },
     onClick () {
       this.loading = true

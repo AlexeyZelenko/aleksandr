@@ -156,9 +156,6 @@ export default {
     ...mapActions([
       'bindCountDocument'
     ]),
-    initialize () {
-      this.songs = this.SONGS
-    },
     submit () {
       if (this.textSong) {
         // console.log('description', this.description)
@@ -181,6 +178,9 @@ export default {
 
       // console.log(data)
       this.save(data)
+    },
+    initialize () {
+      this.songs = this.SONGS
     },
     save (songData) {
       this.addSong(songData)

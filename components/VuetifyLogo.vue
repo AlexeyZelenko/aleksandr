@@ -4,7 +4,7 @@
       class="VuetifyLogo"
       style="color: yellow; font-size: 42px"
     >
-      Олександр Пацьора
+      Worship Band
     </h1>
   </div>
 </template>

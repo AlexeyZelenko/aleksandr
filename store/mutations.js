@@ -28,13 +28,13 @@ export default {
     state.InfoUser = info
   },
 
-  FIREBASE_PRODUCTS: (state, data) => {
+  FIREBASE_SONGS: (state, data) => {
     state.Songs = data
   },
   SORT_SONGS: (state, sortedSongs) => {
     state.sortedSongs = sortedSongs
   },
-  SELECT_SONGS: (state, selected) => {
+  SELECT_CATEGORY_SONGS: (state, selected) => {
     state.selected = selected
   }
 }

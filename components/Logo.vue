@@ -5,7 +5,7 @@
       outlined
       color="yellow"
     >
-      тільки якісні послуги
+      Cherckasy
     </v-btn>
   </div>
 </template>

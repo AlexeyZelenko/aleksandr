@@ -120,26 +120,6 @@ export default {
           to: '/'
         },
         {
-          icon: 'mdi-axe',
-          title: 'Вирубка фруктових дерев',
-          to: '/trees'
-        },
-        {
-          icon: 'mdi-tree',
-          title: 'Тріска для копчення',
-          to: '/chip'
-        },
-        {
-          icon: 'mdi-van-utility',
-          title: 'Вантажоперевезення',
-          to: '/inspire'
-        },
-        {
-          icon: 'mdi-contacts',
-          title: 'Контакти',
-          to: '/contacts'
-        },
-        {
           icon: 'mdi-contacts',
           title: 'Пісні',
           to: '/songs'
@@ -160,7 +140,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Олександр Пацьора'
+      title: 'блага вість'
     }
   }
 }
