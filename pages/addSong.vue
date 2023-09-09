@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="create-song">
     <template>
       <div>
         <v-breadcrumbs :items="breadcrumbs">
@@ -11,7 +11,9 @@
     </template>
     <div>Додати пісню</div>
     <template>
-      <v-sheet width="300" class="mx-auto">
+      <v-sheet
+        class="create-song--sheet"
+      >
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
             v-model="singer"
@@ -54,14 +56,15 @@
             variant="solo"
           />
 
-          <v-textarea
-            v-model="textSong"
-            type="text"
-            label="- Техт пісні -"
-            variant="outlined"
-          />
-
-          <v-col cols="12">
+          <div v-if="tiptap">
+            <v-textarea
+              v-model="textSong"
+              type="text"
+              label="- Техт пісні -"
+              variant="outlined"
+            />
+          </div>
+          <v-col v-if="tiptap" cols="12">
             <tiptap-vuetify
               v-model="description"
               :extensions="extensions"
@@ -69,6 +72,142 @@
               prepend-icon="edit"
             />
           </v-col>
+
+          <template>
+            <v-data-table
+              :headers="headers"
+              :items="blocks"
+              hide-default-footer
+              hide-default-header
+            >
+              <template v-slot:item.name="{ item }">
+                <v-chip
+                  color="green"
+                  dark
+                >
+                  {{ item.name }}
+                </v-chip>
+              </template>
+              <template v-slot:top>
+                <v-toolbar
+                  flat
+                >
+                  <v-toolbar-title>Блок</v-toolbar-title>
+                  <v-divider
+                    class="mx-4"
+                    inset
+                    vertical
+                  />
+                  <v-spacer />
+                  <v-dialog
+                    v-model="dialog"
+                    max-width="500px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        dark
+                        class="mb-2"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        Новий блок
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>
+                        <span class="text-h5">{{ formTitle }}</span>
+                      </v-card-title>
+
+                      <v-card-text
+                        width="100%"
+                        style="padding: 0"
+                      >
+                        <v-container>
+                          <v-col width="100%">
+                            <v-col
+                              width="100%"
+                            >
+                              <v-text-field
+                                v-model="editedItem.name"
+                                label="Назва блоку"
+                              />
+                            </v-col>
+                            <v-col
+                              width="100%"
+                            >
+                              <v-textarea
+                                v-model="editedItem.data"
+                                label="техт/акорди/ноти"
+                              />
+                            </v-col>
+                          </v-col>
+                        </v-container>
+                      </v-card-text>
+
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="close"
+                        >
+                          Закрити
+                        </v-btn>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="saveNewBlock"
+                        >
+                          Зберегти
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <v-dialog v-model="dialogDelete" max-width="500px">
+                    <v-card>
+                      <v-card-title class="text-h5">
+                        Ви впевнені, що хочете видалити цей елемент?
+                      </v-card-title>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn color="blue darken-1" text @click="closeDelete">
+                          Cancel
+                        </v-btn>
+                        <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+                          OK
+                        </v-btn>
+                        <v-spacer />
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-toolbar>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon
+                  small
+                  @click="deleteItem(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+              <template v-slot:no-data>
+                <v-btn
+                  color="primary"
+                  @click="initialize"
+                >
+                  Reset
+                </v-btn>
+              </template>
+            </v-data-table>
+          </template>
 
           <v-btn type="submit" block class="mt-2">
             Додати
@@ -108,6 +247,7 @@ export default {
     TiptapVuetify
   },
   data: () => ({
+    tiptap: false,
     singer: null,
     singerRules: [
       (value) => {
@@ -167,12 +307,45 @@ export default {
         disabled: true,
         href: 'addSong'
       }
-    ]
+    ],
+    dialog: false,
+    dialogDelete: false,
+    headers: [
+      {
+        text: 'Назва блоку',
+        align: 'start',
+        sortable: false,
+        value: 'name'
+      },
+      { text: 'Дані', value: 'data' },
+      { text: 'Дії', value: 'actions', sortable: false }
+    ],
+    blocks: [],
+    editedIndex: -1,
+    editedItem: {
+      name: '',
+      data: ''
+    },
+    defaultItem: {
+      name: '',
+      data: ''
+    }
   }),
   computed: {
     ...mapGetters([
       'SONGS'
-    ])
+    ]),
+    formTitle () {
+      return this.editedIndex === -1 ? 'Новий блок' : 'Редагувати'
+    }
+  },
+  watch: {
+    dialog (val) {
+      val || this.close()
+    },
+    dialogDelete (val) {
+      val || this.closeDelete()
+    }
   },
   mounted () {
     this.initialize()
@@ -257,11 +430,66 @@ export default {
         showConfirmButton: false,
         timer: 2000
       })
+    },
+    editItem (item) {
+      this.editedIndex = this.blocks.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    deleteItem (item) {
+      this.editedIndex = this.blocks.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
+    },
+
+    deleteItemConfirm () {
+      this.blocks.splice(this.editedIndex, 1)
+      this.closeDelete()
+    },
+
+    close () {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+
+    closeDelete () {
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+
+    saveNewBlock () {
+      if (this.editedIndex > -1) {
+        Object.assign(this.blocks[this.editedIndex], this.editedItem)
+      } else {
+        this.blocks.push(this.editedItem)
+      }
+      this.close()
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.create-song {
+  width: 100%;
+
+  &--sheet {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 15px;
+
+    @media (min-width: 767px) {
+      max-width: 600px;
+    }
+  }
+}
 
 </style>

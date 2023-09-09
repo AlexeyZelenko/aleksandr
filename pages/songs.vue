@@ -41,6 +41,7 @@
     </v-row>
 
     <v-card
+      v-if="filteredSongs.length"
       class="mx-auto"
       max-width="500"
     >
@@ -95,6 +96,36 @@
         </v-list-item-group>
       </v-list>
     </v-card>
+    <div v-else class="text-center" style="min-height: 400px;">
+      <v-container style="height: 400px;">
+        <v-row
+          class="fill-height"
+          align-content="center"
+          justify="center"
+        >
+          <v-col
+            class="text-subtitle-1 text-center"
+            cols="12"
+          >
+            Отримання ваших файлів
+          </v-col>
+          <v-progress-linear
+            color="deep-purple accent-4"
+            indeterminate
+            rounded
+            height="6"
+          />
+        </v-row>
+      </v-container>
+    </div>
+
+    <div class="text-center pa-10">
+      <v-pagination
+        v-model="page"
+        :length="4"
+        circle
+      />
+    </div>
   </div>
 </template>
 
@@ -120,7 +151,8 @@ export default {
         disabled: true,
         href: 'songs'
       }
-    ]
+    ],
+    page: 1
   }),
   computed: {
     ...mapGetters([
