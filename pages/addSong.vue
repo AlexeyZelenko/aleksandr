@@ -56,23 +56,6 @@
             variant="solo"
           />
 
-          <div v-if="tiptap">
-            <v-textarea
-              v-model="textSong"
-              type="text"
-              label="- Техт пісні -"
-              variant="outlined"
-            />
-          </div>
-          <v-col v-if="tiptap" cols="12">
-            <tiptap-vuetify
-              v-model="description"
-              :extensions="extensions"
-              placeholder="Описание товара"
-              prepend-icon="edit"
-            />
-          </v-col>
-
           <template>
             <v-data-table
               :headers="headers"
@@ -137,7 +120,7 @@
                               width="100%"
                             >
                               <v-textarea
-                                v-model="editedItem.data"
+                                v-model="editedItem.content"
                                 label="техт/акорди/ноти"
                               />
                             </v-col>
@@ -209,6 +192,15 @@
             </v-data-table>
           </template>
 
+          <div>
+            <v-textarea
+              v-model="note"
+              type="text"
+              label="- Примітки -"
+              variant="outlined"
+            />
+          </div>
+
           <v-btn type="submit" block class="mt-2">
             Додати
           </v-btn>
@@ -221,33 +213,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
-import {
-  Blockquote,
-  Bold,
-  BulletList,
-  Code,
-  HardBreak,
-  Heading,
-  History,
-  HorizontalRule,
-  Italic,
-  Link,
-  ListItem,
-  OrderedList,
-  Paragraph,
-  Strike,
-  TiptapVuetify,
-  Underline
-} from 'tiptap-vuetify'
-import { parseTextSong } from '../helpers/utils'
+// import { parseTextSong } from '../helpers/utils'
 
 export default {
   name: 'AddSong',
-  components: {
-    TiptapVuetify
-  },
   data: () => ({
-    tiptap: false,
     singer: null,
     singerRules: [
       (value) => {
@@ -268,29 +238,8 @@ export default {
     language: null,
     tonality: null,
     youtubeLink: null,
-    textSong: null,
+    note: null,
     description: null,
-    extensions: [
-      History,
-      Blockquote,
-      Link,
-      Underline,
-      Strike,
-      Italic,
-      ListItem,
-      BulletList,
-      OrderedList,
-      [Heading, {
-        options: {
-          levels: [1, 2, 3]
-        }
-      }],
-      Bold,
-      Code,
-      HorizontalRule,
-      Paragraph,
-      HardBreak
-    ],
     breadcrumbs: [
       {
         text: 'Головна',
@@ -317,18 +266,18 @@ export default {
         sortable: false,
         value: 'name'
       },
-      { text: 'Дані', value: 'data' },
+      { text: 'Дані', value: 'content' },
       { text: 'Дії', value: 'actions', sortable: false }
     ],
     blocks: [],
     editedIndex: -1,
     editedItem: {
       name: '',
-      data: ''
+      content: ''
     },
     defaultItem: {
       name: '',
-      data: ''
+      content: ''
     }
   }),
   computed: {
@@ -356,14 +305,12 @@ export default {
       'bindCountDocument'
     ]),
     submit () {
-      if (this.textSong) {
-        // console.log('description', this.description)
-        // const result = this.textSong.split('\n')
-        // console.log('result', result)
-        this.parseTextSong = parseTextSong(this.textSong)
-        /*eslint-disable */
-        console.log('parseTextSong', this.parseTextSong)
-      }
+      //* Разбить текст на блоки - вынести в отдельный функционал*//
+      // if (this.textSong) {
+      //   this.parseTextSong = parseTextSong(this.textSong)
+      //   /*eslint-disable */
+      //   console.log('parseTextSong', this.parseTextSong)
+      // }
       const data = {
         singer: this.singer,
         nameSong: this.nameSong,
@@ -371,18 +318,16 @@ export default {
         language: this.language,
         tonality: this.tonality,
         youtubeLink: this.youtubeLink,
-        textSong: this.textSong,
-        description: this.description
+        note: this.note,
+        description: this.description,
+        blocks: this.blocks
       }
 
       // console.log(data)
-      this.save(data)
+      this.addSong(data)
     },
     initialize () {
       this.songs = this.SONGS
-    },
-    save (songData) {
-      this.addSong(songData)
     },
     async addSong (songData) {
       Swal.fire({
@@ -399,8 +344,9 @@ export default {
       const language = songData.language
       const tonality = songData.tonality
       const youtubeLink = songData.youtubeLink
-      const textSong = songData.textSong
+      const note = songData.note
       const description = songData.description
+      const blocks = songData.blocks
 
       const docRef = await this.$fireStore.collection('songs').add({
         createdAt,
@@ -411,8 +357,9 @@ export default {
         language,
         tonality,
         youtubeLink,
-        textSong,
-        description
+        note,
+        description,
+        blocks
       })
       try {
         const docAdded = await docRef
