@@ -9,7 +9,7 @@
         </v-breadcrumbs>
       </div>
     </template>
-    <div>Songs</div>
+    <div>Пісні</div>
     <v-card
       class="mx-auto"
       color="grey-lighten-3"
@@ -20,7 +20,7 @@
           :loading="loading"
           density="compact"
           variant="solo"
-          label="Search templates"
+          label="Пошук пісні"
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
