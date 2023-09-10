@@ -35,6 +35,12 @@
           >
             mdi-pencil
           </v-icon>
+          <v-icon
+            color="yellow darken-3"
+            @click.stop="removeSong()"
+          >
+            mdi-delete
+          </v-icon>
 
           <div class="my-4 text-subtitle-1">
             тональність • {{ song.tonality }}
@@ -262,10 +268,15 @@ export default {
   },
   methods: {
     ...mapActions([
-      'bindCountDocument'
+      'bindCountDocument',
+      'deleteSong'
     ]),
     editSong () {
       this.$router.push({ name: 'editSong', query: { song: this.song.id } })
+    },
+    removeSong () {
+      this.deleteSong(this.song.id)
+      this.$router.push({ name: 'songs' })
     }
   }
 }
