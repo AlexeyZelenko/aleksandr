@@ -77,13 +77,13 @@ export default {
   modules: [
     [
       'vue-sweetalert2/nuxt',
+      'vue-youtube',
       {
         confirmButtonColor: '#41b882',
         cancelButtonColor: '#ff7674'
       }
     ]
   ],
-
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],

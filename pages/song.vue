@@ -28,11 +28,8 @@
           Назва пісні: {{ song.nameSong }}
         </v-card-title>
 
-        <v-card-text
-          style="text-align: left"
-        >
+        <v-card-text>
           <v-row
-            align="left"
             class="mx-0"
           >
             <v-rating
@@ -94,6 +91,11 @@
         </div>
 
         <v-divider class="mx-4 px-4" />
+
+        <Youtube-video
+          v-if="song && song.youtubeLink"
+          :link="song.youtubeLink"
+        />
 
         <v-expansion-panels>
           <v-expansion-panel>
@@ -189,6 +191,9 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   layout: 'back_catalog',
   name: 'SongInformation',
+  components: {
+    'Youtube-video': () => import('~/components/youtube.vue')
+  },
   data () {
     return {
       readonly: false,
@@ -248,6 +253,18 @@ export default {
 
       // Форматируем дату в удобочитаемый вид (например, "гггг-мм-дд чч:мм:сс")
       return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    },
+    extractVideoId () {
+      // Регулярное выражение для извлечения ID из ссылки YouTube
+      const regex = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?feature=player_embedded&v=))(.*?)(?:\?t=|&t=|&start=|&index=|&list=|$|\n)/
+
+      const match = this.song.youtubeLink.match(regex)
+
+      if (match && match[1]) {
+        return match[1]
+      } else {
+        return null
+      }
     }
   },
   mounted () {
@@ -271,12 +288,11 @@ export default {
   padding: 10px;
   border-radius: 5px;
 }
-.z-product-information {
+.song-information {
   flex-basis: 25%;
   box-shadow: 0 0 8px 0 #e0e0e0;
   padding: $padding*2;
   margin-bottom: $margin*2;
-  text-align: center;
   border-radius: 5px;
 
   iframe {
