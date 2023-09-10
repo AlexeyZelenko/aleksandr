@@ -5,9 +5,10 @@ export const state = () => ({
     { name: 'Поклоніння', value: 'worship' },
     { name: 'Прославління', value: 'glorification' },
     { name: 'Хвала', value: 'praise' },
-    { name: 'Інше', value: 'other' }
+    { name: 'Інше', value: 'other' },
+    { name: 'Всі', value: 'all' }
   ],
-  sortedSongs: [],
+  // sortedSongs: [],
   selected: 'Категорії',
   Songs: []
 })
@@ -15,13 +16,13 @@ export const state = () => ({
 export const mutations = {
   FIREBASE_PRODUCTS: (state, data) => {
     state.Songs = data
-  },
-  SORT_SONGS: (state, sortedSongs) => {
-    state.sortedSongs = sortedSongs
-  },
-  SELECT_SONGS: (state, selected) => {
-    state.selected = selected
   }
+  // SORT_SONGS: (state, sortedSongs) => {
+  //   state.sortedSongs = sortedSongs
+  // },
+  // SELECT_SONGS: (state, selected) => {
+  //   state.selected = selected
+  // }
 }
 
 export const actions = {

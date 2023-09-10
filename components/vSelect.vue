@@ -1,10 +1,18 @@
 <template>
   <div class="v-select">
     <p
+      v-if="selected"
       class="title"
       @click="areOptionsVisible = !areOptionsVisible"
     >
       {{ selected }}
+    </p>
+    <p
+      v-else
+      class="title"
+      @click="areOptionsVisible = !areOptionsVisible"
+    >
+      Категорії
     </p>
     <div
       v-if="areOptionsVisible || isExpanded"
@@ -25,12 +33,12 @@
 export default {
   name: 'VSelect',
   props: {
-    // options: {
-    //   type: Array,
-    //   default () {
-    //     return []
-    //   }
-    // },
+    options: {
+      type: Array,
+      default () {
+        return {}
+      }
+    },
     selected: {
       type: String,
       default: ''
@@ -42,25 +50,17 @@ export default {
   },
   data () {
     return {
-      areOptionsVisible: false,
-      options: [
-        { name: 'Поклоніння', value: 'worship' },
-        { name: 'Прославління', value: 'glorification' },
-        { name: 'Хвала', value: 'praise' },
-        { name: 'Інше', value: 'other' }
-      ]
+      areOptionsVisible: false
     }
   },
-  mounted () {
-    document.addEventListener('click', this.hideSelect.bind(this), true)
-  },
-  beforeDestroy () {
-    document.removeEventListener('click', this.hideSelect)
-  },
+  // mounted () {
+  //   document.addEventListener('click', this.hideSelect.bind(this), true)
+  // },
+  // beforeDestroy () {
+  //   document.removeEventListener('click', this.hideSelect)
+  // },
   methods: {
     selectOption (option) {
-      // eslint-disable-next-line no-console
-      console.log('option', option)
       this.$emit('select', option)
       this.areOptionsVisible = false
     },
@@ -96,6 +96,12 @@ export default {
     left: 0;
     width: 100%;
     padding: 8px;
+  }
+
+  .options p {
+    margin: 0;
+    padding: 8px;
+    cursor: pointer;
   }
 
   .options p:hover {

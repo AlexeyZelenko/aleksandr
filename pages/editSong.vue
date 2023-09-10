@@ -198,6 +198,9 @@
             Додати зміни
           </v-btn>
         </v-form>
+        <v-btn block class="mt-2" @click="cancel">
+          Відмінити
+        </v-btn>
       </v-sheet>
     </template>
   </div>
@@ -393,18 +396,15 @@ export default {
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
-
     deleteItem (item) {
       this.editedIndex = this.blocks.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
-
     deleteItemConfirm () {
       this.blocks.splice(this.editedIndex, 1)
       this.closeDelete()
     },
-
     close () {
       this.dialog = false
       this.$nextTick(() => {
@@ -412,7 +412,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
     closeDelete () {
       this.dialogDelete = false
       this.$nextTick(() => {
@@ -420,7 +419,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
     saveNewBlock () {
       if (this.editedIndex > -1) {
         Object.assign(this.blocks[this.editedIndex], this.editedItem)
@@ -428,6 +426,9 @@ export default {
         this.blocks.push(this.editedItem)
       }
       this.close()
+    },
+    cancel () {
+      this.$router.push({ name: 'songs' })
     }
   }
 }

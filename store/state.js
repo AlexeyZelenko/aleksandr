@@ -9,14 +9,7 @@ export default () => ({
   Users: [],
   InfoUser: [],
   user: null,
-
-  categories: [
-    { name: 'Поклоніння', value: 'worship' },
-    { name: 'Прославління', value: 'glorification' },
-    { name: 'Хвала', value: 'praise' },
-    { name: 'Інше', value: 'other' }
-  ],
+  Songs: [],
   sortedSongs: [],
-  selected: 'Категорії',
-  Songs: []
+  selected: null
 })

@@ -34,91 +34,95 @@
       <v-select
         :selected="selected"
         style="z-index: 3"
-
         :options="categories"
         @select="sortCategory"
       />
     </v-row>
 
-    <v-card
-      v-if="filteredSongs.length"
-      class="mx-auto"
-      max-width="500"
-    >
-      <v-list two-line>
-        <v-list-item-group
-          v-model="selectedStar"
-          active-class="pink--text"
-          multiple
-        >
-          <template v-for="(item, index) in filteredSongs">
-            <v-list-item
-              :key="item.nameSong"
-              @click="songClick(item.id)"
-            >
-              <template v-slot:default="{}">
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.nameSong" />
-
-                  <v-list-item-subtitle
-                    class="text--primary"
-                    v-text="item.language"
-                  />
-
-                  <v-list-item-subtitle v-text="item.singer" />
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-list-item-action-text v-text="item.tonality" />
-
-                  <v-icon
-                    color="yellow darken-3"
-                    @click.stop="editSong(item.id)"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                </v-list-item-action>
-              </template>
-            </v-list-item>
-
-            <v-divider
-              v-if="index < filteredSongs.length - 1"
-              :key="index"
-            />
-          </template>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
-    <div v-else class="text-center" style="min-height: 400px;">
-      <v-container style="height: 400px;">
-        <v-row
-          class="fill-height"
-          align-content="center"
-          justify="center"
-        >
-          <v-col
-            class="text-subtitle-1 text-center"
-            cols="12"
+    <client-only placeholder="Загрузка...">
+      <v-card
+        v-if="filteredSongs.length > 0"
+        class="mx-auto"
+        max-width="500"
+      >
+        <v-list two-line>
+          <v-list-item-group
+            v-model="selectedStar"
+            active-class="pink--text"
+            multiple
           >
-            Отримання ваших файлів
-          </v-col>
-          <v-progress-linear
-            color="deep-purple accent-4"
-            indeterminate
-            rounded
-            height="6"
-          />
-        </v-row>
-      </v-container>
-    </div>
+            <template v-for="(item, index) in filteredSongs">
+              <v-list-item
+                :key="item.nameSong"
+                @click="songClick(item.id)"
+              >
+                <template v-slot:default="{}">
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item.nameSong" />
 
-    <div class="text-center pa-10">
-      <v-pagination
-        v-model="page"
-        :length="4"
-        circle
-      />
-    </div>
+                    <v-list-item-subtitle
+                      class="text--primary"
+                      v-text="item.language"
+                    />
+
+                    <v-list-item-subtitle v-text="item.singer" />
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-list-item-action-text v-text="item.tonality" />
+
+                    <v-icon
+                      color="yellow darken-3"
+                      @click.stop="editSong(item.id)"
+                    >
+                      mdi-pencil
+                    </v-icon>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+
+              <v-divider
+                v-if="index < filteredSongs.length - 1"
+                :key="index"
+              />
+            </template>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+      <div v-else-if="selected && filteredSongs.length === 0">
+        <p>За вашим запросом нічого не знайдено...</p>
+      </div>
+      <div v-else class="text-center" style="min-height: 400px;">
+        <v-container style="height: 400px;">
+          <v-row
+            class="fill-height"
+            align-content="center"
+            justify="center"
+          >
+            <v-col
+              class="text-subtitle-1 text-center"
+              cols="12"
+            >
+              Отримання ваших файлів
+            </v-col>
+            <v-progress-linear
+              color="deep-purple accent-4"
+              indeterminate
+              rounded
+              height="6"
+            />
+          </v-row>
+        </v-container>
+      </div>
+
+      <div class="text-center pa-10">
+        <v-pagination
+          v-model="page"
+          :length="4"
+          circle
+        />
+      </div>
+    </client-only>
   </div>
 </template>
 
@@ -153,27 +157,27 @@ export default {
       'User_Entrance',
       'USER_ID'
     ]),
-    ...mapGetters([
-      'categories',
-      'selected',
-      'sortedSongs'
-    ]),
-    // categories () {
-    //   return this.$store.state.categories.categories
-    // },
-    // selected () {
-    //   return this.$store.state.categories.selected
-    // },
-    // sortedSongs () {
-    //   return this.$store.state.categories.sortedSongs
-    // },
+    categories () {
+      return this.$store.state.categories.categories
+    },
+    selected () {
+      return this.$store.state.selected
+    },
+    sortedSongs () {
+      return this.$store.state.sortedSongs
+    },
     filteredSongs () {
       // console.log('sortedSongs+SONGS', this.sortedSongs, this.SONGS)
-      if (this.sortedSongs.length && this.SONGS.length) {
+      if (this.sortedSongs?.length > 0) {
         return this.sortedSongs
+      } else if (this.SONGS?.length && this.selected === 'Всі') {
+        return this.SONGS
+      } else if (this.SONGS?.length && this.selected && this.selected !== 'Всі') {
+        return this.SONGS.filter(song => song.category === this.selected)
+      } else if (this.SONGS?.length && !this.selected) {
+        return this.SONGS
       } else {
-        const sortSongs = this.SONGS.filter(item => item.category === 'Поклоніння')
-        return sortSongs.sort((a, b) => a.sort > b.sort ? 1 : -1)
+        return []
       }
     }
   },
