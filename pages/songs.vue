@@ -56,7 +56,7 @@
               :key="item.nameSong"
               @click="songClick(item.id)"
             >
-              <template v-slot:default="{ active }">
+              <template v-slot:default="{}">
                 <v-list-item-content>
                   <v-list-item-title v-text="item.nameSong" />
 
@@ -72,17 +72,10 @@
                   <v-list-item-action-text v-text="item.tonality" />
 
                   <v-icon
-                    v-if="!active"
-                    color="grey lighten-1"
-                  >
-                    mdi-star-outline
-                  </v-icon>
-
-                  <v-icon
-                    v-else
                     color="yellow darken-3"
+                    @click.stop="editSong(item.id)"
                   >
-                    mdi-star
+                    mdi-pencil
                   </v-icon>
                 </v-list-item-action>
               </template>
@@ -196,6 +189,9 @@ export default {
     ]),
     songClick (id) {
       this.$router.push({ name: 'song', query: { song: id } })
+    },
+    editSong (id) {
+      this.$router.push({ name: 'editSong', query: { song: id } })
     },
     sortCategory (category) {
       this.sortByCategories(category)

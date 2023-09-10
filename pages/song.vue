@@ -29,22 +29,12 @@
         </v-card-title>
 
         <v-card-text>
-          <v-row
-            class="mx-0"
+          <v-icon
+            color="yellow darken-3"
+            @click.stop="editSong()"
           >
-            <v-rating
-              :value="4.5"
-              color="amber"
-              dense
-              half-increments
-              readonly
-              size="14"
-            />
-
-            <div class="grey--text ms-4">
-              4.5 (413)
-            </div>
-          </v-row>
+            mdi-pencil
+          </v-icon>
 
           <div class="my-4 text-subtitle-1">
             тональність • {{ song.tonality }}
@@ -274,10 +264,8 @@ export default {
     ...mapActions([
       'bindCountDocument'
     ]),
-    reserve () {
-      this.loading = true
-
-      setTimeout(() => (this.loading = false), 2000)
+    editSong () {
+      this.$router.push({ name: 'editSong', query: { song: this.song.id } })
     }
   }
 }

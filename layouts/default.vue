@@ -120,14 +120,19 @@ export default {
           to: '/'
         },
         {
-          icon: 'mdi-contacts',
+          icon: 'mdi-book-open-variant',
           title: 'Пісні',
           to: '/songs'
         },
         {
-          icon: 'mdi-contacts',
+          icon: 'mdi-plus',
           title: 'Додати',
           to: '/addSong'
+        },
+        {
+          icon: 'mdi-calendar',
+          title: 'Календар',
+          to: '/plannerCalendar'
         }
       ],
       items2: [
