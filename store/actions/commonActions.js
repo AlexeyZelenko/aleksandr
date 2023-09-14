@@ -73,5 +73,56 @@ export default {
             })
         }
       })
+  },
+  async addToCalendar ({ commit }, event) {
+    Swal.fire({
+      title: 'Завантаження...',
+      text: '',
+      imageUrl: '352.gif',
+      showConfirmButton: false
+    })
+
+    const createdAt = Date.now()
+    const seen = false
+    const name = event.nameSong
+    const category = event.category
+    const start = event.start
+    const end = event.end
+    const color = event.color
+    const timed = event.timed
+    const order = event.order
+    const description = event.description || ''
+
+    const docRef = await this.$fireStore.collection('calendar').add({
+      createdAt,
+      name,
+      seen,
+      category,
+      start,
+      end,
+      color,
+      timed,
+      description,
+      order
+    })
+    try {
+      const docAdded = await docRef
+      await this.$fireStore.doc('calendar/' + `${docRef.id}`).update({ id: `${docAdded.id}` })
+    } catch (err) {
+      return err
+    }
+
+    Swal.close()
+
+    Swal.fire({
+      position: 'top-end',
+      type: 'success',
+      title: 'Пісня додана до календаря.',
+      showConfirmButton: false,
+      timer: 2000
+    })
+
+    await this.$router.push({ name: 'songs' })
+    commit('SET_EVENT_CALENDAR', event)
   }
 }

@@ -183,6 +183,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import Swal from 'sweetalert2'
 
 export default {
   layout: 'back_catalog',
@@ -281,8 +282,9 @@ export default {
       this.deleteSong(this.song.id)
       this.$router.push({ name: 'songs' })
     },
-    addToCalendar () {
+    async addToCalendar () {
       const event = {
+        id: this.song.id,
         name: this.song.nameSong,
         category: this.song.category,
         start: this.getTime,
@@ -292,6 +294,48 @@ export default {
         order: 3
       }
 
+      Swal.fire({
+        title: 'Завантаження...',
+        text: '',
+        imageUrl: '352.gif',
+        showConfirmButton: false
+      })
+
+      const createdAt = Date.now()
+      const seen = false
+      const name = event.name
+      const category = event.category
+      const start = event.start
+      const end = event.end
+      const color = event.color
+      const timed = event.timed
+      const order = event.order
+      const id = event.id
+
+      await this.$fireStore.collection('calendar').add({
+        createdAt,
+        name,
+        seen,
+        category,
+        start,
+        end,
+        color,
+        timed,
+        order,
+        id
+      })
+
+      Swal.close()
+
+      Swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: 'Пісня додана до календаря.',
+        showConfirmButton: false,
+        timer: 2000
+      })
+
+      await this.$router.push({ name: 'songs' })
       this.SET_EVENT_CALENDAR(event)
     }
   }
