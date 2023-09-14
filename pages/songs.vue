@@ -41,7 +41,7 @@
 
     <client-only placeholder="Загрузка...">
       <v-card
-        v-if="filteredSongs.length > 0"
+        v-if="getSongs && getSongs.length"
         class="mx-auto"
         max-width="500"
       >
@@ -51,7 +51,7 @@
             active-class="pink--text"
             multiple
           >
-            <template v-for="(item, index) in filteredSongs">
+            <template v-for="(item, index) in getSongs">
               <v-list-item
                 :key="item.nameSong"
                 @click="songClick(item.id)"
@@ -82,7 +82,7 @@
               </v-list-item>
 
               <v-divider
-                v-if="index < filteredSongs.length - 1"
+                v-if="index < getSongs.length - 1"
                 :key="index"
               />
             </template>
@@ -115,10 +115,13 @@
         </v-container>
       </div>
 
-      <div class="text-center pa-10">
+      <div
+        v-if="paginateArray.length > 1"
+        class="text-center pa-10"
+      >
         <v-pagination
           v-model="page"
-          :length="4"
+          :length="paginateArray.length"
           circle
         />
       </div>
@@ -149,7 +152,8 @@ export default {
         href: 'songs'
       }
     ],
-    page: 1
+    page: 1,
+    itemsPerPage: 1
   }),
   computed: {
     ...mapGetters([
@@ -165,6 +169,19 @@ export default {
     },
     sortedSongs () {
       return this.$store.state.sortedSongs
+    },
+    getSongs () {
+      return this.paginateArray[this.page - 1]
+    },
+    paginateArray () {
+      if (!this.filteredSongs || this.filteredSongs.length === 0) { return [] }
+      const pageCount = Math.ceil(this.filteredSongs.length / this.itemsPerPage)
+
+      return Array.from({ length: pageCount }, (_, pageIndex) => {
+        const start = pageIndex * this.itemsPerPage
+        const end = start + this.itemsPerPage
+        return this.filteredSongs.slice(start, end)
+      })
     },
     filteredSongs () {
       // console.log('sortedSongs+SONGS', this.sortedSongs, this.SONGS)
