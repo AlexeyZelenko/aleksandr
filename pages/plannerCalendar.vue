@@ -153,19 +153,13 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [
-      {
-        name: 'Слава Богу',
-        category: 'Поклоніння',
-        start: '2023-09-03 10:10:00',
-        end: '2023-09-03 11:00:00',
-        color: 'orange',
-        timed: false,
-        order: 2
-      }
-    ],
     colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1']
   }),
+  computed: {
+    events () {
+      return this.$store.state.plannerCalendar.events
+    }
+  },
   mounted () {
     this.$refs.calendar.checkChange()
   },

@@ -165,7 +165,7 @@
                       <v-btn
                         text
                         color="primary"
-                        @click="$refs.startMenu.save(date)"
+                        @click="$refs.startMenu.save(date); addToCalendar()"
                       >
                         Зберегти
                       </v-btn>
@@ -182,7 +182,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   layout: 'back_catalog',
@@ -271,12 +271,28 @@ export default {
       'bindCountDocument',
       'deleteSong'
     ]),
+    ...mapMutations([
+      'SET_EVENT_CALENDAR'
+    ]),
     editSong () {
       this.$router.push({ name: 'editSong', query: { song: this.song.id } })
     },
     removeSong () {
       this.deleteSong(this.song.id)
       this.$router.push({ name: 'songs' })
+    },
+    addToCalendar () {
+      const event = {
+        name: this.song.nameSong,
+        category: this.song.category,
+        start: this.getTime,
+        end: '',
+        color: 'orange',
+        timed: false,
+        order: 3
+      }
+
+      this.SET_EVENT_CALENDAR(event)
     }
   }
 }

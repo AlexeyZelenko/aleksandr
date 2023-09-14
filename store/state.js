@@ -11,5 +11,18 @@ export default () => ({
   user: null,
   Songs: [],
   sortedSongs: [],
-  selected: null
+  selected: null,
+  plannerCalendar: {
+    events: [
+      {
+        name: 'Слава Богу',
+        category: 'Поклоніння',
+        start: '2023-09-03 10:10:00',
+        end: '2023-09-03 11:00:00',
+        color: 'orange',
+        timed: false,
+        order: 2
+      }
+    ]
+  }
 })

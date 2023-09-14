@@ -36,5 +36,8 @@ export default {
   },
   SELECT_CATEGORY_SONGS: (state, selected) => {
     state.selected = selected
+  },
+  SET_EVENT_CALENDAR: (state, event) => {
+    state.plannerCalendar.events.push(event)
   }
 }
