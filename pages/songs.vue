@@ -17,6 +17,7 @@
     >
       <v-card-text>
         <v-text-field
+          v-model="searchQuery"
           :loading="loading"
           density="compact"
           variant="solo"
@@ -41,7 +42,7 @@
 
     <client-only placeholder="Загрузка...">
       <v-card
-        v-if="getSongs && getSongs.length"
+        v-if="filteredItems && filteredItems.length"
         class="mx-auto"
         max-width="500"
       >
@@ -51,7 +52,7 @@
             active-class="pink--text"
             multiple
           >
-            <template v-for="(item, index) in getSongs">
+            <template v-for="(item, index) in filteredItems">
               <v-list-item
                 :key="item.nameSong"
                 @click="songClick(item.id)"
@@ -82,14 +83,14 @@
               </v-list-item>
 
               <v-divider
-                v-if="index < getSongs.length - 1"
+                v-if="index < filteredItems.length - 1"
                 :key="index"
               />
             </template>
           </v-list-item-group>
         </v-list>
       </v-card>
-      <div v-else-if="selected && filteredSongs.length === 0">
+      <div v-else-if="selected && filteredItems.length === 0">
         <p>За вашим запросом нічого не знайдено...</p>
       </div>
       <div v-else class="text-center" style="min-height: 400px;">
@@ -137,6 +138,7 @@ export default {
     vSelect: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    searchQuery: '',
     loaded: false,
     loading: false,
     selectedStar: [2],
@@ -196,6 +198,12 @@ export default {
       } else {
         return []
       }
+    },
+    filteredItems () {
+      // Фильтруем элементы массива на основе запроса пользователя
+      return this.filteredSongs.filter((item) => {
+        return item.nameSong.toLowerCase().includes(this.searchQuery.toLowerCase())
+      })
     }
   },
   mounted () {

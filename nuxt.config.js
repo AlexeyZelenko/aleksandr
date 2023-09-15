@@ -15,7 +15,7 @@ export default {
     modern: 'client'
   }),
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
-  ssr: true,
+  ssr: false,
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -68,7 +68,8 @@ export default {
           messaging: true,
           performance: true,
           analytics: true,
-          remoteConfig: true
+          remoteConfig: true,
+          hosting: true
         }
       }
     ]
@@ -105,7 +106,20 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    transpile: ['vuetify/lib', 'tiptap-vuetify']
+    transpile: ['vuetify/lib', 'tiptap-vuetify'],
+    /*
+    ** Run ESLint on save
+    */
+    extend (config, { isDev, isClient }) {
+      if (isDev && isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
+      }
+    }
   },
 
   link: [

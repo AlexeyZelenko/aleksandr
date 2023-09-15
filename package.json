@@ -25,7 +25,8 @@
     "vue-plyr": "^7.0.0",
     "vue-sweetalert2": "^4.1.1",
     "vue-youtube": "^1.4.0",
-    "vuexfire": "^3.2.4"
+    "vuexfire": "^3.2.4",
+    "vue-svg-loader": "0.11.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.1.0",
