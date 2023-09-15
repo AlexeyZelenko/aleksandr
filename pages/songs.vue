@@ -9,7 +9,28 @@
         </v-breadcrumbs>
       </div>
     </template>
-    <div>Пісні</div>
+    <v-app-bar
+      dark
+      color="pink"
+    >
+      <v-toolbar-title class="col-6">
+        Пісні
+      </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-col
+        class="d-flex"
+      >
+        <v-select
+          v-model="selectedLanguage"
+          :items="onlanguagechange"
+          label="Мова"
+          dense
+          outlined
+        />
+      </v-col>
+    </v-app-bar>
     <v-card
       class="mx-auto"
       color="grey-lighten-3"
@@ -32,7 +53,7 @@
 
     <!--        Categories-->
     <v-row class="change_categories">
-      <v-select
+      <v-select-categories
         :selected="selected"
         style="z-index: 3"
         :options="categories"
@@ -42,7 +63,7 @@
 
     <client-only placeholder="Загрузка...">
       <v-card
-        v-if="filteredItems && filteredItems.length"
+        v-if="getSongs && getSongs.length"
         class="mx-auto"
         max-width="500"
       >
@@ -52,7 +73,7 @@
             active-class="pink--text"
             multiple
           >
-            <template v-for="(item, index) in filteredItems">
+            <template v-for="(item, index) in getSongs">
               <v-list-item
                 :key="item.nameSong"
                 @click="songClick(item.id)"
@@ -83,14 +104,14 @@
               </v-list-item>
 
               <v-divider
-                v-if="index < filteredItems.length - 1"
+                v-if="index < getSongs.length - 1"
                 :key="index"
               />
             </template>
           </v-list-item-group>
         </v-list>
       </v-card>
-      <div v-else-if="selected && filteredItems.length === 0">
+      <div v-else-if="selected && getSongs.length === 0">
         <p>За вашим запросом нічого не знайдено...</p>
       </div>
       <div v-else class="text-center" style="min-height: 400px;">
@@ -135,9 +156,15 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
-    vSelect: () => import('~/components/vSelect.vue')
+    vSelectCategories: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    selectedLanguage: 'UA',
+    onlanguagechange: [
+      'UA',
+      'RU',
+      'EN'
+    ],
     searchQuery: '',
     loaded: false,
     loading: false,
@@ -173,16 +200,19 @@ export default {
       return this.$store.state.sortedSongs
     },
     getSongs () {
-      return this.paginateArray[this.page - 1]
+      if (this.paginateArray.length > 0) {
+        return this.paginateArray[this.page - 1]
+      }
+      return []
     },
     paginateArray () {
-      if (!this.filteredSongs || this.filteredSongs.length === 0) { return [] }
-      const pageCount = Math.ceil(this.filteredSongs.length / this.itemsPerPage)
+      if (!this.filteredItems || this.filteredItems.length === 0) { return [] }
+      const pageCount = Math.ceil(this.filteredItems.length / this.itemsPerPage)
 
       return Array.from({ length: pageCount }, (_, pageIndex) => {
         const start = pageIndex * this.itemsPerPage
         const end = start + this.itemsPerPage
-        return this.filteredSongs.slice(start, end)
+        return this.filteredItems.slice(start, end)
       })
     },
     filteredSongs () {
@@ -201,8 +231,15 @@ export default {
     },
     filteredItems () {
       // Фильтруем элементы массива на основе запроса пользователя
+      // return this.filteredSongs.filter((item) => {
+      //   return item.nameSong.toLowerCase().includes(this.searchQuery.toLowerCase())
+      // })
+
+      // Фильтруем элементы массива на основе буквы и языка пользователя
       return this.filteredSongs.filter((item) => {
-        return item.nameSong.toLowerCase().includes(this.searchQuery.toLowerCase())
+        const nameMatchesLetter = item.nameSong.toLowerCase().startsWith(this.searchQuery.toLowerCase())
+        const languageMatches = item.language.toLowerCase().includes(this.selectedLanguage.toLowerCase())
+        return nameMatchesLetter && languageMatches
       })
     }
   },
