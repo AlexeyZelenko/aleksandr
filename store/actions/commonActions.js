@@ -16,6 +16,13 @@ export default {
       // commit('LAST_DOC', documents[documents.length - 1]);
       commit('FIREBASE_SONGS2', documents)
     })
+
+    const ref2 = this.$fireStore
+      .collection('calendar')
+    await bindFirestoreRef('Events', ref2, { wait: true }).then((documents) => {
+      // commit('LAST_DOC', documents[documents.length - 1]);
+      commit('CALENDAR_EVENTS', documents)
+    })
   }),
   FIREBASE ({ commit }, message) {
     commit('FIREBASE_MUTATIONS', message)
@@ -74,55 +81,39 @@ export default {
         }
       })
   },
-  async addToCalendar ({ commit }, event) {
-    Swal.fire({
-      title: 'Завантаження...',
-      text: '',
-      imageUrl: '352.gif',
-      showConfirmButton: false
-    })
-
-    const createdAt = Date.now()
-    const seen = false
-    const name = event.nameSong
-    const category = event.category
-    const start = event.start
-    const end = event.end
-    const color = event.color
-    const timed = event.timed
-    const order = event.order
-    const description = event.description || ''
-
-    const docRef = await this.$fireStore.collection('calendar').add({
-      createdAt,
-      name,
-      seen,
-      category,
-      start,
-      end,
-      color,
-      timed,
-      description,
-      order
-    })
-    try {
-      const docAdded = await docRef
-      await this.$fireStore.doc('calendar/' + `${docRef.id}`).update({ id: `${docAdded.id}` })
-    } catch (err) {
-      return err
-    }
-
-    Swal.close()
-
-    Swal.fire({
-      position: 'top-end',
-      type: 'success',
-      title: 'Пісня додана до календаря.',
-      showConfirmButton: false,
-      timer: 2000
-    })
-
-    await this.$router.push({ name: 'songs' })
-    commit('SET_EVENT_CALENDAR', event)
+  deleteEventFromCalendar ({ commit }, id) {
+    this.$fireStore
+      .collection('calendar')
+      .doc(`${id}`)
+      .delete()
+      .then(function () {
+        Swal.fire({
+          title: 'Видалено!',
+          text: 'Подія видалена.',
+          type: 'success'
+        })
+      }).catch(function (error) {
+        // eslint-disable-next-line no-console
+        console.error('Помилка при видаленні документа: ', error)
+      })
+  },
+  editEventFromCalendar ({ commit }, event) {
+    this.$fireStore
+      .collection('calendar')
+      .doc(`${event.id}`)
+      .update({
+        order: event.order,
+        description: event.description
+      })
+      .then(function () {
+        Swal.fire({
+          title: 'Змінено!',
+          text: 'Подія змінена.',
+          type: 'success'
+        })
+      }).catch(function (error) {
+        // eslint-disable-next-line no-console
+        console.error('Помилка при редагуванні документа: ', error)
+      })
   }
 }

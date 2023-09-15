@@ -100,28 +100,93 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
+              <v-btn icon @click="goToSong()">
+                <v-icon>mdi-eye</v-icon>
               </v-btn>
               <v-toolbar-title>{{ selectedEvent.name }}</v-toolbar-title>
+              <template>
+                <v-row justify="center">
+                  <v-dialog
+                    v-model="dialog"
+                    persistent
+                    max-width="600px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>
+                        <span class="text-h5">Додати інформацію</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-container>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="6"
+                              md="4"
+                            >
+                              <v-textarea
+                                v-model="selectedEvent.description"
+                                label="Нотатки"
+                                auto-grow
+                                outlined
+                                rows="1"
+                                row-height="15"
+                              />
+                            </v-col>
+                            <v-col
+                              cols="12"
+                              sm="6"
+                            >
+                              <v-select
+                                v-model="selectedEvent.order"
+                                :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
+                                label="Порядок виконання*"
+                              />
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="dialog = false"
+                        >
+                          Закрити
+                        </v-btn>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="editEvent(selectedEvent)"
+                        >
+                          Зберегти
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-row>
+              </template>
               <v-spacer />
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span>{{ selectedEvent.details }}</span>
               <div style="color: grey">
                 <span>Номер пісні - </span>
-                <span>{{ selectedEvent.order || 1 }}</span>
+                <span>{{ selectedEvent.order }}</span>
               </div>
               <div style="color: grey">
                 <span>Назва категорії - </span>
                 <span>{{ selectedEvent.category }}</span>
               </div>
+              <span style="color: grey">{{ selectedEvent.description }}</span>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -130,6 +195,13 @@
                 @click="selectedOpen = false"
               >
                 Закрити
+              </v-btn>
+              <v-btn
+                text
+                color="secondary"
+                @click="deleteEvent(selectedEvent)"
+              >
+                Видалити
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -140,8 +212,13 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data: () => ({
+    dialog: false,
+    description: '',
+    order: '',
     focus: '',
     type: 'month',
     typeToLabel: {
@@ -161,9 +238,15 @@ export default {
     }
   },
   mounted () {
+    this.bindCountDocument()
     this.$refs.calendar.checkChange()
   },
   methods: {
+    ...mapActions([
+      'bindCountDocument',
+      'userEntrance',
+      'sortByCategories'
+    ]),
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
@@ -196,6 +279,21 @@ export default {
       }
 
       nativeEvent.stopPropagation()
+    },
+    deleteEvent (event) {
+      this.$store.dispatch('deleteEventFromCalendar', event.id)
+      this.selectedOpen = false
+    },
+    editEvent (event) {
+      this.dialog = false
+      this.$store.dispatch('editEventFromCalendar', event)
+      this.selectedOpen = false
+    },
+    goToSong () {
+      this.$router.push({
+        name: 'song',
+        query: { song: this.selectedEvent.idSong }
+      })
     }
   }
 }

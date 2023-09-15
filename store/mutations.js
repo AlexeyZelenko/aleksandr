@@ -39,5 +39,8 @@ export default {
   },
   SET_EVENT_CALENDAR: (state, event) => {
     state.plannerCalendar.events.push(event)
+  },
+  CALENDAR_EVENTS: (state, events) => {
+    state.plannerCalendar.events = events
   }
 }

@@ -235,7 +235,7 @@ export default {
     },
     getTime () {
       // Исходная дата в числовом формате
-      const timestamp = this.song.createdAt
+      const timestamp = this.date
 
       // Создаем объект Date из числовой метки времени
       const date = new Date(timestamp)
@@ -291,7 +291,7 @@ export default {
         end: '',
         color: 'orange',
         timed: false,
-        order: 3
+        order: ''
       }
 
       Swal.fire({
@@ -310,9 +310,10 @@ export default {
       const color = event.color
       const timed = event.timed
       const order = event.order
-      const id = event.id
+      const idSong = event.id
+      const description = ''
 
-      await this.$fireStore.collection('calendar').add({
+      const docRef = await this.$fireStore.collection('calendar').add({
         createdAt,
         name,
         seen,
@@ -322,8 +323,15 @@ export default {
         color,
         timed,
         order,
-        id
+        idSong,
+        description
       })
+      try {
+        const docAdded = await docRef
+        await this.$fireStore.doc('calendar/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+      } catch (err) {
+        return err
+      }
 
       Swal.close()
 
@@ -335,7 +343,7 @@ export default {
         timer: 2000
       })
 
-      await this.$router.push({ name: 'songs' })
+      // await this.$router.push({ name: 'plannerCalendar' })
       this.SET_EVENT_CALENDAR(event)
     }
   }
