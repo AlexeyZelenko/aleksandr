@@ -24,10 +24,13 @@ export default {
       playerOptions: {
         height: '360',
         width: '640',
-        resize: true
+        resize: true,
+        start: 10,
+        end: 0,
+        autoplay: 1
       },
       youtubeOptions: {
-        start: 0,
+        start: 10,
         end: 0,
         autoplay: 1
       }

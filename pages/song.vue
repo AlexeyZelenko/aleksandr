@@ -30,12 +30,14 @@
 
         <v-card-text>
           <v-icon
+            class="mx-6"
             color="yellow darken-3"
             @click.stop="editSong()"
           >
             mdi-pencil
           </v-icon>
           <v-icon
+            class="mx-6"
             color="yellow darken-3"
             @click.stop="removeSong()"
           >
@@ -55,7 +57,7 @@
         <v-divider class="mx-4" />
 
         <div>
-          <div class="d-flex">
+          <div class="d-flex mx-4">
             <v-checkbox
               v-model="readonly"
               label="Readonly"
@@ -98,21 +100,21 @@
             <v-expansion-panel-header v-slot="{ open }">
               <v-row no-gutters>
                 <v-col cols="4">
-                  Дата виконання:
+                  Додати до календаря:
                 </v-col>
                 <v-col
                   cols="8"
                   class="text--secondary"
                 >
                   <v-fade-transition leave-absolute>
-                    <span v-if="open">Коли ви хочете заспівати цю пісню?</span>
+                    <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>
                     <v-row
                       v-else
                       no-gutters
                       style="width: 100%"
                     >
-                      <v-col cols="9">
-                        {{ trip.start || 'Не встановлено' }}
+                      <v-col cols="12">
+                        {{ trip.start }}
                       </v-col>
                     </v-row>
                   </v-fade-transition>
@@ -124,7 +126,7 @@
                 justify="space-around"
                 no-gutters
               >
-                <v-col cols="6">
+                <v-col cols="9">
                   <v-menu
                     ref="startMenu"
                     :close-on-content-click="false"
