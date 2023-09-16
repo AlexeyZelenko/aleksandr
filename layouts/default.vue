@@ -2,7 +2,7 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      style="background-color: #263238"
+      style="background-color: #3E2723"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
@@ -26,7 +26,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-      style="background-color: #263238"
+      style="background-color: #3E2723"
       :clipped-left="clipped"
       fixed
       app
@@ -91,7 +91,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer
-      style="background-color: #263238"
+      style="background-color: #3E2723"
       :absolute="!fixed"
       app
     >

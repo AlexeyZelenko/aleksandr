@@ -75,10 +75,10 @@ export default {
 <style>
   .v-select {
     position: relative;
-    width: 200px;
+    width: 150px;
     cursor: pointer;
     text-align: left;
-    margin: 25px auto;
+    margin: 15px auto;
   }
   .title {
     border: solid 1px #aeaeae;

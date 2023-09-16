@@ -11,7 +11,8 @@
     </template>
     <v-app-bar
       dark
-      color="pink"
+      color="brown darken-3"
+      class="my-2"
     >
       <v-toolbar-title class="col-6">
         Пісні
@@ -19,18 +20,55 @@
 
       <v-spacer />
 
-      <v-col
-        class="d-flex"
-      >
-        <v-select
-          v-model="selectedLanguage"
-          :items="onlanguagechange"
-          label="Мова"
-          dense
-          outlined
-        />
-      </v-col>
+      <template>
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialog"
+            scrollable
+            max-width="300px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="brown darken-2"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{ selectedLanguage }}
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>Вибрати мову пісень</v-card-title>
+              <v-divider />
+              <v-card-text style="height: 200px;">
+                <v-radio-group
+                  v-model="selectedLanguage"
+                  column
+                >
+                  <v-radio
+                    label="Українська"
+                    value="UA"
+                    @click="dialog = false"
+                  />
+                  <v-radio
+                    label="Російська"
+                    value="RU"
+                    @click="dialog = false"
+                  />
+                  <v-radio
+                    label="Англійська"
+                    value="EN"
+                    @click="dialog = false"
+                  />
+                </v-radio-group>
+              </v-card-text>
+              <v-divider />
+            </v-card>
+          </v-dialog>
+        </v-row>
+      </template>
     </v-app-bar>
+
     <v-card
       class="mx-auto"
       color="grey-lighten-3"
@@ -41,9 +79,10 @@
           v-model="searchQuery"
           :loading="loading"
           density="compact"
+          icon="search"
           variant="solo"
           label="Пошук пісні"
-          append-inner-icon="mdi-magnify"
+          append-outer-icon="mdi-magnify"
           single-line
           hide-details
           @click:append-inner="onClick"
@@ -67,50 +106,34 @@
         class="mx-auto"
         max-width="500"
       >
-        <v-list two-line>
-          <v-list-item-group
-            v-model="selectedStar"
-            active-class="pink--text"
-            multiple
+        <v-list
+          subheader
+          two-line
+        >
+          <v-list-item
+            v-for="item in getSongs"
+            :key="item.id"
+            @click="songClick(item.id)"
           >
-            <template v-for="(item, index) in getSongs">
-              <v-list-item
-                :key="item.nameSong"
-                @click="songClick(item.id)"
-              >
-                <template v-slot:default="{}">
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.nameSong" />
+            <v-list-item-content>
+              <v-list-item-title v-text="item.nameSong" />
 
-                    <v-list-item-subtitle
-                      class="text--primary"
-                      v-text="item.language"
-                    />
+              <v-list-item-subtitle v-text="item.category" />
+            </v-list-item-content>
 
-                    <v-list-item-subtitle v-text="item.singer" />
-                  </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon @click="songClick(item.id)">
+                <v-icon color="grey lighten-1">
+                  mdi-information
+                </v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
 
-                  <v-list-item-action>
-                    <v-list-item-action-text v-text="item.tonality" />
-
-                    <v-icon
-                      color="yellow darken-3"
-                      @click.stop="editSong(item.id)"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                  </v-list-item-action>
-                </template>
-              </v-list-item>
-
-              <v-divider
-                v-if="index < getSongs.length - 1"
-                :key="index"
-              />
-            </template>
-          </v-list-item-group>
+          <v-divider inset />
         </v-list>
       </v-card>
+
       <div v-else-if="selected && getSongs.length === 0">
         <p>За вашим запросом нічого не знайдено...</p>
       </div>
@@ -159,6 +182,7 @@ export default {
     vSelectCategories: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    dialog: false,
     selectedLanguage: 'UA',
     onlanguagechange: [
       'UA',
@@ -255,9 +279,6 @@ export default {
     ]),
     songClick (id) {
       this.$router.push({ name: 'song', query: { song: id } })
-    },
-    editSong (id) {
-      this.$router.push({ name: 'editSong', query: { song: id } })
     },
     sortCategory (category) {
       this.sortByCategories(category)

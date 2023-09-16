@@ -1,185 +1,177 @@
 <template>
-  <div>
+  <div class="song-card">
     <v-breadcrumbs :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
-    <div>
-      <v-card
-        :loading="loading"
-        class="mx-auto my-12"
-        max-width="374"
+    <v-card
+      class="mx-auto my-12"
+      max-width="374"
+    >
+      <v-img
+        height="250"
+        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+      />
+
+      <v-card-title>
+        Назва пісні: {{ song.nameSong }}
+      </v-card-title>
+
+      <v-card-text
+        class="song-card--container mx-0"
       >
-        <template slot="progress">
-          <v-progress-linear
-            color="deep-purple"
-            height="10"
-            indeterminate
-          />
-        </template>
-
-        <v-img
-          height="250"
-          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-        />
-
-        <v-card-title>
-          Назва пісні: {{ song.nameSong }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-icon
-            class="mx-6"
-            color="yellow darken-3"
-            @click.stop="editSong()"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            class="mx-6"
-            color="yellow darken-3"
-            @click.stop="removeSong()"
-          >
-            mdi-delete
-          </v-icon>
-
-          <div class="my-4 text-subtitle-1">
+        <v-col
+          class="mx-0"
+        >
+          <div class="text-subtitle-1">
             тональність • {{ song.tonality }}
           </div>
-          <div class="my-4 text-subtitle-1">
-            коли створенна • {{ getTime }}
-          </div>
+        </v-col>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="orange"
+          text
+          @click.stop="editSong()"
+        >
+          Редагувати
+        </v-btn>
 
-          <div>виконавець • {{ song.singer }}</div>
-        </v-card-text>
+        <v-btn
+          color="orange"
+          text
+          @click.stop="removeSong()"
+        >
+          Видалити
+        </v-btn>
+      </v-card-actions>
 
-        <v-divider class="mx-4" />
+      <v-divider class="mx-4" />
 
-        <div>
-          <div class="d-flex mx-4">
-            <v-checkbox
-              v-model="readonly"
-              label="Readonly"
-            />
-          </div>
-
-          <v-expansion-panels
-            v-model="panel"
-            :readonly="readonly"
-            multiple
-          >
-            <v-expansion-panel
-              v-for="item in song.blocks"
-              :key="item.content"
-            >
-              <v-expansion-panel-header>
-                <strong style="color: orangered">
-                  {{ item.name }}
-                </strong>
-              </v-expansion-panel-header>
-
-              <v-expansion-panel-content>
-                <p style="text-align: left">
-                  {{ item.content }}
-                </p>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+      <div>
+        <div class="d-flex mx-4">
+          <v-checkbox
+            v-model="readonly"
+            label="Лише для читання"
+          />
         </div>
 
-        <v-divider class="mx-4 px-4" />
-
-        <Youtube-video
-          v-if="song && song.youtubeLink"
-          :link="song.youtubeLink"
-        />
-
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <v-expansion-panel-header v-slot="{ open }">
-              <v-row no-gutters>
-                <v-col cols="4">
-                  Додати до календаря:
-                </v-col>
-                <v-col
-                  cols="8"
-                  class="text--secondary"
-                >
-                  <v-fade-transition leave-absolute>
-                    <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>
-                    <v-row
-                      v-else
-                      no-gutters
-                      style="width: 100%"
-                    >
-                      <v-col cols="12">
-                        {{ trip.start }}
-                      </v-col>
-                    </v-row>
-                  </v-fade-transition>
-                </v-col>
-              </v-row>
+        <v-expansion-panels
+          v-model="panel"
+          :readonly="readonly"
+          multiple
+        >
+          <v-expansion-panel
+            v-for="item in song.blocks"
+            :key="item.content"
+          >
+            <v-expansion-panel-header>
+              <strong style="color: orangered">
+                {{ item.name }}
+              </strong>
             </v-expansion-panel-header>
+
             <v-expansion-panel-content>
-              <v-row
-                justify="space-around"
-                no-gutters
-              >
-                <v-col cols="9">
-                  <v-menu
-                    ref="startMenu"
-                    :close-on-content-click="false"
-                    :return-value.sync="trip.start"
-                    offset-y
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="trip.start"
-                        label="Дата виконання"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      />
-                    </template>
-                    <v-date-picker
-                      v-model="date"
-                      no-title
-                      scrollable
-                    >
-                      <v-spacer />
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.startMenu.isActive = false"
-                      >
-                        Відмінити
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.startMenu.save(null)"
-                      >
-                        Видалити
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.startMenu.save(date); addToCalendar()"
-                      >
-                        Зберегти
-                      </v-btn>
-                    </v-date-picker>
-                  </v-menu>
-                </v-col>
-              </v-row>
+              <p style="text-align: left">
+                {{ item.content }}
+              </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </v-card>
-    </div>
+      </div>
+
+      <v-divider class="mx-4 px-4" />
+
+      <Youtube-video
+        v-if="song && song.youtubeLink"
+        :link="song.youtubeLink"
+      />
+
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-header v-slot="{ open }">
+            <v-row no-gutters>
+              <v-col cols="4">
+                Додати до календаря:
+              </v-col>
+              <v-col
+                cols="8"
+                class="text--secondary"
+              >
+                <v-fade-transition leave-absolute>
+                  <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>
+                  <v-row
+                    v-else
+                    no-gutters
+                    style="width: 100%"
+                  >
+                    <v-col cols="12">
+                      {{ trip.start }}
+                    </v-col>
+                  </v-row>
+                </v-fade-transition>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-row
+              justify="space-around"
+              no-gutters
+            >
+              <v-col cols="9">
+                <v-menu
+                  ref="startMenu"
+                  :close-on-content-click="false"
+                  :return-value.sync="trip.start"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="trip.start"
+                      label="Дата виконання"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="date"
+                    no-title
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.isActive = false"
+                    >
+                      Відмінити
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.save(null)"
+                    >
+                      Видалити
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.save(date); addToCalendar()"
+                    >
+                      Зберегти
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-card>
   </div>
 </template>
 
@@ -353,6 +345,13 @@ export default {
 </script>
 
 <style lang="scss">
+.song-card {
+  width: 100%;
+
+  &--container {
+    text-align: left;
+  }
+}
 .descriptions {
   padding: 10px;
   border-radius: 5px;

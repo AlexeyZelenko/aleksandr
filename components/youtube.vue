@@ -4,7 +4,6 @@
       <div
         data-plyr-provider="youtube"
         :data-plyr-embed-id="extractVideoId"
-        :youtube="youtubeOptions"
       />
     </vue-plyr>
   </div>
@@ -25,13 +24,6 @@ export default {
         height: '360',
         width: '640',
         resize: true,
-        start: 10,
-        end: 0,
-        autoplay: 1
-      },
-      youtubeOptions: {
-        start: 10,
-        end: 0,
         autoplay: 1
       }
     }
