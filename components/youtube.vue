@@ -1,10 +1,14 @@
 <template>
   <div class="youtube">
     <vue-plyr>
-      <div
-        data-plyr-provider="youtube"
-        :data-plyr-embed-id="extractVideoId"
-      />
+      <div class="plyr__video-embed">
+        <iframe
+          :src="`https://www.youtube.com/embed/${extractVideoId}?amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`"
+          allowfullscreen
+          allowtransparency
+          allow="autoplay"
+        />
+      </div>
     </vue-plyr>
   </div>
 </template>

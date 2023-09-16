@@ -16,12 +16,6 @@
       >
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
-            v-model="singer"
-            label="- Виконавець -"
-            :rules="singerRules"
-          />
-
-          <v-text-field
             v-model="nameSong"
             label="- Назва пісні -"
             :rules="nameSongRules"
@@ -213,14 +207,6 @@ import Swal from 'sweetalert2'
 export default {
   name: 'AddSong',
   data: () => ({
-    singer: null,
-    singerRules: [
-      (value) => {
-        if (value?.length > 3) { return true }
-
-        return 'Повинно бути не менше 3 літер'
-      }
-    ],
     nameSong: null,
     nameSongRules: [
       (value) => {
@@ -326,14 +312,13 @@ export default {
     },
     async addSong (songData) {
       Swal.fire({
-        title: 'Идет загрузка...',
+        title: 'Завантаження пісні...',
         text: '',
         imageUrl: '352.gif',
         showConfirmButton: false
       })
       const createdAt = Date.now()
       const seen = false
-      const singer = songData.singer
       const nameSong = songData.nameSong
       const category = songData.category
       const language = songData.language
@@ -345,7 +330,6 @@ export default {
 
       const docRef = await this.$fireStore.collection('songs').add({
         createdAt,
-        singer,
         seen,
         nameSong,
         category,
@@ -368,7 +352,7 @@ export default {
       Swal.fire({
         position: 'top-end',
         type: 'success',
-        title: 'Пісня додана',
+        title: 'Пісня додана!',
         showConfirmButton: false,
         timer: 2000
       })

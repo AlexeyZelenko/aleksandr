@@ -16,12 +16,6 @@
       >
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
-            v-model="singer"
-            label="- Виконавець -"
-            :rules="singerRules"
-          />
-
-          <v-text-field
             v-model="nameSong"
             label="- Назва пісні -"
             :rules="nameSongRules"
@@ -215,13 +209,6 @@ export default {
   name: 'EditSong',
   data: () => ({
     singer: null,
-    singerRules: [
-      (value) => {
-        if (value?.length > 3) { return true }
-
-        return 'Повинно бути не менше 3 літер'
-      }
-    ],
     nameSong: null,
     nameSongRules: [
       (value) => {
@@ -352,7 +339,6 @@ export default {
       })
       const createdAt = Date.now()
       const seen = false
-      const singer = songData.singer
       const nameSong = songData.nameSong
       const category = songData.category
       const language = songData.language
@@ -366,7 +352,6 @@ export default {
         await this.$fireStore.doc('songs/' + this.song.id).update({
           id: this.song.id,
           createdAt,
-          singer,
           seen,
           nameSong,
           category,

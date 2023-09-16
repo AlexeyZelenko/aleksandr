@@ -90,6 +90,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-footer
       style="background-color: #3E2723"
       :absolute="!fixed"
@@ -101,6 +102,60 @@
         justify="space-around"
       >
         &copy; {{ new Date().getFullYear() }}
+      </v-row>
+    </v-footer>
+
+    <v-footer
+      style="background-color: #263238"
+      :absolute="!fixed"
+      app
+    >
+      <v-row
+        style="margin: 5px"
+        align="center"
+        justify="space-around"
+      >
+        &copy; {{ new Date().getFullYear() }}
+        <a
+          style="text-decoration: none"
+          href="https://www.instagram.com/bv.ck.ua"
+        >
+          <v-icon
+            aria-hidden="true"
+          >mdi-instagram</v-icon>
+        </a>
+        <a
+          style="text-decoration: none"
+          href="https://www.facebook.com/bv.ck.ua"
+        >
+          <v-icon
+            aria-hidden="true"
+          >mdi-facebook</v-icon>
+        </a>
+        <a
+          style="text-decoration: none"
+          href="https://twitter.com/bv_church"
+        >
+          <v-icon
+            aria-hidden="true"
+          >mdi-twitter</v-icon>
+        </a>
+        <a
+          style="text-decoration: none"
+          href="https://www.youtube.com/@bv.ck.ua.church"
+        >
+          <v-icon
+            aria-hidden="true"
+          >mdi-youtube</v-icon>
+        </a>
+        <a
+          style="text-decoration: none"
+          href="https://bv.ck.ua/"
+        >
+          <v-icon
+            aria-hidden="true"
+          >mdi-web</v-icon>
+        </a>
       </v-row>
     </v-footer>
   </v-app>
@@ -145,7 +200,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'блага вість'
+      title: 'БЛАГА ВІСТЬ'
     }
   }
 }
