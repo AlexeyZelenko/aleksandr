@@ -58,16 +58,16 @@
             </template>
             <v-list>
               <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
+                <v-list-item-title>День</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
+                <v-list-item-title>Тиждень</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
+                <v-list-item-title>Місяць</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
+                <v-list-item-title>4 дня</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -148,7 +148,7 @@
                               <v-select
                                 v-model="selectedEvent.order"
                                 :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
-                                label="Порядок виконання*"
+                                label="Порядок виконання"
                               />
                             </v-col>
                           </v-row>
@@ -225,7 +225,7 @@ export default {
       month: 'Місяць',
       week: 'Неділя',
       day: 'День',
-      '4day': '4 Days'
+      '4day': '4 Дні'
     },
     selectedEvent: {},
     selectedElement: null,

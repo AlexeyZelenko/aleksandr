@@ -38,18 +38,12 @@
       >
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
+      <v-icon
+        style="margin: 10px"
+        @click="home"
       >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+        mdi-home
+      </v-icon>
       <v-toolbar-title v-text="title" />
       <v-spacer />
 
@@ -60,6 +54,60 @@
       <!--      >-->
       <!--        <v-icon>mdi-menu</v-icon>-->
       <!--      </v-btn>-->
+
+      <!--            Вход в Админку-->
+      <v-btn
+        v-if="GET_ADMIN_ENTRANCE"
+        class="ma-2"
+        outlined
+        small
+        style="color: white; z-index: 102"
+        @click="adminPlusLogin"
+      >
+        <v-icon>mdi-format-list-bulleted-square</v-icon>
+      </v-btn>
+
+      <!--ВХОД ЧЕРЕЗ ГУГЛ АККАУНТ-->
+      <div style="margin: 5px">
+        <v-btn
+          v-if="!User_Entrance"
+          rounded
+          style="background-color: #795548; color: white; position: relative; z-index: 10000;"
+          @click="signInWithGoogle"
+        >
+          Вхід
+        </v-btn>
+        <v-btn
+          v-if="User_Entrance"
+          rounded
+          style="background-color: #795548; color: white; z-index: 102"
+          @click="logout"
+        >
+          Вихід
+        </v-btn>
+      </div>
+      <!--Отображение пользователя-->
+      <div style="margin: 5px; z-index: 102; cursor: pointer">
+        <div
+          v-if="User_Entrance"
+          @click="goToUserPage()"
+        >
+          <slot>
+            <img
+              id="user-pic"
+              style="cursor: pointer"
+              :src="(getProfilePicUrl)"
+              alt=""
+            >
+          </slot>
+        </div>
+        <div
+          v-if="User_Entrance"
+          id="user-name"
+        >
+          {{ getUserName }}
+        </div>
+      </div>
     </v-app-bar>
     <v-main class="cover">
       <v-container>
@@ -90,20 +138,6 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
-    <v-footer
-      style="background-color: #3E2723"
-      :absolute="!fixed"
-      app
-    >
-      <v-row
-        style="margin: 5px"
-        align="center"
-        justify="space-around"
-      >
-        &copy; {{ new Date().getFullYear() }}
-      </v-row>
-    </v-footer>
 
     <v-footer
       style="background-color: #263238"
@@ -162,6 +196,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
@@ -202,6 +238,44 @@ export default {
       rightDrawer: false,
       title: 'БЛАГА ВІСТЬ'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'GET_ADMIN_ENTRANCE',
+      'User_Entrance'
+    ]),
+    getUserName () {
+      return this.$fireAuthObj().currentUser.displayName
+    },
+    getProfilePicUrl () {
+      return this.$fireAuthObj().currentUser.photoURL || '@/assets/images/profile_placeholder.png'
+    }
+  },
+  methods: {
+    home () {
+      this.$router.push('/')
+    },
+    goToUserPage () {
+      this.$router.push('user')
+    },
+    async signInWithGoogle () {
+      try {
+        await this.$store.dispatch('signInWithGoogle')
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log('Ошибка входа Google', e)
+      }
+    },
+    adminPlusLogin () {
+      if (this.GET_ADMIN_ENTRANCE) {
+        this.$router.push('admin')
+      } else {
+        this.$router.push('index')
+      }
+    },
+    async logout () {
+      await this.$store.dispatch('logout')
+    }
   }
 }
 </script>
@@ -217,5 +291,24 @@ export default {
     min-height: 250px;
     text-align: center;
     clear: both;
+  }
+
+  #user-pic {
+    top: -3px;
+    position: relative;
+    display: inline-block;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    background-size: 40px;
+    border-radius: 20px;
+  }
+
+  #user-name {
+    display: none;
+    font-size: 12px;
+    line-height: normal;
+    padding-right: 5px;
+    padding-left: 5px;
   }
 </style>

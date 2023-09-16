@@ -104,7 +104,7 @@ export default {
         Swal.fire({
           position: 'top-end',
           type: 'success',
-          title: 'Вы успешно вышли!',
+          title: 'Ви успішно вийшли!',
           showConfirmButton: false,
           timer: 1500
         })
