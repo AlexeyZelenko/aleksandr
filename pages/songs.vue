@@ -115,6 +115,9 @@
             :key="item.id"
             @click="songClick(item.id)"
           >
+            <v-list-item-icon>
+              <v-icon>mdi-music</v-icon>
+            </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="item.nameSong" />
 
