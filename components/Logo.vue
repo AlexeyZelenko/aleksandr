@@ -1,11 +1,22 @@
 <template>
   <div>
     <v-btn
-      class="ma-8"
+      class="ma-2"
       outlined
       color="yellow"
+      nuxt
+      to="/songs"
     >
-      Cherckasy
+      Пісні
+    </v-btn>
+    <v-btn
+      class="ma-2"
+      outlined
+      color="yellow"
+      nuxt
+      to="/addSong"
+    >
+      Додати пісню
     </v-btn>
   </div>
 </template>

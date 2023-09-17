@@ -10,26 +10,7 @@
             class="white--text align-end"
             height="300px"
             :src="Cover"
-          >
-            <v-btn
-              class="ma-2"
-              outlined
-              color="yellow"
-              nuxt
-              to="/songs"
-            >
-              Пісні
-            </v-btn>
-            <v-btn
-              class="ma-2"
-              outlined
-              color="yellow"
-              nuxt
-              to="/addSong"
-            >
-              Додати пісню
-            </v-btn>
-          </v-img>
+          />
         </v-card>
         <div>
           <logo />
