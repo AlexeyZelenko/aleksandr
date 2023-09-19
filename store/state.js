@@ -5,14 +5,14 @@ export default () => ({
   error: null,
   songs: [],
   userId: null,
-  listUsers: [],
   Users: [],
-  InfoUser: [],
+  infoUser: {},
   user: null,
   Songs: [],
   sortedSongs: [],
   selected: null,
   plannerCalendar: {
-    events: []
+    songs: [],
+    users: []
   }
 })

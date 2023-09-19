@@ -45,7 +45,7 @@ export default {
             this.$fireStore.collection('users')
               .doc(uid)
               .set({
-                cartInfo: [],
+                listFavoriteSongs: [],
                 orderInfo: []
               })
             return document
@@ -53,15 +53,15 @@ export default {
           // Если нет никаких данных-пользователь удалил
           if (document === {}) {
             this.$fireStore.collection('users').doc(uid).set({
-              cartInfo: [],
+              listFavoriteSongs: [],
               orderInfo: []
             })
             return document
           }
-          return document.cartInfo
+          return document.listFavoriteSongs
         })
       // Проверка администратора
-      if (['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662']
+      if (['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2']
         .some(elem => elem === `${uid}`)) {
         // Получение ТОКЕНА администратора
         // await dispatch('saveMessagingDeviceToken')
@@ -91,8 +91,25 @@ export default {
     const userEntrance = !!this.$fireAuthObj().currentUser
     const USER_ID = await dispatch('getUid')
     if (userEntrance) {
-      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662'].includes(USER_ID)
+      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
       commit('ADMIN_ENTRANCE', adminEntrance)
+
+      const user = await this.$fireAuthObj().currentUser
+      const userOnlain = user.providerData[0]
+
+      commit('AUTH_USER', userOnlain)
+
+      const uid = await dispatch('getUid')
+      if (uid) {
+        const user = await this.$fireStore.collection('users')
+          .doc(`${uid}`)
+          .get()
+          .then((snapshot) => {
+            // do something with document
+            return snapshot.data()
+          })
+        commit('USER_INFO', user)
+      }
     }
     commit('USER_ENTRANCE', userEntrance)
   },
@@ -113,11 +130,6 @@ export default {
         commit('ADMIN_ENTRANCE', userEntrance)
       })
   },
-  // async list_Users ({ commit }) {
-  //   const user = this.$fireAuthObj().currentUser
-  //   const userOnlain = user.providerData[0]
-  //   commit('LIST_USERS', userOnlain)
-  // },
   displayName () {
     return this.$fireAuthObj().currentUser.displayName
   },
@@ -128,7 +140,7 @@ export default {
     const USER_ID = await dispatch('getUid')
     const userEntrance = !!this.$fireAuthObj().currentUser
     if (userEntrance) {
-      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662'].includes(USER_ID)
+      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
       commit('ADMIN_ENTRANCE', adminEntrance)
     }
     commit('USER_ENTRANCE', userEntrance)

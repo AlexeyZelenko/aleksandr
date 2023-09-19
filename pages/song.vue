@@ -16,6 +16,24 @@
 
       <v-card-title>
         Назва пісні: {{ song.nameSong }}
+        <v-spacer />
+        <v-row>
+          <v-icon
+            v-if="!song.activeStar"
+            color="grey lighten-1"
+            @click.stop="addToFavorite(song.id)"
+          >
+            mdi-star-outline
+          </v-icon>
+
+          <v-icon
+            v-else
+            color="yellow darken-3"
+            @click.stop="deleteFavorite(song.id)"
+          >
+            mdi-star
+          </v-icon>
+        </v-row>
       </v-card-title>
 
       <v-card-text
@@ -187,6 +205,7 @@ export default {
   },
   data () {
     return {
+      activeStar: false,
       readonly: false,
       panel: [0],
       loading: false,
@@ -216,7 +235,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'SONGS'
+      'SONGS',
+      'infoUser'
     ]),
     song () {
       let result = {}
@@ -225,6 +245,7 @@ export default {
           result = item
         }
       })
+      result.activeStar = !!(this.infoUser.listFavoriteSongs && this.infoUser.listFavoriteSongs.includes(result.id))
       return result
     },
     getTime () {
@@ -233,14 +254,15 @@ export default {
 
       // Создаем объект Date из числовой метки времени
       const date = new Date(timestamp)
+      const today = new Date()
 
       // Извлекаем нужные компоненты даты
       const year = date.getFullYear()
       const month = date.getMonth() + 1 // Месяцы в JavaScript начинаются с 0, поэтому добавляем 1
       const day = date.getDate()
-      const hours = date.getHours()
-      const minutes = date.getMinutes()
-      const seconds = date.getSeconds()
+      const hours = today.getHours()
+      const minutes = today.getMinutes()
+      const seconds = today.getSeconds()
 
       // Форматируем дату в удобочитаемый вид (например, "гггг-мм-дд чч:мм:сс")
       return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
@@ -264,11 +286,21 @@ export default {
   methods: {
     ...mapActions([
       'bindCountDocument',
-      'deleteSong'
+      'deleteSong',
+      'ADD_TO_FAVORITE',
+      'REMOVE_FROM_FAVORITE'
     ]),
     ...mapMutations([
       'SET_EVENT_CALENDAR'
     ]),
+    addToFavorite (id) {
+      this.ADD_TO_FAVORITE(id)
+      this.activeStar = !this.activeStar
+    },
+    deleteFavorite () {
+      this.REMOVE_FROM_FAVORITE(this.song.id)
+      this.activeStar = !this.activeStar
+    },
     editSong () {
       this.$router.push({ name: 'editSong', query: { song: this.song.id } })
     },
@@ -285,7 +317,8 @@ export default {
         end: '',
         color: 'orange',
         timed: false,
-        order: ''
+        order: '',
+        type: 'song'
       }
 
       Swal.fire({
@@ -306,6 +339,7 @@ export default {
       const order = event.order
       const idSong = event.id
       const description = ''
+      const type = event.type
 
       const docRef = await this.$fireStore.collection('calendar').add({
         createdAt,
@@ -318,7 +352,8 @@ export default {
         timed,
         order,
         idSong,
-        description
+        description,
+        type
       })
       try {
         const docAdded = await docRef
@@ -337,8 +372,7 @@ export default {
         timer: 2000
       })
 
-      // await this.$router.push({ name: 'plannerCalendar' })
-      this.SET_EVENT_CALENDAR(event)
+      await this.$router.push({ name: 'plannerCalendar' })
     }
   }
 }

@@ -20,7 +20,6 @@ export default {
     const ref2 = this.$fireStore
       .collection('calendar')
     await bindFirestoreRef('Events', ref2, { wait: true }).then((documents) => {
-      // commit('LAST_DOC', documents[documents.length - 1]);
       commit('CALENDAR_EVENTS', documents)
     })
   }),
@@ -81,7 +80,7 @@ export default {
         }
       })
   },
-  deleteEventFromCalendar ({ commit }, id) {
+  deleteEventFromCalendar ({ commit, dispatch }, id) {
     this.$fireStore
       .collection('calendar')
       .doc(`${id}`)
@@ -92,6 +91,8 @@ export default {
           text: 'Подія видалена.',
           type: 'success'
         })
+
+        dispatch('bindCountDocument')
       }).catch(function (error) {
         // eslint-disable-next-line no-console
         console.error('Помилка при видаленні документа: ', error)
@@ -112,6 +113,27 @@ export default {
           type: 'success'
         })
       }).catch(function (error) {
+        // eslint-disable-next-line no-console
+        console.error('Помилка при редагуванні документа: ', error)
+      })
+  },
+  editUsersList ({ commit, dispatch }, event) {
+    this.$fireStore
+      .collection('calendar')
+      .doc(`${event.id}`)
+      .update({
+        selected: event.selected
+      })
+      .then(function () {
+        Swal.fire({
+          title: 'Змінено!',
+          text: 'Подія змінена.',
+          type: 'success'
+        })
+
+        dispatch('bindCountDocument')
+      })
+      .catch(function (error) {
         // eslint-disable-next-line no-console
         console.error('Помилка при редагуванні документа: ', error)
       })

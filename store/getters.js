@@ -20,7 +20,7 @@ export default {
   userEntrance: s => s.userEntrance,
   adminEntrance: s => s.adminEntrance,
   listUsers: s => s.listUsers,
-  InfoUser: s => s.InfoUser,
+  infoUser: s => s.infoUser,
   userId: s => s.userId,
   eventsCalendar: s => s.eventsCalendar
 }

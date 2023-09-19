@@ -1,0 +1,228 @@
+<template>
+  <v-card
+    class="mx-auto"
+    max-width="500"
+  >
+    <v-list shaped>
+      <v-list-item-group
+        v-model="selectedUsers"
+        multiple
+      >
+        <template v-for="(item, i) in users">
+          <v-divider
+            v-if="!item"
+            :key="`divider-${i}`"
+          />
+
+          <v-list-item
+            v-else
+            :key="`item-${i}`"
+            :value="item"
+            active-class="deep-purple--text text--accent-4"
+          >
+            <template v-slot:default="{ active }">
+              <v-list-item-content>
+                <v-list-item-title v-text="item" />
+              </v-list-item-content>
+
+              <v-list-item-action>
+                <v-checkbox
+                  :input-value="active"
+                  color="deep-purple accent-4"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+        </template>
+      </v-list-item-group>
+    </v-list>
+
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header v-slot="{ open }">
+          <v-row no-gutters>
+            <v-col cols="4">
+              Додати до календаря:
+            </v-col>
+            <v-col
+              cols="8"
+              class="text--secondary"
+            >
+              <v-fade-transition leave-absolute>
+                <span v-if="open">Виберіть дату</span>
+                <v-row
+                  v-else
+                  no-gutters
+                  style="width: 100%"
+                >
+                  <v-col cols="12">
+                    {{ trip.start }}
+                  </v-col>
+                </v-row>
+              </v-fade-transition>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row
+            justify="space-around"
+            no-gutters
+          >
+            <v-col cols="9">
+              <v-menu
+                ref="startMenu"
+                :close-on-content-click="false"
+                :return-value.sync="trip.start"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="trip.start"
+                    label="Дата виконання"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  />
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer />
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.isActive = false"
+                  >
+                    Відмінити
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.save(null)"
+                  >
+                    Видалити
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.save(date); addToCalendar()"
+                  >
+                    Зберегти
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </v-card>
+</template>
+
+<script>
+import Swal from 'sweetalert2'
+
+export default {
+  name: 'ListItemGroup',
+  data: () => ({
+    selectedUsers: [],
+    users: [
+      'Антоніна Бієвець',
+      'Яна Зеленько',
+      'Катерина Мельник',
+      'Поліна Січкар',
+      'Юлія Охріменко',
+      'Альона',
+      '',
+      'Святослав',
+      'Вадим Січкарь',
+      'Влад Зеленський'
+    ],
+    model: ['Carrots'],
+    date: null,
+    trip: {
+      start: null
+    }
+  }),
+  computed: {
+    getTime () {
+      // Исходная дата в числовом формате
+      const timestamp = this.date
+      const today = new Date()
+
+      // Создаем объект Date из числовой метки времени
+      const date = new Date(timestamp)
+
+      // Извлекаем нужные компоненты даты
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1 // Месяцы в JavaScript начинаются с 0, поэтому добавляем 1
+      const day = date.getDate()
+      const hours = date.getHours()
+      const minutes = today.getMinutes()
+      const seconds = today.getSeconds()
+
+      // Форматируем дату в удобочитаемый вид (например, "гггг-мм-дд чч:мм:сс")
+      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+  },
+  methods: {
+    async addToCalendar () {
+      const event = {
+        users: this.users,
+        selected: this.selectedUsers,
+        start: this.getTime,
+        color: 'blue'
+      }
+
+      Swal.fire({
+        title: 'Завантаження...',
+        text: '',
+        imageUrl: '352.gif',
+        showConfirmButton: false
+      })
+
+      const createdAt = Date.now()
+      const type = 'users'
+      const start = event.start
+      const users = event.users
+      const selected = event.selected
+      const color = event.color
+      const name = 'Служителі'
+
+      const docRef = await this.$fireStore.collection('calendar').add({
+        createdAt,
+        users,
+        selected,
+        start,
+        type,
+        color,
+        name
+      })
+      try {
+        const docAdded = await docRef
+        await this.$fireStore.doc('calendar/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+      } catch (err) {
+        return err
+      }
+
+      Swal.close()
+
+      Swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: 'Группа додана до календаря.',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

@@ -18,14 +18,11 @@ export default {
   USER_ID_ENTRANCE: (state, userID) => {
     state.userId = userID
   },
-  LIST_USERS: (state, userOnlain) => {
-    state.listUsers = userOnlain
-  },
   ADMIN_ENTRANCE: (state, adminEntrance) => {
     state.adminEntrance = adminEntrance
   },
   USER_INFO: (state, info) => {
-    state.InfoUser = info
+    state.infoUser = info
   },
 
   FIREBASE_SONGS: (state, data) => {
@@ -37,10 +34,15 @@ export default {
   SELECT_CATEGORY_SONGS: (state, selected) => {
     state.selected = selected
   },
-  SET_EVENT_CALENDAR: (state, event) => {
-    state.plannerCalendar.events.push(event)
-  },
   CALENDAR_EVENTS: (state, events) => {
-    state.plannerCalendar.events = events
+    state.plannerCalendar.songs = []
+    state.plannerCalendar.users = []
+    events.forEach((event) => {
+      if (event.type === 'song') {
+        state.plannerCalendar.songs.push(event)
+      } else if (event.type === 'users') {
+        state.plannerCalendar.users.push(event)
+      }
+    })
   }
 }
