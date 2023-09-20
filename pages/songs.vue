@@ -20,6 +20,20 @@
 
       <v-spacer />
 
+      <v-btn
+        icon
+        @click="showFilter = !showFilter"
+      >
+        <v-icon>{{ showFilter ? 'mdi-chevron-up' : 'mdi-filter' }}</v-icon>
+      </v-btn>
+
+      <v-btn
+        icon
+        @click="showSearch = !showSearch"
+      >
+        <v-icon>{{ showSearch ? 'mdi-chevron-up' : 'mdi-magnify' }}</v-icon>
+      </v-btn>
+
       <template>
         <v-row justify="center">
           <v-dialog
@@ -68,37 +82,48 @@
         </v-row>
       </template>
     </v-app-bar>
+    <v-expand-transition>
+      <div v-show="showFilter">
+        <!--        Categories-->
+        <v-row class="change_categories">
+          <v-select-categories
+            :selected="selected"
+            style="z-index: 3"
+            :options="categories"
+            @select="sortCategory"
+          />
+        </v-row>
+        <v-divider />
 
-    <v-card
-      class="mx-auto"
-      color="grey-lighten-3"
-      max-width="500"
-    >
-      <v-card-text>
-        <v-text-field
-          v-model="searchQuery"
-          :loading="loading"
-          density="compact"
-          icon="search"
-          variant="solo"
-          label="Пошук пісні"
-          append-outer-icon="mdi-magnify"
-          single-line
-          hide-details
-          @click:append-inner="onClick"
-        />
-      </v-card-text>
-    </v-card>
-
-    <!--        Categories-->
-    <v-row class="change_categories">
-      <v-select-categories
-        :selected="selected"
-        style="z-index: 3"
-        :options="categories"
-        @select="sortCategory"
-      />
-    </v-row>
+        <v-card-text>
+          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+        </v-card-text>
+      </div>
+    </v-expand-transition>
+    <v-expand-transition>
+      <div v-show="showSearch">
+        <v-card
+          class="mx-auto"
+          color="grey-lighten-3"
+          max-width="500"
+        >
+          <v-card-text>
+            <v-text-field
+              v-model="searchQuery"
+              :loading="loading"
+              density="compact"
+              icon="search"
+              variant="solo"
+              label="Пошук пісні"
+              append-outer-icon="mdi-magnify"
+              single-line
+              hide-details
+              @click:append-inner="onClick"
+            />
+          </v-card-text>
+        </v-card>
+      </div>
+    </v-expand-transition>
 
     <client-only placeholder="Загрузка...">
       <v-card
@@ -185,6 +210,8 @@ export default {
     vSelectCategories: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    showSearch: false,
+    showFilter: false,
     dialog: false,
     selectedLanguage: 'UA',
     onlanguagechange: [
