@@ -200,12 +200,14 @@ export default {
       {
         text: 'Головна',
         disabled: false,
-        href: '/'
+        to: { name: 'index' },
+        exact: true
       },
       {
         text: 'Пісні',
         disabled: true,
-        href: 'songs'
+        href: 'songs',
+        exact: true
       }
     ],
     page: 1,

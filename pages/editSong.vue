@@ -227,17 +227,18 @@ export default {
       {
         text: 'Головна',
         disabled: false,
-        href: '/'
+        exact: true,
+        to: { name: 'index' }
       },
       {
         text: 'Пісні',
-        disabled: false,
-        href: 'songs'
+        exact: true,
+        to: { name: 'songs' }
       },
       {
         text: 'Редагувати пісню',
         disabled: true,
-        href: 'addSong'
+        to: { name: 'addSong' }
       }
     ],
     dialog: false,

@@ -1,126 +1,133 @@
 <template>
-  <v-card
-    class="mx-auto"
-    max-width="500"
-  >
-    <v-list shaped>
-      <v-list-item-group
-        v-model="selectedUsers"
-        multiple
-      >
-        <template v-for="(item, i) in users">
-          <v-divider
-            v-if="!item"
-            :key="`divider-${i}`"
-          />
+  <div>
+    <v-breadcrumbs :items="breadcrumbs">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <v-card
+      class="mx-auto"
+      max-width="500"
+    >
+      <v-list shaped>
+        <v-list-item-group
+          v-model="selectedUsers"
+          multiple
+        >
+          <template v-for="(item, i) in users">
+            <v-divider
+              v-if="!item"
+              :key="`divider-${i}`"
+            />
 
-          <v-list-item
-            v-else
-            :key="`item-${i}`"
-            :value="item"
-            active-class="deep-purple--text text--accent-4"
-          >
-            <template v-slot:default="{ active }">
-              <v-list-item-content>
-                <v-list-item-title v-text="item" />
-              </v-list-item-content>
-
-              <v-list-item-action>
-                <v-checkbox
-                  :input-value="active"
-                  color="deep-purple accent-4"
-                />
-              </v-list-item-action>
-            </template>
-          </v-list-item>
-        </template>
-      </v-list-item-group>
-    </v-list>
-
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-header v-slot="{ open }">
-          <v-row no-gutters>
-            <v-col cols="4">
-              Додати до календаря:
-            </v-col>
-            <v-col
-              cols="8"
-              class="text--secondary"
+            <v-list-item
+              v-else
+              :key="`item-${i}`"
+              :value="item"
+              active-class="deep-purple--text text--accent-4"
             >
-              <v-fade-transition leave-absolute>
-                <span v-if="open">Виберіть дату</span>
-                <v-row
-                  v-else
-                  no-gutters
-                  style="width: 100%"
-                >
-                  <v-col cols="12">
-                    {{ trip.start }}
-                  </v-col>
-                </v-row>
-              </v-fade-transition>
-            </v-col>
-          </v-row>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-row
-            justify="space-around"
-            no-gutters
-          >
-            <v-col cols="9">
-              <v-menu
-                ref="startMenu"
-                :close-on-content-click="false"
-                :return-value.sync="trip.start"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="trip.start"
-                    label="Дата виконання"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
+              <template v-slot:default="{ active }">
+                <v-list-item-content>
+                  <v-list-item-title v-text="item" />
+                </v-list-item-content>
+
+                <v-list-item-action>
+                  <v-checkbox
+                    :input-value="active"
+                    color="deep-purple accent-4"
                   />
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  scrollable
+                </v-list-item-action>
+              </template>
+            </v-list-item>
+          </template>
+        </v-list-item-group>
+      </v-list>
+
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-header v-slot="{ open }">
+            <v-row no-gutters>
+              <v-col cols="4">
+                Додати до календаря:
+              </v-col>
+              <v-col
+                cols="8"
+                class="text--secondary"
+              >
+                <v-fade-transition leave-absolute>
+                  <span v-if="open">Виберіть дату</span>
+                  <v-row
+                    v-else
+                    no-gutters
+                    style="width: 100%"
+                  >
+                    <v-col cols="12">
+                      {{ trip.start }}
+                    </v-col>
+                  </v-row>
+                </v-fade-transition>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-row
+              justify="space-around"
+              no-gutters
+            >
+              <v-col cols="9">
+                <v-menu
+                  ref="startMenu"
+                  :close-on-content-click="false"
+                  :return-value.sync="trip.start"
+                  offset-y
+                  min-width="290px"
                 >
-                  <v-spacer />
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.startMenu.isActive = false"
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="trip.start"
+                      label="Дата виконання"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="date"
+                    no-title
+                    scrollable
                   >
-                    Відмінити
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.startMenu.save(null)"
-                  >
-                    Видалити
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.startMenu.save(date); addToCalendar()"
-                  >
-                    Зберегти
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </v-card>
+                    <v-spacer />
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.isActive = false"
+                    >
+                      Відмінити
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.save(null)"
+                    >
+                      Видалити
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.startMenu.save(date); addToCalendar()"
+                    >
+                      Зберегти
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -130,6 +137,18 @@ export default {
   name: 'ListItemGroup',
   data: () => ({
     selectedUsers: [],
+    breadcrumbs: [
+      {
+        text: 'Головна',
+        disabled: false,
+        exact: true,
+        to: { name: 'index' }
+      },
+      {
+        text: 'Користувачи',
+        disabled: true
+      }
+    ],
     users: [
       'Антоніна Бієвець',
       'Яна Зеленько',

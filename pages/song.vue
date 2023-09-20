@@ -17,7 +17,7 @@
       <v-card-title>
         Назва пісні: {{ song.nameSong }}
         <v-spacer />
-        <v-row>
+        <v-row v-if="User_Entrance">
           <v-icon
             v-if="!song.activeStar"
             color="grey lighten-1"
@@ -214,17 +214,19 @@ export default {
         {
           text: 'Головна',
           disabled: false,
-          href: '/'
+          exact: true,
+          to: { name: 'index' }
         },
         {
           text: 'Пісні',
           disabled: false,
-          href: 'songs'
+          exact: true,
+          to: { name: 'songs' }
         },
         {
           text: 'Пісня',
           disabled: true,
-          href: 'addSong'
+          to: { name: 'songInformation' }
         }
       ],
       date: null,
@@ -236,7 +238,8 @@ export default {
   computed: {
     ...mapGetters([
       'SONGS',
-      'infoUser'
+      'infoUser',
+      'User_Entrance'
     ]),
     song () {
       let result = {}
