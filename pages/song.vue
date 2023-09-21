@@ -102,8 +102,8 @@
       <v-divider class="mx-4 px-4" />
 
       <Youtube-video
-        v-if="song && song.youtubeLink"
-        :link="song.youtubeLink"
+        v-if="song && song.youtubeLink?.length > 0"
+        :links="song.youtubeLink"
       />
 
       <v-expansion-panels>

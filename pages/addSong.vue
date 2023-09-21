@@ -43,12 +43,127 @@
             variant="outlined"
           />
 
-          <v-text-field
-            v-model="youtubeLink"
-            label="Посилання на відео з youtube"
-            prepend-icon="mdi-television-play"
-            variant="solo"
-          />
+          <template>
+            <v-data-table
+              :headers="headers2"
+              :items="linksYoutube"
+              hide-default-footer
+              hide-default-header
+            >
+              <template v-slot:item.name="{ item }">
+                <v-chip
+                  color="green"
+                  dark
+                >
+                  {{ item.link }}
+                </v-chip>
+              </template>
+              <template v-slot:top>
+                <v-toolbar
+                  flat
+                >
+                  <v-toolbar-title>Youtube</v-toolbar-title>
+                  <v-divider
+                    class="mx-4"
+                    inset
+                    vertical
+                  />
+                  <v-spacer />
+                  <v-dialog
+                    v-model="dialog2"
+                    max-width="500px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        dark
+                        class="mb-2"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>
+                        <span class="text-h5">{{ formTitle }}</span>
+                      </v-card-title>
+
+                      <v-card-text
+                        width="100%"
+                        style="padding: 0"
+                      >
+                        <v-container>
+                          <v-col width="100%">
+                            <v-col
+                              width="100%"
+                            >
+                              <v-text-field
+                                v-model="editedItem2.link"
+                                label="Посилання з youtube"
+                              />
+                            </v-col>
+                          </v-col>
+                        </v-container>
+                      </v-card-text>
+
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="close2"
+                        >
+                          Закрити
+                        </v-btn>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="saveNewBlock2"
+                        >
+                          Зберегти
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <v-dialog v-model="dialogDelete2" max-width="500px">
+                    <v-card>
+                      <v-card-title class="text-h5">
+                        Ви впевнені, що хочете видалити цей елемент?
+                      </v-card-title>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn color="blue darken-1" text @click="closeDelete2">
+                          Cancel
+                        </v-btn>
+                        <v-btn color="blue darken-1" text @click="deleteItemConfirm2">
+                          OK
+                        </v-btn>
+                        <v-spacer />
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-toolbar>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem2(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon
+                  small
+                  @click="deleteItem2(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+            </v-data-table>
+          </template>
 
           <template>
             <v-data-table
@@ -241,10 +356,12 @@ export default {
       }
     ],
     dialog: false,
+    dialog2: false,
     dialogDelete: false,
+    dialogDelete2: false,
     headers: [
       {
-        text: 'Назва блоку',
+        text: 'Додайте новий блок',
         align: 'start',
         sortable: false,
         value: 'name'
@@ -252,11 +369,29 @@ export default {
       { text: 'Дані', value: 'content' },
       { text: 'Дії', value: 'actions', sortable: false }
     ],
+    headers2: [
+      {
+        text: 'Посилання з Youtube',
+        align: 'start',
+        sortable: false,
+        value: 'name'
+      },
+      { text: 'Дані', value: 'content' },
+      { text: 'Дії', value: 'actions', sortable: false }
+    ],
+    linksYoutube: [],
     blocks: [],
     editedIndex: -1,
+    editedIndex2: -1,
     editedItem: {
       name: '',
       content: ''
+    },
+    editedItem2: {
+      link: ''
+    },
+    defaultItem2: {
+      link: ''
     },
     defaultItem: {
       name: '',
@@ -275,8 +410,14 @@ export default {
     dialog (val) {
       val || this.close()
     },
+    dialog2 (val) {
+      val || this.close2()
+    },
     dialogDelete (val) {
       val || this.closeDelete()
+    },
+    dialogDelete2 (val) {
+      val || this.closeDelete2()
     }
   },
   mounted () {
@@ -300,7 +441,7 @@ export default {
         category: this.category,
         language: this.language,
         tonality: this.tonality,
-        youtubeLink: this.youtubeLink,
+        youtubeLink: this.linksYoutube,
         note: this.note,
         description: this.description,
         blocks: this.blocks
@@ -366,20 +507,41 @@ export default {
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
+    editItem2 (item) {
+      this.editedIndex2 = this.linksYoutube.indexOf(item)
+      this.editedItem2 = Object.assign({}, item)
+      this.dialog2 = true
+    },
     deleteItem (item) {
       this.editedIndex = this.blocks.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
+    deleteItem2 (item) {
+      this.editedIndex2 = this.linksYoutube.indexOf(item)
+      this.editedItem2 = Object.assign({}, item)
+      this.dialogDelete2 = true
+    },
     deleteItemConfirm () {
       this.blocks.splice(this.editedIndex, 1)
       this.closeDelete()
+    },
+    deleteItemConfirm2 () {
+      this.linksYoutube.splice(this.editedIndex2, 1)
+      this.closeDelete2()
     },
     close () {
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+      })
+    },
+    close2 () {
+      this.dialog2 = false
+      this.$nextTick(() => {
+        this.editedItem2 = Object.assign({}, this.defaultItem2)
+        this.editedIndex2 = -1
       })
     },
     closeDelete () {
@@ -389,6 +551,13 @@ export default {
         this.editedIndex = -1
       })
     },
+    closeDelete2 () {
+      this.dialogDelete2 = false
+      this.$nextTick(() => {
+        this.editedItem2 = Object.assign({}, this.defaultItem2)
+        this.editedIndex2 = -1
+      })
+    },
     saveNewBlock () {
       if (this.editedIndex > -1) {
         Object.assign(this.blocks[this.editedIndex], this.editedItem)
@@ -396,6 +565,14 @@ export default {
         this.blocks.push(this.editedItem)
       }
       this.close()
+    },
+    saveNewBlock2 () {
+      if (this.editedIndex2 > -1) {
+        Object.assign(this.linksYoutube[this.editedIndex2], this.editedItem2)
+      } else {
+        this.linksYoutube.push(this.editedItem2)
+      }
+      this.close2()
     },
     cancel () {
       this.$router.push({ name: 'songs' })
