@@ -7,10 +7,8 @@
     </v-breadcrumbs>
     <v-card>
       <v-toolbar
-        color="purple"
-        dark
+        color="brown darken-3"
         flat
-        prominent
       >
         <template v-slot:extension>
           <v-tabs
@@ -68,6 +66,16 @@
               <v-divider inset />
             </v-list>
           </v-card>
+          <v-card
+            v-else
+            class="mx-auto"
+            max-width="500"
+            flat
+          >
+            <v-card-title class="text-h5">
+              Немає вибраних пісень
+            </v-card-title>
+          </v-card>
           <div
             v-if="paginateArray.length > 1"
             class="text-center pa-10"
@@ -80,39 +88,27 @@
           </div>
         </v-tab-item>
         <v-tab-item>
-          <v-card flat>
-            <v-card-title class="text-h5">
-              An awesome title
-            </v-card-title>
-            <v-card-text>
-              <p>
-                Duis lobortis massa imperdiet quam. Donec vitae orci sed dolor rutrum auctor. Vestibulum facilisis, purus nec pulvinar iaculis, ligula mi congue nunc, vitae euismod ligula urna in dolor. Praesent congue erat at massa.
-              </p>
+          <v-card
+            class="mx-auto"
+            width="256"
+            tile
+          >
+            <v-list>
+              <v-list-item>
+                <v-list-item-avatar class="mx-auto">
+                  <v-img :src="(getProfilePicUrl)" />
+                </v-list-item-avatar>
+              </v-list-item>
 
-              <p>
-                Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Pellentesque egestas, neque sit amet convallis pulvinar, justo nulla eleifend augue, ac auctor orci leo non est. Etiam sit amet orci eget eros faucibus tincidunt. Donec sodales sagittis magna.
-              </p>
-
-              <p class="mb-0">
-                Ut leo. Suspendisse potenti. Duis vel nibh at velit scelerisque suscipit. Fusce pharetra convallis urna.
-              </p>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item>
-          <v-card flat>
-            <v-card-title class="text-h5">
-              An even better title
-            </v-card-title>
-            <v-card-text>
-              <p>
-                Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Sed hendrerit. Maecenas malesuada. Vestibulum ullamcorper mauris at ligula. Proin faucibus arcu quis ante.
-              </p>
-
-              <p class="mb-0">
-                Etiam vitae tortor. Curabitur ullamcorper ultricies nisi. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Aliquam lobortis. Suspendisse potenti.
-              </p>
-            </v-card-text>
+              <v-list-item link>
+                <v-list-item-content>
+                  <v-list-item-title class="text-h6">
+                    {{ getUserName }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>{{ getUserEmail }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -142,9 +138,8 @@ export default {
     itemsPerPage: 1,
     tabs: null,
     tabsList: [
-      { name: 'Favorite', icon: 'mdi-heart' },
-      { name: 'Albums', icon: 'mdi-album' },
-      { name: 'Artists', icon: 'mdi-account' }
+      { name: 'Вибране', icon: 'mdi-heart' },
+      { name: 'Налаштуваня', icon: 'mdi-account' }
     ]
   }),
   computed: {
@@ -154,6 +149,15 @@ export default {
       'USER_ID',
       'infoUser'
     ]),
+    getUserName () {
+      return this.$fireAuthObj().currentUser.displayName
+    },
+    getUserEmail () {
+      return this.$fireAuthObj().currentUser.email
+    },
+    getProfilePicUrl () {
+      return this.$fireAuthObj().currentUser.photoURL || '@/assets/images/profile_placeholder.png'
+    },
     favoriteSongs () {
       if (!this.infoUser?.listFavoriteSongs?.length) { return [] }
       const array = []

@@ -47,6 +47,7 @@
                 dark
                 v-bind="attrs"
                 v-on="on"
+                @click="clearFilters()"
               >
                 {{ selectedLanguage }}
               </v-btn>
@@ -97,15 +98,27 @@
 
         <v-card-text class="flex flex-column">
           <v-item-group>
-            <v-subheader>Пошук по першій літері назви пісні</v-subheader>
+            <v-subheader>
+              Пошук по першій літері назви пісні
+              <v-chip
+                v-if="startingLetter"
+                class="ma-2"
+                close
+                color="indigo darken-3"
+                outlined
+                @click:close="startingLetter = ''"
+              >
+                {{ startingLetter }}
+              </v-chip>
+            </v-subheader>
             <v-item
-              v-for="(item, i) in ukrainianAlphabet"
+              v-for="(item, i) in alphabet"
               :key="i"
-              v-slot="{ active, toggle }"
+              v-slot="{ toggle }"
             >
               <v-chip
+                v-if="!startingLetter"
                 active-class="teal lighten-3--text"
-                :input-value="active"
                 @click="toggle"
               >
                 <span @click="searchSongChart(item)">{{ item }}</span>
@@ -262,13 +275,35 @@ export default {
       'User_Entrance',
       'USER_ID'
     ]),
-    ukrainianAlphabet () {
-      return [
-        'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
-        'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
-        'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
-        'Ю', 'Я'
-      ]
+    alphabet () {
+      if (this.selectedLanguage === 'UA') {
+        return [
+          'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
+          'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
+          'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
+          'Ю', 'Я'
+        ]
+      } else if (this.selectedLanguage === 'RU') {
+        return [
+          'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
+          'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т',
+          'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь',
+          'Э', 'Ю', 'Я'
+        ]
+      } else if (this.selectedLanguage === 'EN') {
+        return [
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+          'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+          'U', 'V', 'W', 'X', 'Y', 'Z'
+        ]
+      } else {
+        return [
+          'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
+          'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
+          'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
+          'Ю', 'Я'
+        ]
+      }
     },
     categories () {
       return this.$store.state.categories.categories
@@ -335,11 +370,16 @@ export default {
       'sortByCategories'
     ]),
     searchSongChart (letter) {
-      if (letter === this.startingLetter) {
+      if (this.startingLetter !== '' && letter === this.startingLetter) {
         this.startingLetter = ''
+      } else if (this.startingLetter === '' && letter !== this.startingLetter) {
+        this.startingLetter = letter
       } else {
         this.startingLetter = letter
       }
+    },
+    clearFilters () {
+      this.startingLetter = ''
     },
     songClick (id) {
       this.$router.push({ name: 'song', query: { song: id } })

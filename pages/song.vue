@@ -23,7 +23,7 @@
             color="grey lighten-1"
             @click.stop="addToFavorite(song.id)"
           >
-            mdi-star-outline
+            mdi-heart-outline
           </v-icon>
 
           <v-icon
@@ -31,7 +31,7 @@
             color="yellow darken-3"
             @click.stop="deleteFavorite(song.id)"
           >
-            mdi-star
+            mdi-heart
           </v-icon>
         </v-row>
       </v-card-title>
