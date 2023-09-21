@@ -95,8 +95,23 @@
         </v-row>
         <v-divider />
 
-        <v-card-text>
-          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+        <v-card-text class="flex flex-column">
+          <v-item-group>
+            <v-subheader>Пошук по першій літері назви пісні</v-subheader>
+            <v-item
+              v-for="(item, i) in ukrainianAlphabet"
+              :key="i"
+              v-slot="{ active, toggle }"
+            >
+              <v-chip
+                active-class="teal lighten-3--text"
+                :input-value="active"
+                @click="toggle"
+              >
+                <span @click="searchSongChart(item)">{{ item }}</span>
+              </v-chip>
+            </v-item>
+          </v-item-group>
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -210,6 +225,7 @@ export default {
     vSelectCategories: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    startingLetter: '',
     showSearch: false,
     showFilter: false,
     dialog: false,
@@ -246,6 +262,14 @@ export default {
       'User_Entrance',
       'USER_ID'
     ]),
+    ukrainianAlphabet () {
+      return [
+        'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
+        'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
+        'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
+        'Ю', 'Я'
+      ]
+    },
     categories () {
       return this.$store.state.categories.categories
     },
@@ -295,7 +319,8 @@ export default {
       return this.filteredSongs.filter((item) => {
         const nameMatchesLetter = item.nameSong.toLowerCase().startsWith(this.searchQuery.toLowerCase())
         const languageMatches = item.language.toLowerCase().includes(this.selectedLanguage.toLowerCase())
-        return nameMatchesLetter && languageMatches
+        const nameMatchesFirstLetter = item.nameSong.toLowerCase().startsWith(this.startingLetter.toLowerCase())
+        return nameMatchesLetter && languageMatches && nameMatchesFirstLetter
       })
     }
   },
@@ -309,6 +334,13 @@ export default {
       'userEntrance',
       'sortByCategories'
     ]),
+    searchSongChart (letter) {
+      if (letter === this.startingLetter) {
+        this.startingLetter = ''
+      } else {
+        this.startingLetter = letter
+      }
+    },
     songClick (id) {
       this.$router.push({ name: 'song', query: { song: id } })
     },

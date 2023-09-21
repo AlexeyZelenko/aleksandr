@@ -21,8 +21,10 @@
               v-for="(tab, index) in tabsList"
               :key="index"
             >
-              {{ tab.name }}
-              <v-icon :v-icon="tab.icon" />
+              <p class="mx-2">
+                <v-icon>{{ tab.icon }}</v-icon>
+              </p>
+              <p>{{ tab.name }}</p>
             </v-tab>
           </v-tabs>
         </template>
