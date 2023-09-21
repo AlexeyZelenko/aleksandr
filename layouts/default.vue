@@ -77,29 +77,77 @@
         >
           Вхід
         </v-btn>
-        <v-btn
-          v-if="User_Entrance"
-          rounded
-          style="background-color: #795548; color: white; z-index: 102"
-          @click="logout"
-        >
-          Вихід
-        </v-btn>
       </div>
       <!--Отображение пользователя-->
       <div style="margin: 5px; z-index: 102; cursor: pointer">
         <div
           v-if="User_Entrance"
-          @click="goToUserPage()"
         >
-          <slot>
-            <img
-              id="user-pic"
-              style="cursor: pointer"
-              :src="(getProfilePicUrl)"
-              alt=""
-            >
-          </slot>
+          <v-container
+            fluid
+          >
+            <v-row justify="center">
+              <v-menu
+                bottom
+                min-width="200px"
+                rounded
+                offset-y
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    x-large
+                    v-on="on"
+                  >
+                    <v-avatar color="brown darken-1">
+                      <v-icon dark>
+                        mdi-account-circle
+                      </v-icon>
+                    </v-avatar>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-content class="justify-center">
+                    <div
+                      v-if="User_Entrance"
+                      class="mx-auto text-center"
+                    >
+                      <slot>
+                        <img
+                          id="user-pic"
+                          style="cursor: pointer"
+                          :src="(getProfilePicUrl)"
+                          alt=""
+                        >
+                      </slot>
+                      <h3>{{ getUserName }}</h3>
+                      <p class="text-caption mt-1">
+                        {{ getUserEmail }}
+                      </p>
+                      <v-divider class="my-3" />
+                      <v-btn
+                        depressed
+                        rounded
+                        text
+                        @click="goToUserPage()"
+                      >
+                        Кабінет
+                      </v-btn>
+                      <v-divider class="my-3" />
+                      <v-btn
+                        depressed
+                        rounded
+                        text
+                        @click="logout"
+                      >
+                        Вийти
+                      </v-btn>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
+            </v-row>
+          </v-container>
         </div>
         <div
           v-if="User_Entrance"
@@ -201,6 +249,11 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      user: {
+        initials: 'JD',
+        fullName: 'John Doe',
+        email: 'john.doe@doe.com'
+      },
       clipped: false,
       drawer: false,
       fixed: false,
@@ -251,6 +304,10 @@ export default {
     ]),
     getUserName () {
       return this.$fireAuthObj().currentUser.displayName
+    },
+    getUserEmail () {
+      return this.$fireAuthObj().currentUser.email
+      // return this.$fireStoreObj().collection('users').doc(email).get()
     },
     getProfilePicUrl () {
       return this.$fireAuthObj().currentUser.photoURL || '@/assets/images/profile_placeholder.png'
