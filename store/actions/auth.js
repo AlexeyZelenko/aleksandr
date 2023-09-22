@@ -2,9 +2,10 @@ import Swal from 'sweetalert2'
 
 export default {
   getUid () {
-    const user = new this.$fireAuthObj().currentUser
-    return user ? user.uid : null
+    const currentUser = this.$fireAuthObj().currentUser
+    return currentUser ? currentUser.uid : null
   },
+
   async signInWithGoogle ({ commit, dispatch }) {
     try {
       const provider = new this.$fireAuthObj.GoogleAuthProvider()
@@ -20,51 +21,35 @@ export default {
       // Если нет инфо, создать
       if (!info) {
         const user = this.$fireAuthObj().currentUser
-        let array = []
-        await user.providerData.forEach((profile) => {
-          array = [profile.providerId, profile.uid, profile.displayName, profile.email, profile.photoURL]
-          return array
-        })
-        await this.$fireDbObj().ref(`/users/${uid}/info`).set({
-          SignInPprovider: array[0],
-          Name: array[2],
-          Email: array[3],
-          PhotoURL: array[4],
-          ProviderSpecificUID: array[1]
-        })
+
+        if (user) {
+          const profile = user.providerData[0]
+          const infoData = {
+            SignInProvider: profile.providerId,
+            Name: profile.displayName,
+            Email: profile.email,
+            PhotoURL: profile.photoURL,
+            ProviderSpecificUID: profile.uid
+          }
+
+          await this.$fireDbObj().ref(`/users/${uid}/info`).set(infoData)
+        }
       }
 
       // Получить корзину для ткущего пользователя
-      await this.$fireStore.collection('users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => {
-          const document = snapshot.data()
-          // Если нет никаких данных
-          if (!document) {
-            this.$fireStore.collection('users')
-              .doc(uid)
-              .set({
-                listFavoriteSongs: [],
-                orderInfo: []
-              })
-            return document
-          }
-          // Если нет никаких данных-пользователь удалил
-          if (document === {}) {
-            this.$fireStore.collection('users').doc(uid).set({
-              listFavoriteSongs: [],
-              orderInfo: []
-            })
-            return document
-          }
-          return document.listFavoriteSongs
+      const userDocument = await this.$fireStore.collection('users').doc(uid).get()
+      const user = userDocument.data()
+
+      if (!user || Object.keys(user).length === 0) {
+        await this.$fireStore.collection('users').doc(uid).set({
+          listFavoriteSongs: [],
+          orderInfo: []
         })
-      // Проверка администратора
-      if (['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2']
-        .some(elem => elem === `${uid}`)) {
-        // Получение ТОКЕНА администратора
-        // await dispatch('saveMessagingDeviceToken')
+      }
+
+      if (['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(uid)) {
+        // Ось код для адміністратора, якщо потрібно
+        // await dispatch('saveMessagingDeviceToken');
 
         Swal.fire({
           position: 'top-end',
@@ -73,12 +58,12 @@ export default {
           showConfirmButton: false,
           timer: 1500
         })
-        // router.push('/admin')
+        // router.push('/admin');
       } else {
         Swal.fire({
           position: 'top-end',
           type: 'success',
-          title: 'Ви війшли!',
+          title: 'Ви ввійшли!',
           showConfirmButton: false,
           timer: 1500
         })
@@ -91,28 +76,28 @@ export default {
     const userEntrance = !!this.$fireAuthObj().currentUser
     const USER_ID = await dispatch('getUid')
     if (userEntrance) {
-      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
-      commit('ADMIN_ENTRANCE', adminEntrance)
+      const isAdmin = ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
+      commit('ADMIN_ENTRANCE', isAdmin)
 
-      const user = await this.$fireAuthObj().currentUser
-      const userOnlain = user.providerData[0]
+      const currentUser = this.$fireAuthObj().currentUser
+      if (currentUser) {
+        const userOnlain = currentUser.providerData[0]
+        commit('AUTH_USER', userOnlain)
 
-      commit('AUTH_USER', userOnlain)
-
-      const uid = await dispatch('getUid')
-      if (uid) {
-        const user = await this.$fireStore.collection('users')
-          .doc(`${uid}`)
-          .get()
-          .then((snapshot) => {
-            // do something with document
-            return snapshot.data()
-          })
-        commit('USER_INFO', user)
+        const uid = await dispatch('getUid')
+        if (uid) {
+          const userSnapshot = await this.$fireStore.collection('users')
+            .doc(uid)
+            .get()
+          const user = userSnapshot.data()
+          commit('USER_INFO', user)
+        }
       }
     }
+
     commit('USER_ENTRANCE', userEntrance)
   },
+
   async logout ({ commit }) {
     await this.$fireAuthObj().signOut()
       .then(() => {
@@ -126,25 +111,30 @@ export default {
           timer: 1500
         })
 
+        this.$router.push('/')
+
         commit('USER_ENTRANCE', userEntrance)
         commit('ADMIN_ENTRANCE', userEntrance)
       })
   },
+
   displayName () {
     return this.$fireAuthObj().currentUser.displayName
   },
+
   getProfilePicUrl () {
     return this.$fireAuthObj().currentUser.photoURL || '@/assets/images/profile-pic-placeholder.png'
   },
+
   async userEntrance ({ commit, dispatch }) {
     const USER_ID = await dispatch('getUid')
     const userEntrance = !!this.$fireAuthObj().currentUser
-    if (userEntrance) {
-      const adminEntrance = await ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
-      commit('ADMIN_ENTRANCE', adminEntrance)
-    }
+    const adminEntrance = ['6XUeVk6rJKcsFvkgIRHcKhWqx523', 'aB67CVm6SmTTAmQqL8Cj2Xpcl662', '0FvqtO9OJYcOM8ugqeJOVTVUlAY2'].includes(USER_ID)
+
+    commit('ADMIN_ENTRANCE', adminEntrance)
     commit('USER_ENTRANCE', userEntrance)
   }
+
   // async USER_ID_ACTIONS ({ commit }) {
   //   const user = this.$fireAuthObj().currentUser
   //   const userID = user ? user.uid : null

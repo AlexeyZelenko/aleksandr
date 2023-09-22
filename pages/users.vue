@@ -206,37 +206,50 @@ export default {
 
       const createdAt = Date.now()
       const type = 'users'
-      const start = event.start
-      const users = event.users
-      const selected = event.selected
-      const color = event.color
+      const { start, users, selected, color } = event
       const name = 'Служителі'
 
-      const docRef = await this.$fireStore.collection('calendar').add({
-        createdAt,
-        users,
-        selected,
-        start,
-        type,
-        color,
-        name
-      })
       try {
+        const docRef = await this.$fireStore.collection('calendar').add({
+          createdAt,
+          users,
+          selected,
+          start,
+          type,
+          color,
+          name
+        })
+
         const docAdded = await docRef
-        await this.$fireStore.doc('calendar/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
-      } catch (err) {
-        return err
+        await this.$fireStore.doc(`calendar/${docAdded.id}`).update({ id: docAdded.id })
+
+        Swal.close()
+
+        Swal.fire({
+          position: 'top-end',
+          type: 'success',
+          title: 'Группа додана до календаря.',
+          showConfirmButton: false,
+          timer: 2000
+        })
+      } catch (error) {
+        // Обробка помилок
+        // eslint-disable-next-line no-console
+        console.error('Помилка при додаванні події до календаря:', error)
+
+        Swal.close()
+
+        Swal.fire({
+          position: 'top-end',
+          type: 'error',
+          title: 'Помилка при додаванні події до календаря',
+          showConfirmButton: false,
+          timer: 2000
+        })
+
+        // Ви можете також повернути помилку для подальшого оброблення, якщо це необхідно.
+        return error
       }
-
-      Swal.close()
-
-      Swal.fire({
-        position: 'top-end',
-        type: 'success',
-        title: 'Группа додана до календаря.',
-        showConfirmButton: false,
-        timer: 2000
-      })
     }
   }
 }

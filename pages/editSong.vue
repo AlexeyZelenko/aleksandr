@@ -155,7 +155,7 @@
                 </v-icon>
                 <v-icon
                   small
-                  @click="deleteItem2(item)"
+                  @click="deleteItemFromArray(item, 'youtubeLink')"
                 >
                   mdi-delete
                 </v-icon>
@@ -284,7 +284,7 @@
                 </v-icon>
                 <v-icon
                   small
-                  @click="deleteItem(item)"
+                  @click="deleteItemFromArray(item, 'blocks');"
                 >
                   mdi-delete
                 </v-icon>
@@ -415,18 +415,10 @@ export default {
     }
   },
   watch: {
-    dialog (val) {
-      val || this.close()
-    },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
-    dialog2 (val) {
-      val || this.close2()
-    },
-    dialogDelete2 (val) {
-      val || this.closeDelete2()
-    }
+    dialog: 'closeOnFalse',
+    dialogDelete: 'closeOnFalse',
+    dialog2: 'closeOnFalse',
+    dialogDelete2: 'closeOnFalse'
   },
   mounted () {
     this.initialize()
@@ -436,6 +428,11 @@ export default {
     ...mapActions([
       'bindCountDocument'
     ]),
+    closeOnFalse (val) {
+      if (!val) {
+        this.close()
+      }
+    },
     submit () {
       //* Разбить текст на блоки - вынести в отдельный функционал*//
       // if (this.textSong) {
@@ -477,19 +474,16 @@ export default {
         imageUrl: '352.gif',
         showConfirmButton: false
       })
+
       const createdAt = Date.now()
       const seen = false
-      const nameSong = songData.nameSong
-      const category = songData.category
-      const language = songData.language
-      const tonality = songData.tonality
-      const youtubeLink = songData.youtubeLink
-      const note = songData.note
-      const description = songData.description
-      const blocks = songData.blocks
+      const {
+        nameSong, category, language, tonality, youtubeLink, note, description, blocks
+      } = songData
 
       try {
-        await this.$fireStore.doc('songs/' + this.song.id).update({
+        const docRef = this.$fireStore.doc(`songs/${this.song.id}`)
+        await docRef.update({
           id: this.song.id,
           createdAt,
           seen,
@@ -501,19 +495,34 @@ export default {
           note,
           description,
           blocks
-        }).then(() => {
-          Swal.close()
-
-          Swal.fire({
-            position: 'top-end',
-            type: 'success',
-            title: 'Пісня змінена',
-            showConfirmButton: false,
-            timer: 2000
-          })
         })
-      } catch (err) {
-        return err
+
+        Swal.close()
+
+        await Swal.fire({
+          position: 'top-end',
+          type: 'success',
+          title: 'Пісня змінена',
+          showConfirmButton: false,
+          timer: 2000
+        })
+      } catch (error) {
+        // Обробка помилки
+        // eslint-disable-next-line no-console
+        console.error('Помилка при збереженні пісні:', error)
+
+        Swal.close()
+
+        await Swal.fire({
+          position: 'top-end',
+          type: 'error',
+          title: 'Помилка при збереженні пісні',
+          showConfirmButton: false,
+          timer: 2000
+        })
+
+        // Ви можете також повернути помилку для подальшого оброблення, якщо це необхідно.
+        return error
       }
     },
     editItem (item) {
@@ -526,15 +535,12 @@ export default {
       this.editedItem2 = Object.assign({}, item)
       this.dialog2 = true
     },
-    deleteItem (item) {
-      this.editedIndex = this.blocks.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-    deleteItem2 (item) {
-      this.editedIndex2 = this.youtubeLink.indexOf(item)
-      this.editedItem2 = Object.assign({}, item)
-      this.dialogDelete2 = true
+
+    deleteItemFromArray (item, arrayName) {
+      const index = this[arrayName].indexOf(item)
+      if (index !== -1) {
+        this[arrayName].splice(index, 1)
+      }
     },
     deleteItemConfirm () {
       this.blocks.splice(this.editedIndex, 1)
@@ -544,34 +550,27 @@ export default {
       this.youtubeLink.splice(this.editedIndex2, 1)
       this.closeDelete2()
     },
-    close () {
-      this.dialog = false
+
+    closeDialog (dialogName, editedItemName, defaultItemName, editedIndexName) {
+      this[dialogName] = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
+        this[editedItemName] = Object.assign({}, this[defaultItemName])
+        this[editedIndexName] = -1
       })
+    },
+    close () {
+      this.closeDialog('dialog', 'editedItem', 'defaultItem', 'editedIndex')
     },
     close2 () {
-      this.dialog2 = false
-      this.$nextTick(() => {
-        this.editedItem2 = Object.assign({}, this.defaultItem2)
-        this.editedIndex2 = -1
-      })
+      this.closeDialog('dialog2', 'editedItem2', 'defaultItem2', 'editedIndex2')
     },
     closeDelete () {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
+      this.closeDialog('dialogDelete', 'editedItem', 'defaultItem', 'editedIndex')
     },
     closeDelete2 () {
-      this.dialogDelete2 = false
-      this.$nextTick(() => {
-        this.editedItem2 = Object.assign({}, this.defaultItem2)
-        this.editedIndex2 = -1
-      })
+      this.closeDialog('dialogDelete2', 'editedItem2', 'defaultItem2', 'editedIndex2')
     },
+
     saveNewBlock () {
       if (this.editedIndex > -1) {
         Object.assign(this.blocks[this.editedIndex], this.editedItem)

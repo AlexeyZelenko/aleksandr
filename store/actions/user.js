@@ -7,64 +7,49 @@ export default {
   },
   async ADD_TO_FAVORITE ({ dispatch, commit }, payload) {
     const uid = await dispatch('getUid')
+
     if (uid) {
-      const user = await this.$fireStore.collection('users')
-        .doc(`${uid}`)
-        .get()
-        .then((snapshot) => {
-          // do something with document
-          return snapshot.data()
-        })
+      try {
+        const userRef = this.$fireStore.collection('users').doc(uid)
+        const userSnapshot = await userRef.get()
+        const userData = userSnapshot.data()
 
-      await this.$fireStore.collection('users')
-        .doc(`${uid}`)
-        .set({
-          ...user,
-          listFavoriteSongs: [...user.listFavoriteSongs, payload]
-        })
-
-      await this.$fireStore.collection('users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => {
-          const document = snapshot.data()
-          // do something with document
-          commit('USER_INFO', document)
-        })
+        if (userData) {
+          userData.listFavoriteSongs.push(payload)
+          await userRef.set(userData)
+          commit('USER_INFO', userData)
+        }
+      } catch (error) {
+        // Обробка помилок
+        // eslint-disable-next-line no-console
+        console.error('Помилка при додаванні до обраного:', error)
+      }
     }
   },
+
   async REMOVE_FROM_FAVORITE ({ dispatch, commit }, itemDelete) {
     const uid = await dispatch('getUid')
+
     if (uid) {
-      const cartUser = await this.$fireStore.collection('users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => {
-          const document = snapshot.data()
-          // do something with document
-          return document.listFavoriteSongs
-        })
+      try {
+        const userRef = this.$fireStore.collection('users').doc(uid)
+        const userSnapshot = await userRef.get()
+        const userData = userSnapshot.data()
 
-      const newcartInfo = cartUser.filter(item => item.arrayImagesViews !== itemDelete.arrayImagesViews)
-      const user = { ...this.user }
+        if (userData) {
+          userData.listFavoriteSongs = userData.listFavoriteSongs.filter(
+            item => item !== itemDelete
+          )
 
-      user.listFavoriteSongs = newcartInfo
-
-      this.$fireStore.collection('users')
-        .doc(uid)
-        .update(user)
-        .then(() => {})
-
-      await this.$fireStore.collection('users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => {
-          const document = snapshot.data()
-          // do something with document
-          commit('USER_INFO', document)
-        })
-    } else {
-      // commit('REMOVE_FROM_CART', itemDelete)
+          await userRef.update(userData)
+          commit('USER_INFO', userData)
+        }
+      } catch (error) {
+        // Обробка помилок
+        // eslint-disable-next-line no-console
+        console.error('Помилка при видаленні з обраного:', error)
+      }
     }
   }
+
 }

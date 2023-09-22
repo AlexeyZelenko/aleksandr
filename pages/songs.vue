@@ -318,6 +318,7 @@ export default {
           'U', 'V', 'W', 'X', 'Y', 'Z'
         ]
       }
+
       return alphabets[this.selectedLanguage] || alphabets.UA
     },
     categories () {

@@ -3,25 +3,22 @@ import 'firebase/firestore'
 import Swal from 'sweetalert2'
 
 export default {
-  AlertMessageLoading () {
-    Swal.fire({
-      title: 'Завантаження...',
-      showConfirmButton: false
-    })
-  },
   bindCountDocument: firestoreAction(async function ({ commit, bindFirestoreRef }) {
-    const ref = this.$fireStore
-      .collection('songs')
-    await bindFirestoreRef('Songs', ref, { wait: true }).then((documents) => {
+    try {
+      const ref = this.$fireStore.collection('songs')
+      const documents = await bindFirestoreRef('Songs', ref, { wait: true })
+      // Якщо вам потрібно отримати останній документ, розкоментуйте наступний рядок:
       // commit('LAST_DOC', documents[documents.length - 1]);
       commit('FIREBASE_SONGS2', documents)
-    })
 
-    const ref2 = this.$fireStore
-      .collection('calendar')
-    await bindFirestoreRef('Events', ref2, { wait: true }).then((documents) => {
-      commit('CALENDAR_EVENTS', documents)
-    })
+      const ref2 = this.$fireStore.collection('calendar')
+      const eventDocuments = await bindFirestoreRef('Events', ref2, { wait: true })
+      commit('CALENDAR_EVENTS', eventDocuments)
+    } catch (error) {
+      // Обробка помилок
+      // eslint-disable-next-line no-console
+      console.error('Помилка при отриманні документів:', error)
+    }
   }),
   FIREBASE ({ commit }, message) {
     commit('FIREBASE_MUTATIONS', message)
@@ -43,7 +40,7 @@ export default {
   },
   // eslint-disable-next-line no-empty-pattern
   async deleteSong ({}, id) {
-    await Swal.fire({
+    const confirmResult = await Swal.fire({
       title: 'Ви впевнені?',
       text: 'Ви не зможете відновити це!',
       type: 'warning',
@@ -52,90 +49,104 @@ export default {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Так, видалити це!'
     })
-      .then((result) => {
-        if (result.value) {
-          Swal.fire({
-            title: 'Іде видалення...',
-            text: '',
-            imageUrl: '352.gif',
-            showConfirmButton: false
-          })
 
-          this.$fireStore
-            .collection('songs')
-            .doc(`${id}`)
-            .delete()
-            .then(function () {
-              Swal.close()
-
-              Swal.fire({
-                title: 'Видалено!',
-                text: 'Пісня видалена.',
-                type: 'success'
-              })
-            }).catch(function (error) {
-            // eslint-disable-next-line no-console
-              console.error('Помилка при видаленні документа: ', error)
-            })
-        }
+    if (confirmResult.value) {
+      Swal.fire({
+        title: 'Іде видалення...',
+        text: '',
+        imageUrl: '352.gif',
+        showConfirmButton: false
       })
-  },
-  deleteEventFromCalendar ({ commit, dispatch }, id) {
-    this.$fireStore
-      .collection('calendar')
-      .doc(`${id}`)
-      .delete()
-      .then(function () {
+
+      try {
+        await this.$fireStore.collection('songs').doc(`${id}`).delete()
+        Swal.close()
         Swal.fire({
           title: 'Видалено!',
-          text: 'Подія видалена.',
+          text: 'Пісня видалена.',
           type: 'success'
         })
-
-        dispatch('bindCountDocument')
-      }).catch(function (error) {
+      } catch (error) {
+        // Обробка помилок
         // eslint-disable-next-line no-console
-        console.error('Помилка при видаленні документа: ', error)
-      })
+        console.error('Помилка при видаленні документа:', error)
+        Swal.close()
+        Swal.fire({
+          title: 'Помилка при видаленні!',
+          text: 'Сталася помилка при видаленні пісні.',
+          type: 'error'
+        })
+      }
+    }
   },
-  editEventFromCalendar ({ commit }, event) {
-    this.$fireStore
-      .collection('calendar')
-      .doc(`${event.id}`)
-      .update({
+  async deleteEventFromCalendar ({ commit, dispatch }, id) {
+    try {
+      await this.$fireStore.collection('calendar').doc(`${id}`).delete()
+      Swal.fire({
+        title: 'Видалено!',
+        text: 'Подія видалена.',
+        type: 'success'
+      })
+      // Викликайте дію (action) для оновлення лічильника документів
+      dispatch('bindCountDocument')
+    } catch (error) {
+      // Обробка помилок
+      // eslint-disable-next-line no-console
+      console.error('Помилка при видаленні документа:', error)
+      Swal.fire({
+        title: 'Помилка при видаленні!',
+        text: 'Сталася помилка при видаленні події.',
+        type: 'error'
+      })
+    }
+  },
+  async editEventFromCalendar ({ commit }, event) {
+    try {
+      await this.$fireStore.collection('calendar').doc(`${event.id}`).update({
         order: event.order,
         description: event.description
       })
-      .then(function () {
-        Swal.fire({
-          title: 'Змінено!',
-          text: 'Подія змінена.',
-          type: 'success'
-        })
-      }).catch(function (error) {
-        // eslint-disable-next-line no-console
-        console.error('Помилка при редагуванні документа: ', error)
+
+      Swal.fire({
+        title: 'Змінено!',
+        text: 'Подія змінена.',
+        type: 'success'
       })
+    } catch (error) {
+      // Обробка помилок
+      // eslint-disable-next-line no-console
+      console.error('Помилка при редагуванні документа:', error)
+
+      Swal.fire({
+        title: 'Помилка при редагуванні!',
+        text: 'Сталася помилка при редагуванні події.',
+        type: 'error'
+      })
+    }
   },
-  editUsersList ({ commit, dispatch }, event) {
-    this.$fireStore
-      .collection('calendar')
-      .doc(`${event.id}`)
-      .update({
+  async editUsersList ({ commit, dispatch }, event) {
+    try {
+      await this.$fireStore.collection('calendar').doc(`${event.id}`).update({
         selected: event.selected
       })
-      .then(function () {
-        Swal.fire({
-          title: 'Змінено!',
-          text: 'Подія змінена.',
-          type: 'success'
-        })
 
-        dispatch('bindCountDocument')
+      Swal.fire({
+        title: 'Змінено!',
+        text: 'Подія змінена.',
+        type: 'success'
       })
-      .catch(function (error) {
-        // eslint-disable-next-line no-console
-        console.error('Помилка при редагуванні документа: ', error)
+
+      // Викликайте дію (action) для оновлення лічильника документів
+      dispatch('bindCountDocument')
+    } catch (error) {
+      // Обробка помилок
+      // eslint-disable-next-line no-console
+      console.error('Помилка при редагуванні документа:', error)
+
+      Swal.fire({
+        title: 'Помилка при редагуванні!',
+        text: 'Сталася помилка при редагуванні події.'
       })
+    }
   }
 }

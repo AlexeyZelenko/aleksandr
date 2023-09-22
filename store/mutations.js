@@ -35,14 +35,8 @@ export default {
     state.selected = selected
   },
   CALENDAR_EVENTS: (state, events) => {
-    state.plannerCalendar.songs = []
-    state.plannerCalendar.users = []
-    events.forEach((event) => {
-      if (event.type === 'song') {
-        state.plannerCalendar.songs.push(event)
-      } else if (event.type === 'users') {
-        state.plannerCalendar.users.push(event)
-      }
-    })
+    state.plannerCalendar.songs = events.filter(event => event.type === 'song')
+    state.plannerCalendar.users = events.filter(event => event.type === 'users')
   }
+
 }
