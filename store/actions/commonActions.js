@@ -100,7 +100,7 @@ export default {
       })
     }
   },
-  async editEventFromCalendar ({ commit }, event) {
+  async editEventFromCalendar ({ commit, dispatch }, event) {
     try {
       await this.$fireStore.collection('calendar').doc(`${event.id}`).update({
         order: event.order,
@@ -112,6 +112,9 @@ export default {
         text: 'Подія змінена.',
         type: 'success'
       })
+
+      // Викликайте дію (action) для оновлення лічильника документів
+      dispatch('bindCountDocument')
     } catch (error) {
       // Обробка помилок
       // eslint-disable-next-line no-console
