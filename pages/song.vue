@@ -333,16 +333,8 @@ export default {
 
       const createdAt = Date.now()
       const seen = false
-      const name = event.name
-      const category = event.category
-      const start = event.start
-      const end = event.end
-      const color = event.color
-      const timed = event.timed
-      const order = event.order
-      const idSong = event.id
+      const { name, category, start, end, color, timed, order, id, type } = event
       const description = ''
-      const type = event.type
 
       const docRef = await this.$fireStore.collection('calendar').add({
         createdAt,
@@ -354,13 +346,14 @@ export default {
         color,
         timed,
         order,
-        idSong,
+        idSong: id,
         description,
         type
       })
+
       try {
         const docAdded = await docRef
-        await this.$fireStore.doc('calendar/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+        await this.$fireStore.doc(`calendar/${docAdded.id}`).update({ id: docAdded.id })
       } catch (err) {
         return err
       }
@@ -377,6 +370,7 @@ export default {
 
       await this.$router.push({ name: 'plannerCalendar' })
     }
+
   }
 }
 </script>

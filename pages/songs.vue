@@ -24,14 +24,27 @@
         icon
         @click="showFilter = !showFilter"
       >
-        <v-icon>{{ showFilter ? 'mdi-chevron-up' : 'mdi-filter' }}</v-icon>
+        <v-badge
+          :content="filteredLength"
+          :value="filteredLength"
+          color="green"
+          overlap
+        >
+          <v-icon>{{ showFilter ? 'mdi-chevron-up' : 'mdi-filter' }}</v-icon>
+        </v-badge>
       </v-btn>
 
       <v-btn
         icon
         @click="showSearch = !showSearch"
       >
-        <v-icon>{{ showSearch ? 'mdi-chevron-up' : 'mdi-magnify' }}</v-icon>
+        <v-badge
+          :value="searchQuery"
+          color="green"
+          overlap
+        >
+          <v-icon>{{ showSearch ? 'mdi-chevron-up' : 'mdi-magnify' }}</v-icon>
+        </v-badge>
       </v-btn>
 
       <template>
@@ -251,7 +264,6 @@ export default {
     searchQuery: '',
     loaded: false,
     loading: false,
-    selectedStar: [2],
     breadcrumbs: [
       {
         text: 'Головна',
@@ -275,35 +287,38 @@ export default {
       'User_Entrance',
       'USER_ID'
     ]),
+    filteredLength () {
+      const hasStartingLetter = Boolean(this.startingLetter)
+      const isAllSelected = this.selected === 'Всі'
+      const isCategorySelected = this.selected === null
+
+      return (hasStartingLetter && !isAllSelected && !isCategorySelected) ? 2
+        : (!hasStartingLetter && !isAllSelected && !isCategorySelected) ? 1
+          : (hasStartingLetter && (isAllSelected || isCategorySelected)) ? 1
+            : (!hasStartingLetter && (isAllSelected || isCategorySelected)) ? 0
+              : 0
+    },
     alphabet () {
-      if (this.selectedLanguage === 'UA') {
-        return [
+      const alphabets = {
+        UA: [
           'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
           'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
           'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
           'Ю', 'Я'
-        ]
-      } else if (this.selectedLanguage === 'RU') {
-        return [
+        ],
+        RU: [
           'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
           'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т',
           'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь',
           'Э', 'Ю', 'Я'
-        ]
-      } else if (this.selectedLanguage === 'EN') {
-        return [
+        ],
+        EN: [
           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
           'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
           'U', 'V', 'W', 'X', 'Y', 'Z'
         ]
-      } else {
-        return [
-          'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З', 'И',
-          'І', 'Ї', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
-          'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'ь',
-          'Ю', 'Я'
-        ]
       }
+      return alphabets[this.selectedLanguage] || alphabets.UA
     },
     categories () {
       return this.$store.state.categories.categories
@@ -331,26 +346,19 @@ export default {
       })
     },
     filteredSongs () {
-      // console.log('sortedSongs+SONGS', this.sortedSongs, this.SONGS)
       if (this.sortedSongs?.length > 0) {
         return this.sortedSongs
-      } else if (this.SONGS?.length && this.selected === 'Всі') {
-        return this.SONGS
-      } else if (this.SONGS?.length && this.selected && this.selected !== 'Всі') {
-        return this.SONGS.filter(song => song.category === this.selected)
-      } else if (this.SONGS?.length && !this.selected) {
-        return this.SONGS
+      } else if (this.SONGS?.length) {
+        if (!this.selected || this.selected === 'Всі') {
+          return this.SONGS
+        } else {
+          return this.SONGS.filter(song => song.category === this.selected)
+        }
       } else {
         return []
       }
     },
     filteredItems () {
-      // Фильтруем элементы массива на основе запроса пользователя
-      // return this.filteredSongs.filter((item) => {
-      //   return item.nameSong.toLowerCase().includes(this.searchQuery.toLowerCase())
-      // })
-
-      // Фильтруем элементы массива на основе буквы и языка пользователя
       return this.filteredSongs.filter((item) => {
         const nameMatchesLetter = item.nameSong.toLowerCase().startsWith(this.searchQuery.toLowerCase())
         const languageMatches = item.language.toLowerCase().includes(this.selectedLanguage.toLowerCase())
@@ -370,13 +378,7 @@ export default {
       'sortByCategories'
     ]),
     searchSongChart (letter) {
-      if (this.startingLetter !== '' && letter === this.startingLetter) {
-        this.startingLetter = ''
-      } else if (this.startingLetter === '' && letter !== this.startingLetter) {
-        this.startingLetter = letter
-      } else {
-        this.startingLetter = letter
-      }
+      this.startingLetter = this.startingLetter === letter ? '' : letter
     },
     clearFilters () {
       this.startingLetter = ''
