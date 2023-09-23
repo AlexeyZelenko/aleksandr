@@ -317,19 +317,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
-// import { parseTextSong } from '../helpers/utils'
 
 export default {
   name: 'AddSong',
   data: () => ({
-    nameSong: null,
-    nameSongRules: [
-      (value) => {
-        if (/[^0-9]/.test(value)) { return true }
-
-        return 'Назва пісні не повина мати цифри'
-      }
-    ],
     category: null,
     language: null,
     tonality: null,
@@ -429,12 +420,6 @@ export default {
       'bindCountDocument'
     ]),
     submit () {
-      //* Разбить текст на блоки - вынести в отдельный функционал*//
-      // if (this.textSong) {
-      //   this.parseTextSong = parseTextSong(this.textSong)
-      //   /*eslint-disable */
-      //   console.log('parseTextSong', this.parseTextSong)
-      // }
       const data = {
         singer: this.singer,
         nameSong: this.nameSong,

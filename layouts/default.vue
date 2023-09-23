@@ -249,11 +249,6 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      user: {
-        initials: 'JD',
-        fullName: 'John Doe',
-        email: 'john.doe@doe.com'
-      },
       clipped: false,
       drawer: false,
       fixed: false,
@@ -283,6 +278,11 @@ export default {
           title: 'Служителі',
           to: '/users'
         }
+        // {
+        //   icon: 'mdi-import-variant',
+        //   title: 'Імпорт з тексту',
+        //   to: '/addSongFromText'
+        // }
       ],
       items2: [
         {

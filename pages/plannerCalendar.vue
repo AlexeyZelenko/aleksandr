@@ -363,22 +363,24 @@ export default {
       this.$refs.calendar.next()
     },
     showEvent ({ nativeEvent, event }) {
-      const open = () => {
+      const openEvent = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
-        // eslint-disable-next-line no-return-assign
-        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+        this.selectedOpen = true
       }
 
       if (this.selectedOpen) {
         this.selectedOpen = false
-        requestAnimationFrame(() => requestAnimationFrame(() => open()))
+        setTimeout(() => {
+          openEvent()
+        }, 0)
       } else {
-        open()
+        openEvent()
       }
 
       nativeEvent.stopPropagation()
     },
+
     deleteEvent (event) {
       this.$store.dispatch('deleteEventFromCalendar', event.id)
       this.selectedOpen = false
@@ -386,11 +388,20 @@ export default {
       this.bindCountDocument()
     },
     editEvent (event) {
-      this.dialog = false
       this.$store.dispatch('editEventFromCalendar', event)
-      this.selectedOpen = false
-      this.bindCountDocument()
+        .then(() => {
+          // Якщо редагування успішне, закрийте діалог та оновіть дані
+          this.dialog = false
+          this.selectedOpen = false
+          this.bindCountDocument()
+        })
+        .catch((error) => {
+          // Обробити помилку, якщо редагування не вдалося
+          // eslint-disable-next-line no-console
+          console.error('Помилка при редагуванні події: ', error)
+        })
     },
+
     goToSong () {
       this.$router.push({
         name: 'song',
