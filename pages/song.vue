@@ -1,6 +1,9 @@
 <template>
   <div class="song-card">
-    <v-breadcrumbs :items="breadcrumbs">
+    <v-breadcrumbs
+      v-if="song?.nameSong"
+      :items="breadcrumbs"
+    >
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
@@ -9,11 +12,6 @@
       class="mx-auto my-12"
       max-width="374"
     >
-      <v-img
-        height="250"
-        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-      />
-
       <v-card-title>
         Назва пісні: {{ song.nameSong }}
         <v-spacer />
@@ -36,68 +34,36 @@
         </v-row>
       </v-card-title>
 
-      <v-card-text
-        class="song-card--container mx-0"
-      >
-        <v-col
-          class="mx-0"
-        >
-          <div class="text-subtitle-1">
-            тональність • {{ song.tonality }}
-          </div>
-        </v-col>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
-          color="orange"
-          text
-          @click.stop="editSong()"
-        >
-          Редагувати
-        </v-btn>
-
-        <v-btn
-          color="orange"
-          text
-          @click.stop="removeSong()"
-        >
-          Видалити
-        </v-btn>
-      </v-card-actions>
-
       <v-divider class="mx-4" />
 
-      <div>
-        <div class="d-flex mx-4">
-          <v-checkbox
-            v-model="readonly"
-            label="Лише для читання"
-          />
-        </div>
-
-        <v-expansion-panels
-          v-model="panel"
-          :readonly="readonly"
-          multiple
+      <v-expansion-panels
+        v-model="panel"
+        :readonly="readonly"
+        multiple
+      >
+        <v-expansion-panel
+          v-for="item in song.blocks"
+          :key="item.content"
         >
-          <v-expansion-panel
-            v-for="item in song.blocks"
-            :key="item.content"
-          >
-            <v-expansion-panel-header>
-              <strong style="color: orangered">
-                {{ item.name }}
-              </strong>
-            </v-expansion-panel-header>
+          <v-expansion-panel-header>
+            <strong style="color: orangered">
+              {{ item.name }}
+            </strong>
+          </v-expansion-panel-header>
 
-            <v-expansion-panel-content>
-              <p style="text-align: left">
-                {{ item.content }}
-              </p>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </div>
+          <v-expansion-panel-content>
+            <v-textarea
+              v-model="item.content"
+              style="text-align: left"
+              disabled
+              auto-grow
+              outlined
+              rows="1"
+              row-height="15"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
       <v-divider class="mx-4 px-4" />
 
@@ -189,6 +155,39 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+
+      <div class="text-center d-flex align-center justify-space-around">
+        <v-checkbox
+          v-model="readonly"
+          label="Зафіксувати"
+        />
+        <v-btn @click="all">
+          Всі
+        </v-btn>
+        <v-btn @click="none">
+          Закрити
+        </v-btn>
+      </div>
+
+      <v-card-actions>
+        <v-btn
+          color="orange"
+          text
+          outlined
+          @click.stop="editSong()"
+        >
+          Редагувати
+        </v-btn>
+        <v-divider class="mx-4 px-4" />
+        <v-btn
+          color="orange"
+          text
+          outlined
+          @click.stop="removeSong()"
+        >
+          Видалити
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -205,30 +204,11 @@ export default {
   },
   data () {
     return {
+      panel: [],
       activeStar: false,
-      readonly: false,
-      panel: [0],
+      readonly: true,
       loading: false,
       selection: 1,
-      breadcrumbs: [
-        {
-          text: 'Головна',
-          disabled: false,
-          exact: true,
-          to: { name: 'index' }
-        },
-        {
-          text: 'Пісні',
-          disabled: false,
-          exact: true,
-          to: { name: 'songs' }
-        },
-        {
-          text: 'Пісня',
-          disabled: true,
-          to: { name: 'songInformation' }
-        }
-      ],
       date: null,
       trip: {
         start: null
@@ -241,6 +221,21 @@ export default {
       'infoUser',
       'User_Entrance'
     ]),
+    breadcrumbs () {
+      return [
+        {
+          text: 'Пісні',
+          disabled: false,
+          exact: true,
+          to: { name: 'index' }
+        },
+        {
+          text: this.song.nameSong,
+          disabled: true,
+          to: { name: 'songInformation' }
+        }
+      ]
+    },
     song () {
       let result = {}
       this.SONGS.map((item) => {
@@ -285,6 +280,7 @@ export default {
   },
   mounted () {
     this.bindCountDocument()
+    this.all()
   },
   methods: {
     ...mapActions([
@@ -296,6 +292,15 @@ export default {
     ...mapMutations([
       'SET_EVENT_CALENDAR'
     ]),
+    all () {
+      if (this.song.blocks) {
+        this.panel = [...Array(this.song.blocks.length).keys()].map((k, i) => i)
+      }
+    },
+    // Reset the panel
+    none () {
+      this.panel = []
+    },
     addToFavorite (id) {
       this.ADD_TO_FAVORITE(id)
       this.activeStar = !this.activeStar
@@ -309,7 +314,7 @@ export default {
     },
     removeSong () {
       this.deleteSong(this.song.id)
-      this.$router.push({ name: 'songs' })
+      this.$router.push({ name: 'index' })
     },
     async addToCalendar () {
       const event = {

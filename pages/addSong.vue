@@ -35,13 +35,6 @@
             :items="['UA', 'RU', 'EN']"
             variant="outlined"
           />
-          <v-select
-            v-model="tonality"
-            chips
-            label="- Тональність -"
-            :items="['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'H']"
-            variant="outlined"
-          />
 
           <template>
             <v-data-table
@@ -323,7 +316,6 @@ export default {
   data: () => ({
     category: null,
     language: null,
-    tonality: null,
     youtubeLink: null,
     note: null,
     description: null,
@@ -338,7 +330,7 @@ export default {
         text: 'Пісні',
         disabled: false,
         exact: true,
-        to: { name: 'songs' }
+        to: { name: '/' }
       },
       {
         text: 'Додати пісню',
@@ -425,7 +417,6 @@ export default {
         nameSong: this.nameSong,
         category: this.category,
         language: this.language,
-        tonality: this.tonality,
         youtubeLink: this.linksYoutube,
         note: this.note,
         description: this.description,
@@ -439,54 +430,60 @@ export default {
       this.songs = this.SONGS
     },
     async addSong (songData) {
-      Swal.fire({
-        title: 'Завантаження пісні...',
-        text: '',
-        imageUrl: '352.gif',
-        showConfirmButton: false
-      })
-      const createdAt = Date.now()
-      const seen = false
-      const nameSong = songData.nameSong
-      const category = songData.category
-      const language = songData.language
-      const tonality = songData.tonality
-      const youtubeLink = songData.youtubeLink
-      const note = songData.note
-      const description = songData.description
-      const blocks = songData.blocks
-
-      const docRef = await this.$fireStore.collection('songs').add({
-        createdAt,
-        seen,
-        nameSong,
-        category,
-        language,
-        tonality,
-        youtubeLink,
-        note,
-        description,
-        blocks
-      })
       try {
+        Swal.fire({
+          title: 'Завантаження пісні...',
+          text: '',
+          imageUrl: '352.gif',
+          showConfirmButton: false
+        })
+
+        const createdAt = Date.now()
+        const seen = false
+        const nameSong = songData.nameSong
+        const category = songData.category
+        const language = songData.language
+        const youtubeLink = songData.youtubeLink
+        const note = songData.note
+        const description = songData.description
+        const blocks = songData.blocks
+
+        const docRef = await this.$fireStore.collection('songs').add({
+          createdAt,
+          seen,
+          nameSong,
+          category,
+          language,
+          youtubeLink,
+          note,
+          description,
+          blocks
+        })
+
         const docAdded = await docRef
         await this.$fireStore.doc('songs/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+
+        Swal.close()
+
+        Swal.fire({
+          position: 'top-end',
+          type: 'success',
+          title: 'Пісня додана!',
+          showConfirmButton: false,
+          timer: 2000
+        })
+
+        await this.$router.push({ name: 'songs' })
       } catch (err) {
-        return err
+        // Обробка помилок
+        Swal.fire({
+          type: 'error',
+          title: 'Помилка!',
+          text: 'Виникла помилка при додаванні пісні. Спробуйте ще раз.'
+        })
       }
-
-      Swal.close()
-
-      Swal.fire({
-        position: 'top-end',
-        type: 'success',
-        title: 'Пісня додана!',
-        showConfirmButton: false,
-        timer: 2000
-      })
-
-      await this.$router.push({ name: 'songs' })
     },
+
     editItem (item) {
       this.editedIndex = this.blocks.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -560,7 +557,7 @@ export default {
       this.close2()
     },
     cancel () {
-      this.$router.push({ name: 'songs' })
+      this.$router.push({ name: 'index' })
     }
   }
 }

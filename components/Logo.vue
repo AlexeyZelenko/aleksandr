@@ -5,7 +5,7 @@
       outlined
       color="yellow"
       nuxt
-      to="/songs"
+      to="/"
     >
       Пісні
     </v-btn>

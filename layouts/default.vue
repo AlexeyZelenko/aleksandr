@@ -32,12 +32,6 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
       <v-icon
         style="margin: 10px"
         @click="home"
@@ -46,14 +40,56 @@
       </v-icon>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-
-      <!--      Кнопка правого меню-->
-      <!--      <v-btn-->
-      <!--        icon-->
-      <!--        @click.stop="rightDrawer = !rightDrawer"-->
-      <!--      >-->
-      <!--        <v-icon>mdi-menu</v-icon>-->
-      <!--      </v-btn>-->
+      <!--      Зміна мови-->
+      <template>
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialog"
+            scrollable
+            max-width="300px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <!--              Додати очистку фільтрів при переході на іншу мову-->
+              <!--              @click="clearFilters()"-->
+              <v-btn
+                color="brown darken-2"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{ selectedLanguage }}
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>Вибрати мову пісень</v-card-title>
+              <v-divider />
+              <v-card-text style="height: 200px;">
+                <v-radio-group
+                  v-model="selectedLanguage"
+                  column
+                >
+                  <v-radio
+                    label="Українська"
+                    value="UA"
+                    @click="dialog = false"
+                  />
+                  <v-radio
+                    label="Російська"
+                    value="RU"
+                    @click="dialog = false"
+                  />
+                  <v-radio
+                    label="Англійська"
+                    value="EN"
+                    @click="dialog = false"
+                  />
+                </v-radio-group>
+              </v-card-text>
+              <v-divider />
+            </v-card>
+          </v-dialog>
+        </v-row>
+      </template>
 
       <!--            Вход в Админку-->
       <v-btn
@@ -259,11 +295,6 @@ export default {
           to: '/'
         },
         {
-          icon: 'mdi-book-open-variant',
-          title: 'Пісні',
-          to: '/songs'
-        },
-        {
           icon: 'mdi-plus',
           title: 'Додати',
           to: '/addSong'
@@ -294,7 +325,14 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'БЛАГА ВІСТЬ'
+      title: 'Worship',
+      onlanguagechange: [
+        'UA',
+        'RU',
+        'EN'
+      ],
+      selectedLanguage: 'UA',
+      dialog: false
     }
   },
   computed: {

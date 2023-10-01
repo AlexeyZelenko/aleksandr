@@ -35,13 +35,6 @@
             :items="['UA', 'RU', 'EN']"
             variant="outlined"
           />
-          <v-select
-            v-model="tonality"
-            chips
-            label="- Тональність -"
-            :items="['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'H']"
-            variant="outlined"
-          />
 
           <template>
             <v-data-table
@@ -332,7 +325,6 @@ export default {
     ],
     category: null,
     language: null,
-    tonality: null,
     note: null,
     description: null,
     breadcrumbs: [
@@ -345,7 +337,7 @@ export default {
       {
         text: 'Пісні',
         exact: true,
-        to: { name: 'songs' }
+        to: { name: 'index' }
       },
       {
         text: 'Редагувати пісню',
@@ -445,7 +437,6 @@ export default {
         nameSong: this.nameSong,
         category: this.category,
         language: this.language,
-        tonality: this.tonality,
         youtubeLink: this.youtubeLink,
         note: this.note,
         description: this.description,
@@ -462,7 +453,6 @@ export default {
       this.nameSong = this.song.nameSong
       this.category = this.song.category
       this.language = this.song.language
-      this.tonality = this.song.tonality
       this.youtubeLink = this.song.youtubeLink
       this.note = this.song.note
       this.description = this.song.description
@@ -478,7 +468,7 @@ export default {
       const createdAt = Date.now()
       const seen = false
       const {
-        nameSong, category, language, tonality, youtubeLink, note, description, blocks
+        nameSong, category, language, youtubeLink, note, description, blocks
       } = songData
 
       try {
@@ -490,7 +480,6 @@ export default {
           nameSong,
           category,
           language,
-          tonality,
           youtubeLink,
           note,
           description,
