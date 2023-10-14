@@ -6,11 +6,15 @@
       class="my-2"
     >
       <v-toolbar-title>
-        Список пісень
+        <div class="text1--text mb-2">
+          Список пісень
+        </div>
       </v-toolbar-title>
 
       <div class="home-song-page--search__desktop">
         <v-text-field
+          dark
+          class="text1--text text1--icon"
           :loading="loading"
           density="compact"
           icon="search"
@@ -27,6 +31,7 @@
 
       <v-btn
         icon
+        color="text1"
         @click="showFilter = !showFilter"
       >
         <v-badge
@@ -44,6 +49,7 @@
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                color="text1"
                 icon
                 v-bind="attrs"
                 v-on="on"
@@ -66,6 +72,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="button1"
+                class="text1--text"
                 dark
                 v-bind="attrs"
                 v-on="on"
@@ -109,6 +116,7 @@
     <div class="home-song-page--search__mobile">
       <v-text-field
         v-model="searchQuery"
+        class="text1--text"
         :loading="loading"
         density="compact"
         icon="search"

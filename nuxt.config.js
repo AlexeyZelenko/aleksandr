@@ -95,8 +95,9 @@ export default {
         options: { customProperties: true },
         dark: {
           background: colors.blueGrey.darken2,
+          text1: colors.grey.lighten5,
 
-          button1: colors.blueGrey.darken1,
+          button1: colors.blueGrey.darken2,
           button2: colors.blueGrey.lighten1,
           appbar: colors.blueGrey.darken3,
           appbar2: colors.blueGrey.darken2,
@@ -110,10 +111,11 @@ export default {
         light: {
           background: colors.blueGrey.lighten5,
 
-          button1: colors.blueGrey.lighten4,
-          button2: colors.blueGrey.lighten4,
-          appbar: colors.blueGrey.lighten2,
-          appbar2: colors.blueGrey.lighten3
+          button1: colors.blueGrey.lighten2,
+          button2: colors.blueGrey.lighten2,
+          appbar: colors.blueGrey.lighten3,
+          appbar2: colors.blueGrey.lighten3,
+          text1: colors.grey.darken4
         }
       }
     },

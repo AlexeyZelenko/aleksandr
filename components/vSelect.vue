@@ -58,14 +58,14 @@ export default {
     justify-content: space-around;
     align-items: center;
     flex-wrap: nowrap;
-    margin-top: 20px;
+    margin: 20px auto;
 
     p {
       width: 100%;
       text-align: center;
       font-size: 0.9rem;
       font-weight: 500;
-      color: #fff;
+      color: #B0BEC5;
       cursor: pointer;
       transition: all 0.3s ease;
       padding: 5px;

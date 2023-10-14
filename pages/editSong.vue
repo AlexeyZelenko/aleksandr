@@ -9,12 +9,15 @@
         </v-breadcrumbs>
       </div>
     </template>
-    <div>Редагувати пісню</div>
+
     <template>
       <v-sheet
         class="create-song--sheet"
         color="background"
       >
+        <h3 class="text1--text">
+          Редагувати пісню
+        </h3>
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
             v-model="nameSong"

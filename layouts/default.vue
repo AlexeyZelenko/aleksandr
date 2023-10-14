@@ -206,7 +206,8 @@
         </div>
       </div>
     </v-app-bar>
-    <v-main class="cover">
+
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
@@ -379,17 +380,17 @@ export default {
 </script>
 
 <style>
-  .cover {
-    background-image: url("../static/cover1-1.jpg");
-    background-size: cover;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    padding-top: 80px;
-    padding-bottom: 80px;
-    min-height: 250px;
-    text-align: center;
-    clear: both;
-  }
+  /*.cover {*/
+  /*  background-image: url("../static/cover1-1.jpg");*/
+  /*  background-size: cover;*/
+  /*  background-position: 0 0;*/
+  /*  background-repeat: no-repeat;*/
+  /*  padding-top: 80px;*/
+  /*  padding-bottom: 80px;*/
+  /*  min-height: 250px;*/
+  /*  text-align: center;*/
+  /*  clear: both;*/
+  /*}*/
 
   #user-pic {
     top: -3px;

@@ -8,13 +8,15 @@
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
+
     <v-card
-      class="mx-auto my-12"
+      class="mx-auto my-12 pa-4"
       max-width="374"
       color="background"
     >
       <v-card-title>
-        Назва пісні: {{ song.nameSong }}
+        <span class="text1--text text--secondary">Назва пісні:</span>
+        <span class="text1--text px-1 font-weight-bold">{{ song.nameSong }}</span>
         <v-spacer />
         <v-row v-if="User_Entrance">
           <v-icon
@@ -46,23 +48,33 @@
           v-for="item in song.blocks"
           :key="item.content"
         >
-          <v-expansion-panel-header>
-            <strong style="color: orangered">
-              {{ item.name }}
-            </strong>
-          </v-expansion-panel-header>
+          <v-hover>
+            <template v-slot:default="{ hover }">
+              <div
+                :class="`elevation-${hover ? 24 : 6}`"
+                class="mx-auto transition-swing"
+              >
+                <v-expansion-panel-header>
+                  <strong style="color: orangered">
+                    {{ item.name }}
+                  </strong>
+                </v-expansion-panel-header>
 
-          <v-expansion-panel-content>
-            <v-textarea
-              v-model="item.content"
-              style="text-align: left"
-              disabled
-              auto-grow
-              outlined
-              rows="1"
-              row-height="15"
-            />
-          </v-expansion-panel-content>
+                <v-expansion-panel-content>
+                  <v-textarea
+                    v-model="item.content"
+                    class="text1--text"
+                    style="text-align: left"
+                    disabled
+                    auto-grow
+                    outlined
+                    rows="1"
+                    row-height="15"
+                  />
+                </v-expansion-panel-content>
+              </div>
+            </template>
+          </v-hover>
         </v-expansion-panel>
       </v-expansion-panels>
 
