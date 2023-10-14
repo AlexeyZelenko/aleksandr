@@ -13,6 +13,7 @@
     <template>
       <v-sheet
         class="create-song--sheet"
+        color="background"
       >
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
@@ -42,6 +43,7 @@
               :items="youtubeLink"
               hide-default-footer
               hide-default-header
+              color="background"
             >
               <template v-slot:item.name="{ item }">
                 <v-chip
@@ -53,6 +55,7 @@
               </template>
               <template v-slot:top>
                 <v-toolbar
+                  color="background"
                   flat
                 >
                   <v-toolbar-title>Youtube</v-toolbar-title>
@@ -163,6 +166,7 @@
               :items="blocks"
               hide-default-footer
               hide-default-header
+              color="background"
             >
               <template v-slot:item.name="{ item }">
                 <v-chip
@@ -174,6 +178,7 @@
               </template>
               <template v-slot:top>
                 <v-toolbar
+                  color="background"
                   flat
                 >
                   <v-toolbar-title>Блок</v-toolbar-title>
@@ -294,11 +299,16 @@
             />
           </div>
 
-          <v-btn type="submit" block class="mt-2">
+          <v-btn type="submit" block class="ma-2" color="button2">
             Додати зміни
           </v-btn>
         </v-form>
-        <v-btn block class="mt-2" @click="cancel">
+        <v-btn
+          color="button2"
+          block
+          class="ma-2"
+          @click="cancel"
+        >
           Відмінити
         </v-btn>
       </v-sheet>
@@ -592,7 +602,7 @@ export default {
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 15px;
 
     @media (min-width: 767px) {
       max-width: 600px;

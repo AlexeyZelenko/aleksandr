@@ -11,6 +11,7 @@
     <v-card
       class="mx-auto my-12"
       max-width="374"
+      color="background"
     >
       <v-card-title>
         Назва пісні: {{ song.nameSong }}

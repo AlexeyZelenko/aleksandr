@@ -9,16 +9,18 @@
         </v-breadcrumbs>
       </div>
     </template>
-    <div>Додати пісню</div>
+    <div class="my-1">
+      Додати пісню
+    </div>
     <template>
       <v-sheet
         class="create-song--sheet"
+        color="background"
       >
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
             v-model="nameSong"
             label="- Назва пісні -"
-            :rules="nameSongRules"
           />
 
           <v-select
@@ -42,6 +44,7 @@
               :items="linksYoutube"
               hide-default-footer
               hide-default-header
+              color="background"
             >
               <template v-slot:item.name="{ item }">
                 <v-chip
@@ -53,6 +56,7 @@
               </template>
               <template v-slot:top>
                 <v-toolbar
+                  color="background"
                   flat
                 >
                   <v-toolbar-title>Youtube</v-toolbar-title>
@@ -62,13 +66,14 @@
                     vertical
                   />
                   <v-spacer />
+
                   <v-dialog
                     v-model="dialog2"
                     max-width="500px"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        color="primary"
+                        color="button2"
                         dark
                         class="mb-2"
                         v-bind="attrs"
@@ -79,7 +84,7 @@
                         </v-icon>
                       </v-btn>
                     </template>
-                    <v-card>
+                    <v-card color="background">
                       <v-card-title>
                         <span class="text-h5">{{ formTitle }}</span>
                       </v-card-title>
@@ -105,14 +110,14 @@
                       <v-card-actions>
                         <v-spacer />
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="close2"
                         >
                           Закрити
                         </v-btn>
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="saveNewBlock2"
                         >
@@ -121,6 +126,7 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+
                   <v-dialog v-model="dialogDelete2" max-width="500px">
                     <v-card>
                       <v-card-title class="text-h5">
@@ -128,10 +134,10 @@
                       </v-card-title>
                       <v-card-actions>
                         <v-spacer />
-                        <v-btn color="blue darken-1" text @click="closeDelete2">
+                        <v-btn color="color5" text @click="closeDelete2">
                           Cancel
                         </v-btn>
-                        <v-btn color="blue darken-1" text @click="deleteItemConfirm2">
+                        <v-btn color="color5" text @click="deleteItemConfirm2">
                           OK
                         </v-btn>
                         <v-spacer />
@@ -164,6 +170,7 @@
               :items="blocks"
               hide-default-footer
               hide-default-header
+              color="background"
             >
               <template v-slot:item.name="{ item }">
                 <v-chip
@@ -176,6 +183,7 @@
               <template v-slot:top>
                 <v-toolbar
                   flat
+                  color="background"
                 >
                   <v-toolbar-title>Блок</v-toolbar-title>
                   <v-divider
@@ -190,7 +198,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        color="primary"
+                        color="button2"
                         dark
                         class="mb-2"
                         v-bind="attrs"
@@ -233,14 +241,14 @@
                       <v-card-actions>
                         <v-spacer />
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="close"
                         >
                           Закрити
                         </v-btn>
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="saveNewBlock"
                         >
@@ -256,10 +264,10 @@
                       </v-card-title>
                       <v-card-actions>
                         <v-spacer />
-                        <v-btn color="blue darken-1" text @click="closeDelete">
+                        <v-btn color="button1" text @click="closeDelete">
                           Cancel
                         </v-btn>
-                        <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+                        <v-btn color="button1" text @click="deleteItemConfirm">
                           OK
                         </v-btn>
                         <v-spacer />
@@ -295,11 +303,17 @@
             />
           </div>
 
-          <v-btn type="submit" block class="mt-2">
+          <v-btn color="button2" type="submit" block class="my-2">
             Додати
           </v-btn>
         </v-form>
-        <v-btn block class="mt-2" @click="cancel">
+        <v-btn
+          color="button2"
+          block
+          class="my-2"
+          style="margin: 0 auto;"
+          @click="cancel"
+        >
           Відмінити
         </v-btn>
       </v-sheet>
@@ -314,6 +328,7 @@ import Swal from 'sweetalert2'
 export default {
   name: 'AddSong',
   data: () => ({
+    nameSong: null,
     category: null,
     language: null,
     youtubeLink: null,
@@ -571,7 +586,7 @@ export default {
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 15px;
 
     @media (min-width: 767px) {
       max-width: 600px;

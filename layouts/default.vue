@@ -2,7 +2,7 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      style="background-color: #3E2723"
+      color="appbar"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
@@ -24,9 +24,20 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <div class="py-4 mx-4">
+          <v-switch
+            v-model="$vuetify.theme.dark"
+            hint="theme"
+            inset
+            persistent-hint
+          />
+        </div>
+      </template>
     </v-navigation-drawer>
     <v-app-bar
-      style="background-color: #3E2723"
+      color="appbar"
       :clipped-left="clipped"
       fixed
       app
@@ -40,6 +51,7 @@
       </v-icon>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+
       <!--      Зміна мови-->
       <template>
         <v-row v-if="showlanguage" justify="center">
@@ -52,7 +64,7 @@
               <!--              Додати очистку фільтрів при переході на іншу мову-->
               <!--              @click="clearFilters()"-->
               <v-btn
-                color="brown darken-2"
+                color="button1"
                 dark
                 v-bind="attrs"
                 v-on="on"
@@ -108,7 +120,8 @@
         <v-btn
           v-if="!User_Entrance"
           rounded
-          style="background-color: #795548; color: white; position: relative; z-index: 10000;"
+          color="button1"
+          style="color: white; position: relative; z-index: 10000;"
           @click="signInWithGoogle"
         >
           Вхід
@@ -135,7 +148,7 @@
                     x-large
                     v-on="on"
                   >
-                    <v-avatar color="brown darken-1">
+                    <v-avatar color="button2">
                       <v-icon dark>
                         mdi-account-circle
                       </v-icon>
@@ -198,33 +211,9 @@
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      style="background-color: #37474f"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
 
     <v-footer
-      style="background-color: #263238"
+      color="appbar"
       :absolute="!fixed"
       app
     >
@@ -358,6 +347,9 @@ export default {
     }
   },
   methods: {
+    setTheme (themeName) {
+      this.$vuetify.theme.currentTheme = themeName
+    },
     home () {
       this.$router.push('/')
     },
@@ -388,7 +380,7 @@ export default {
 
 <style>
   .cover {
-    background-image: url("../static/cover1.jpg");
+    background-image: url("../static/cover1-1.jpg");
     background-size: cover;
     background-position: 0 0;
     background-repeat: no-repeat;

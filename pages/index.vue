@@ -2,7 +2,7 @@
   <div class="home-song-page">
     <v-app-bar
       dark
-      color="brown darken-3"
+      color="appbar2"
       class="my-2"
     >
       <v-toolbar-title>
@@ -65,7 +65,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                color="brown darken-2"
+                color="button1"
                 dark
                 v-bind="attrs"
                 v-on="on"
@@ -74,7 +74,7 @@
                 {{ selectedLanguage }}
               </v-btn>
             </template>
-            <v-card>
+            <v-card color="background">
               <v-card-title>Вибрати мову пісень</v-card-title>
               <v-divider />
               <v-card-text style="height: 200px;">
@@ -180,6 +180,7 @@
         v-if="getSongs && getSongs.length"
         class="mx-auto"
         max-width="500"
+        color="background"
       >
         <v-list-item-group
           subheader
@@ -189,7 +190,7 @@
             v-for="item in getSongs"
             :key="item.id"
             class="my-1"
-            color="grey lighten-6"
+            color="background"
             @click="songClick(item.id)"
           >
             <v-list-item-icon>

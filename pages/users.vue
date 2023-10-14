@@ -8,8 +8,9 @@
     <v-card
       class="mx-auto"
       max-width="500"
+      color="background"
     >
-      <v-list shaped>
+      <v-list shaped color="background">
         <v-list-item-group
           v-model="selectedUsers"
           multiple
@@ -24,7 +25,7 @@
               v-else
               :key="`item-${i}`"
               :value="item"
-              active-class="deep-purple--text text--accent-4"
+              active-class="blue-grey lighten-5--text text--accent-4"
             >
               <template v-slot:default="{ active }">
                 <v-list-item-content>
@@ -43,16 +44,17 @@
         </v-list-item-group>
       </v-list>
 
-      <v-expansion-panels>
+      <v-expansion-panels color="background">
         <v-expansion-panel>
           <v-expansion-panel-header v-slot="{ open }">
-            <v-row no-gutters>
+            <v-row no-gutters color="background">
               <v-col cols="4">
                 Додати до календаря:
               </v-col>
               <v-col
                 cols="8"
                 class="text--secondary"
+                color="background"
               >
                 <v-fade-transition leave-absolute>
                   <span v-if="open">Виберіть дату</span>
