@@ -1,13 +1,13 @@
 <template>
   <div class="category-songs-select">
-    <p
+    <div
       v-for="option in options"
       :key="option.value"
       :class="{ active: option.name === selectedOptions }"
       @click.stop="selectOption(option)"
     >
       {{ option.name }}
-    </p>
+    </div>
   </div>
 </template>
 
@@ -63,7 +63,7 @@ export default {
     p {
       width: 100%;
       text-align: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 500;
       color: #fff;
       cursor: pointer;

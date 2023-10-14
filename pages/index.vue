@@ -141,9 +141,11 @@
               <v-chip
                 v-if="startingLetter"
                 class="ma-2"
-                close
-                color="indigo darken-3"
+                color="primary"
                 outlined
+                pill
+                small
+                close
                 @click:close="startingLetter = ''"
               >
                 {{ startingLetter }}
@@ -156,7 +158,10 @@
             >
               <v-chip
                 v-if="!startingLetter"
-                active-class="teal lighten-3--text"
+                color="primary"
+                outlined
+                pill
+                small
                 @click="toggle"
               >
                 <span @click="searchSongChart(item)">{{ item }}</span>
