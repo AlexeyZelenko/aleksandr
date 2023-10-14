@@ -42,7 +42,7 @@
       <v-spacer />
       <!--      Зміна мови-->
       <template>
-        <v-row justify="center">
+        <v-row v-if="showlanguage" justify="center">
           <v-dialog
             v-model="dialog"
             scrollable
@@ -237,6 +237,7 @@
         <a
           style="text-decoration: none"
           href="https://www.instagram.com/bv.ck.ua"
+          target="_blank"
         >
           <v-icon
             aria-hidden="true"
@@ -245,6 +246,7 @@
         <a
           style="text-decoration: none"
           href="https://www.facebook.com/bv.ck.ua"
+          target="_blank"
         >
           <v-icon
             aria-hidden="true"
@@ -253,6 +255,7 @@
         <a
           style="text-decoration: none"
           href="https://twitter.com/bv_church"
+          target="_blank"
         >
           <v-icon
             aria-hidden="true"
@@ -261,6 +264,7 @@
         <a
           style="text-decoration: none"
           href="https://www.youtube.com/@bv.ck.ua.church"
+          target="_blank"
         >
           <v-icon
             aria-hidden="true"
@@ -269,6 +273,7 @@
         <a
           style="text-decoration: none"
           href="https://bv.ck.ua/"
+          target="_blank"
         >
           <v-icon
             aria-hidden="true"
@@ -285,6 +290,7 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      showlanguage: false,
       clipped: false,
       drawer: false,
       fixed: false,

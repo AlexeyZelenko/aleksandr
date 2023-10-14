@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <template>
-      <div>
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-chevron-right</v-icon>
-          </template>
-        </v-breadcrumbs>
-      </div>
-    </template>
+  <div class="home-song-page">
     <v-app-bar
       dark
       color="brown darken-3"
       class="my-2"
     >
-      <v-toolbar-title class="col-3">
-        Пісні
+      <v-toolbar-title>
+        Список пісень
       </v-toolbar-title>
+
+      <div class="home-song-page--search__desktop">
+        <v-text-field
+          :loading="loading"
+          density="compact"
+          icon="search"
+          variant="solo"
+          label="Пошук пісні"
+          append-outer-icon="mdi-magnify"
+          single-line
+          hide-details
+          @click:append-inner="onClick"
+        />
+      </div>
 
       <v-spacer />
 
@@ -31,19 +36,6 @@
           overlap
         >
           <v-icon>{{ showFilter ? 'mdi-chevron-up' : 'mdi-filter' }}</v-icon>
-        </v-badge>
-      </v-btn>
-
-      <v-btn
-        icon
-        @click="showSearch = !showSearch"
-      >
-        <v-badge
-          :value="searchQuery"
-          color="green"
-          overlap
-        >
-          <v-icon>{{ showSearch ? 'mdi-chevron-up' : 'mdi-magnify' }}</v-icon>
         </v-badge>
       </v-btn>
 
@@ -126,6 +118,22 @@
         </v-row>
       </template>
     </v-app-bar>
+
+    <div class="home-song-page--search__mobile">
+      <v-text-field
+        v-model="searchQuery"
+        :loading="loading"
+        density="compact"
+        icon="search"
+        variant="solo"
+        label="Пошук пісні"
+        append-outer-icon="mdi-magnify"
+        single-line
+        hide-details
+        @click:append-inner="onClick"
+      />
+    </div>
+
     <v-expand-transition>
       <div v-show="showFilter">
         <!--        Categories-->
@@ -171,30 +179,8 @@
         </v-card-text>
       </div>
     </v-expand-transition>
-    <v-expand-transition>
-      <div v-show="showSearch">
-        <v-card
-          class="mx-auto"
-          color="grey-lighten-3"
-          max-width="500"
-        >
-          <v-card-text>
-            <v-text-field
-              v-model="searchQuery"
-              :loading="loading"
-              density="compact"
-              icon="search"
-              variant="solo"
-              label="Пошук пісні"
-              append-outer-icon="mdi-magnify"
-              single-line
-              hide-details
-              @click:append-inner="onClick"
-            />
-          </v-card-text>
-        </v-card>
-      </div>
-    </v-expand-transition>
+
+    <v-expand-transition />
 
     <client-only placeholder="Загрузка...">
       <v-card
@@ -202,13 +188,15 @@
         class="mx-auto"
         max-width="500"
       >
-        <v-list
+        <v-list-item-group
           subheader
           two-line
         >
           <v-list-item
             v-for="item in getSongs"
             :key="item.id"
+            class="my-1"
+            color="grey lighten-6"
             @click="songClick(item.id)"
           >
             <v-list-item-icon>
@@ -219,18 +207,8 @@
 
               <v-list-item-subtitle v-text="item.category" />
             </v-list-item-content>
-
-            <v-list-item-action>
-              <v-btn icon @click="songClick(item.id)">
-                <v-icon color="grey lighten-1">
-                  mdi-information
-                </v-icon>
-              </v-btn>
-            </v-list-item-action>
           </v-list-item>
-
-          <v-divider inset />
-        </v-list>
+        </v-list-item-group>
       </v-card>
 
       <div v-else-if="selected && getSongs.length === 0">
@@ -281,6 +259,7 @@ export default {
     vSelectCategories: () => import('~/components/vSelect.vue')
   },
   data: () => ({
+    showFilter: false,
     items: [
       { title: 'Останні додані', icon: 'mdi-clock', value: 'last' },
       { title: 'За тиждень', icon: 'mdi-calendar-week', value: 'week' },
@@ -290,8 +269,6 @@ export default {
     ],
     showDateCreated: false,
     startingLetter: '',
-    showSearch: false,
-    showFilter: false,
     dialog: false,
     selectedLanguage: 'UA',
     onlanguagechange: [
@@ -302,16 +279,8 @@ export default {
     searchQuery: '',
     loaded: false,
     loading: false,
-    breadcrumbs: [
-      {
-        text: 'Пісні',
-        disabled: false,
-        to: { name: 'index' },
-        exact: true
-      }
-    ],
     page: 1,
-    itemsPerPage: 1
+    itemsPerPage: 10
   }),
   computed: {
     ...mapGetters([
@@ -444,7 +413,39 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.home-song-page {
+  &--search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    &__desktop {
+      display: none;
+
+      @media (min-width: 768px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 50px;
+        min-width: 400px;
+      }
+    }
+
+    &__mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+}
+
 .change_categories {
   padding-bottom: 10px;
   display: flex;

@@ -473,7 +473,7 @@ export default {
           timer: 2000
         })
 
-        await this.$router.push({ name: 'songs' })
+        await this.$router.push({ name: 'index' })
       } catch (err) {
         // Обробка помилок
         Swal.fire({

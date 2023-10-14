@@ -495,6 +495,7 @@ export default {
           showConfirmButton: false,
           timer: 2000
         })
+        await this.$router.push({ name: 'song', query: { song: this.song.id } })
       } catch (error) {
         // Обробка помилки
         // eslint-disable-next-line no-console
