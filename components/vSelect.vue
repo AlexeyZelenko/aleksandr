@@ -1,13 +1,13 @@
 <template>
   <div class="category-songs-select">
-    <div
+    <p
       v-for="option in options"
       :key="option.value"
       :class="{ active: option.name === selectedOptions }"
       @click.stop="selectOption(option)"
     >
       {{ option.name }}
-    </div>
+    </p>
   </div>
 </template>
 
@@ -68,6 +68,10 @@ export default {
       color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
+      padding: 5px;
+      border: 1px solid #6c6262;
+      border-radius: 5px;
+      margin: 0 5px;
 
       &:hover {
         color: #f00;

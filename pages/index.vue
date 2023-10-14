@@ -160,8 +160,9 @@
                 v-if="!startingLetter"
                 color="primary"
                 outlined
-                pill
                 small
+                class="pa-1"
+                style="border: none;"
                 @click="toggle"
               >
                 <span @click="searchSongChart(item)">{{ item }}</span>
