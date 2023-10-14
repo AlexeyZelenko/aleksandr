@@ -1,31 +1,13 @@
 <template>
-  <div class="v-select">
+  <div class="category-songs-select">
     <p
-      v-if="selected"
-      class="title"
-      @click="areOptionsVisible = !areOptionsVisible"
+      v-for="option in options"
+      :key="option.value"
+      :class="{ active: option.name === selectedOptions }"
+      @click.stop="selectOption(option)"
     >
-      {{ selected }}
+      {{ option.name }}
     </p>
-    <p
-      v-else
-      class="title"
-      @click="areOptionsVisible = !areOptionsVisible"
-    >
-      Категорії
-    </p>
-    <div
-      v-if="areOptionsVisible || isExpanded"
-      class="options"
-    >
-      <p
-        v-for="option in options"
-        :key="option.value"
-        @click="selectOption(option)"
-      >
-        {{ option.name }}
-      </p>
-    </div>
   </div>
 </template>
 
@@ -50,17 +32,13 @@ export default {
   },
   data () {
     return {
-      areOptionsVisible: false
+      areOptionsVisible: false,
+      selectedOptions: ''
     }
   },
-  // mounted () {
-  //   document.addEventListener('click', this.hideSelect.bind(this), true)
-  // },
-  // beforeDestroy () {
-  //   document.removeEventListener('click', this.hideSelect)
-  // },
   methods: {
     selectOption (option) {
+      this.selectedOptions = option.name
       this.$emit('select', option)
       this.areOptionsVisible = false
     },
@@ -72,39 +50,36 @@ export default {
 }
 </script>
 
-<style>
-  .v-select {
-    position: relative;
-    width: 150px;
-    cursor: pointer;
-    text-align: left;
-    margin: 15px auto;
-  }
-  .title {
-    border: solid 1px #aeaeae;
-    padding: 8px;
-  }
-  .v-select p {
-    margin: 0;
-  }
-
-  .options {
-    border: solid 1px #aeaeae;
-    background: #636262;
-    position: absolute;
-    top: 50px;
-    left: 0;
+<style lang="scss" scoped>
+  .category-songs-select {
     width: 100%;
-    padding: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin-top: 20px;
+
+    p {
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #f00;
+      }
+
+      @media (min-width: 768px) {
+        font-size: 1.2rem;
+      }
+    }
   }
 
-  .options p {
-    margin: 0;
-    padding: 8px;
-    cursor: pointer;
-  }
-
-  .options p:hover {
-    background: #785050;
+  .active {
+    color: #4CAF50 !important;
   }
 </style>

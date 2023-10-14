@@ -52,19 +52,6 @@
                 <v-icon>{{ showDateCreated ? 'mdi-sort-clock-ascending-outline' : 'mdi-sort-clock-descending-outline' }}</v-icon>
               </v-btn>
             </template>
-            <!--            <v-list>-->
-            <!--              <v-list-item-->
-            <!--                v-for="(item, index) in items"-->
-            <!--                :key="index"-->
-            <!--              >-->
-            <!--                <v-list-item-title-->
-            <!--                  @click="sortDateCreated(item)"-->
-            <!--                >-->
-            <!--                  <v-icon>{{item.icon}}</v-icon>-->
-            <!--                  {{ item.title }}-->
-            <!--                </v-list-item-title>-->
-            <!--              </v-list-item>-->
-            <!--            </v-list>-->
           </v-menu>
         </div>
       </template>
@@ -260,13 +247,6 @@ export default {
   },
   data: () => ({
     showFilter: false,
-    items: [
-      { title: 'Останні додані', icon: 'mdi-clock', value: 'last' },
-      { title: 'За тиждень', icon: 'mdi-calendar-week', value: 'week' },
-      { title: 'За місяць', icon: 'mdi-calendar-month', value: 'month' },
-      { title: 'За рік', icon: 'mdi-calendar-year', value: 'year' },
-      { title: 'За все время', icon: 'mdi-calendar', value: 'all' }
-    ],
     showDateCreated: false,
     startingLetter: '',
     dialog: false,
