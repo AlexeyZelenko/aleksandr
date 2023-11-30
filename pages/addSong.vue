@@ -22,6 +22,7 @@
           <v-text-field
             v-model="nameSong"
             label="- Назва пісні -"
+            :rules="[rules.required]"
           />
 
           <v-select
@@ -30,6 +31,7 @@
             label="- Тема -"
             :items="['Поклоніння', 'Прославління', 'Хвала', 'Інше']"
             variant="outlined"
+            :rules="[rules.required]"
           />
           <v-select
             v-model="language"
@@ -37,6 +39,7 @@
             label="- Мова -"
             :items="['UA', 'RU', 'EN']"
             variant="outlined"
+            :rules="[rules.required]"
           />
 
           <template>
@@ -329,6 +332,9 @@ import Swal from 'sweetalert2'
 export default {
   name: 'AddSong',
   data: () => ({
+    rules: {
+      required: value => !!value || 'Required.'
+    },
     nameSong: null,
     category: null,
     language: null,
@@ -437,6 +443,14 @@ export default {
         note: this.note,
         description: this.description,
         blocks: this.blocks
+      }
+      if (this.nameSong === null || this.category === null || this.language === null || this.blocks.length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Помилка',
+          text: 'Заповніть всі поля!'
+        })
+        return
       }
 
       // console.log(data)

@@ -82,7 +82,8 @@ export default {
       {
         confirmButtonColor: '#41b882',
         cancelButtonColor: '#ff7674'
-      }
+      },
+      '@vee-validate/nuxt'
     ]
   ],
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)

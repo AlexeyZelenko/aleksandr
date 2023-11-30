@@ -3,7 +3,6 @@ import { vuexfireMutations } from 'vuexfire'
 export default {
   ...vuexfireMutations,
   FIREBASE_SONGS2: (state, documents) => {
-    // console.log(documents)
     state.Songs = documents
   },
   FIREBASE_MUTATIONS: (state, message) => {

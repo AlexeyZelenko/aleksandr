@@ -279,10 +279,12 @@ export default {
   }),
   computed: {
     ...mapGetters([
-      'SONGS',
       'User_Entrance',
       'USER_ID'
     ]),
+    SONGS () {
+      return this.$store.getters.SONGS
+    },
     filteredLength () {
       const hasStartingLetter = Boolean(this.startingLetter)
       const isAllSelected = this.selected === 'Всі'
@@ -356,6 +358,7 @@ export default {
       }
     },
     filteredItems () {
+      if (!this.filteredSongs || this.filteredSongs.length === 0) { return [] }
       return this.filteredSongs.filter((item) => {
         const nameMatchesLetter = item.nameSong.toLowerCase().startsWith(this.searchQuery.toLowerCase())
         const languageMatches = item.language.toLowerCase().includes(this.selectedLanguage.toLowerCase())
