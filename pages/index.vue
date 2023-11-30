@@ -1,5 +1,19 @@
 <template>
   <div class="home-song-page">
+    <v-fab-transition>
+      <v-btn
+        color="pink"
+        dark
+        absolute
+        bottom
+        right
+        fab
+        @click="addSong"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
     <v-app-bar
       dark
       color="appbar2"
@@ -377,6 +391,9 @@ export default {
       'userEntrance',
       'sortByCategories'
     ]),
+    addSong () {
+      this.$router.push({ name: 'addSong' })
+    },
     sortDateCreated () {
       this.showDateCreated = !this.showDateCreated
       this.filteredSongs.sort((a, b) => {
