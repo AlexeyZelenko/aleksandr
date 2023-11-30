@@ -17,7 +17,6 @@ export default {
     } catch (error) {
       // Обробка помилок
       // eslint-disable-next-line no-console
-      console.error('Помилка при отриманні документів:', error)
     }
   }),
   async sortByCategories ({ commit, getters, dispatch }, category) {
