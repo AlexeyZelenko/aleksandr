@@ -27,6 +27,7 @@
 
       <div class="home-song-page--search__desktop">
         <v-text-field
+          v-model="searchQuery"
           dark
           class="text1--text text1--icon"
           :loading="loading"
