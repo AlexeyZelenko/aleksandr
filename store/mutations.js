@@ -36,6 +36,9 @@ export default {
   CALENDAR_EVENTS: (state, events) => {
     state.plannerCalendar.songs = events.filter(event => event.type === 'song')
     state.plannerCalendar.users = events.filter(event => event.type === 'users')
+  },
+  WEEK_EVENTS: (state, events) => {
+    state.week = events
   }
 
 }

@@ -3,7 +3,7 @@ import { firestoreAction } from 'vuexfire'
 export const state = () => ({
   categories: [
     { name: 'Поклоніння', value: 'worship' },
-    { name: 'Прославління', value: 'glorification' },
+    { name: 'Хвала', value: 'glorification' },
     { name: 'Інше', value: 'other' },
     { name: 'Всі', value: 'all' }
   ],

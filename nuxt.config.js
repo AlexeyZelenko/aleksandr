@@ -20,7 +20,7 @@ export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     titleTemplate: '%s',
-    title: 'SONGS',
+    title: 'WORSHIP',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -97,6 +97,7 @@ export default {
         dark: {
           background: colors.blueGrey.darken2,
           text1: colors.grey.lighten5,
+          text2: colors.lighten5,
 
           button1: colors.blueGrey.darken2,
           button2: colors.blueGrey.lighten1,
@@ -116,7 +117,8 @@ export default {
           button2: colors.blueGrey.lighten2,
           appbar: colors.blueGrey.lighten3,
           appbar2: colors.blueGrey.lighten3,
-          text1: colors.grey.darken4
+          text1: colors.grey.darken4,
+          text2: colors.black
         }
       }
     },

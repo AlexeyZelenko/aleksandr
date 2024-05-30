@@ -15,35 +15,20 @@
         class="create-song--sheet"
         color="background"
       >
-        <h3 class="text1--text">
-          Редагувати пісню
+        <h3 class="tex1--text">
+          Додати список пісень на тиждень
         </h3>
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
-            v-model="nameSong"
-            label="- Назва пісні -"
-            :rules="nameSongRules"
-          />
-
-          <v-select
-            v-model="category"
-            chips
-            label="- Тема -"
-            :items="['Поклоніння', 'Хвала', 'Інше']"
-            variant="outlined"
-          />
-          <v-select
-            v-model="language"
-            chips
-            label="- Мова -"
-            :items="['UA', 'RU', 'EN']"
-            variant="outlined"
+            v-model="datetime"
+            label="- Дата -"
+            :rules="[rules.required]"
           />
 
           <template>
             <v-data-table
               :headers="headers2"
-              :items="youtubeLink"
+              :items="linksYoutube"
               hide-default-footer
               hide-default-header
               color="background"
@@ -61,29 +46,32 @@
                   color="background"
                   flat
                 >
-                  <v-toolbar-title>Youtube</v-toolbar-title>
+                  <v-toolbar-title>Посилання на плейлист Youtube</v-toolbar-title>
                   <v-divider
                     class="mx-4"
                     inset
                     vertical
                   />
                   <v-spacer />
+
                   <v-dialog
                     v-model="dialog2"
                     max-width="500px"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        color="primary"
+                        color="button2"
                         dark
                         class="mb-2"
                         v-bind="attrs"
                         v-on="on"
                       >
-                        Додати нове посилання
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <v-card>
+                    <v-card color="background">
                       <v-card-title>
                         <span class="text-h5">{{ formTitle }}</span>
                       </v-card-title>
@@ -109,14 +97,14 @@
                       <v-card-actions>
                         <v-spacer />
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="close2"
                         >
                           Закрити
                         </v-btn>
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="saveNewBlock2"
                         >
@@ -125,6 +113,7 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+
                   <v-dialog v-model="dialogDelete2" max-width="500px">
                     <v-card>
                       <v-card-title class="text-h5">
@@ -132,10 +121,10 @@
                       </v-card-title>
                       <v-card-actions>
                         <v-spacer />
-                        <v-btn color="blue darken-1" text @click="closeDelete2">
+                        <v-btn color="color5" text @click="closeDelete2">
                           Cancel
                         </v-btn>
-                        <v-btn color="blue darken-1" text @click="deleteItemConfirm2">
+                        <v-btn color="color5" text @click="deleteItemConfirm2">
                           OK
                         </v-btn>
                         <v-spacer />
@@ -154,7 +143,7 @@
                 </v-icon>
                 <v-icon
                   small
-                  @click="deleteItemFromArray(item, 'youtubeLink')"
+                  @click="deleteItem2(item)"
                 >
                   mdi-delete
                 </v-icon>
@@ -164,7 +153,7 @@
 
           <template>
             <v-data-table
-              v-if="blocks && blocks.length"
+              class="my-10"
               :headers="headers"
               :items="blocks"
               hide-default-footer
@@ -181,10 +170,10 @@
               </template>
               <template v-slot:top>
                 <v-toolbar
-                  color="background"
                   flat
+                  color="background"
                 >
-                  <v-toolbar-title>Блок</v-toolbar-title>
+                  <v-toolbar-title>Пісня</v-toolbar-title>
                   <v-divider
                     class="mx-4"
                     inset
@@ -197,13 +186,13 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        color="primary"
+                        color="button2"
                         dark
                         class="mb-2"
                         v-bind="attrs"
                         v-on="on"
                       >
-                        Новий блок
+                        Нова пісня
                       </v-btn>
                     </template>
                     <v-card>
@@ -222,7 +211,15 @@
                             >
                               <v-text-field
                                 v-model="editedItem.name"
-                                label="Назва блоку"
+                                label="Назва пісні"
+                              />
+                            </v-col>
+                            <v-col
+                              width="100%"
+                            >
+                              <v-text-field
+                                v-model="editedItem.id"
+                                label="id пісні"
                               />
                             </v-col>
                             <v-col
@@ -230,7 +227,7 @@
                             >
                               <v-textarea
                                 v-model="editedItem.content"
-                                label="техт/акорди/ноти"
+                                label="примітки"
                               />
                             </v-col>
                           </v-col>
@@ -240,14 +237,14 @@
                       <v-card-actions>
                         <v-spacer />
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="close"
                         >
                           Закрити
                         </v-btn>
                         <v-btn
-                          color="blue darken-1"
+                          color="color5"
                           text
                           @click="saveNewBlock"
                         >
@@ -263,10 +260,10 @@
                       </v-card-title>
                       <v-card-actions>
                         <v-spacer />
-                        <v-btn color="blue darken-1" text @click="closeDelete">
+                        <v-btn color="button1" text @click="closeDelete">
                           Cancel
                         </v-btn>
-                        <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+                        <v-btn color="button1" text @click="deleteItemConfirm">
                           OK
                         </v-btn>
                         <v-spacer />
@@ -285,7 +282,7 @@
                 </v-icon>
                 <v-icon
                   small
-                  @click="deleteItemFromArray(item, 'blocks');"
+                  @click="deleteItem(item)"
                 >
                   mdi-delete
                 </v-icon>
@@ -302,14 +299,15 @@
             />
           </div>
 
-          <v-btn type="submit" block class="ma-2" color="button2">
-            Додати зміни
+          <v-btn color="button2" type="submit" block class="my-2">
+            Додати
           </v-btn>
         </v-form>
         <v-btn
           color="button2"
           block
-          class="ma-2"
+          class="my-2"
+          style="margin: 0 auto;"
           @click="cancel"
         >
           Відмінити
@@ -322,47 +320,43 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
-// import { parseTextSong } from '../helpers/utils'
 
 export default {
-  name: 'EditSong',
+  name: 'AddSong',
   data: () => ({
-    singer: null,
-    nameSong: null,
-    nameSongRules: [
-      (value) => {
-        if (/[^0-9]/.test(value)) { return true }
-
-        return 'Назва пісні не повина мати цифри'
-      }
-    ],
-    category: null,
-    language: null,
+    rules: {
+      required: value => !!value || 'Required.'
+    },
+    datetime: null,
+    youtubeLink: null,
     note: null,
     description: null,
     breadcrumbs: [
       {
         text: 'Головна',
         disabled: false,
-        exact: true,
-        to: { name: 'index' }
+        to: { name: 'index' },
+        exact: true
       },
       {
-        text: 'Пісні',
+        text: 'Тиждень',
+        disabled: false,
         exact: true,
-        to: { name: 'index' }
+        to: { name: '/' }
       },
       {
-        text: 'Редагувати пісню',
+        text: 'Додати список пісень',
         disabled: true,
-        to: { name: 'addSong' }
+        to: { name: 'editPlayListWeek' }
       }
     ],
     dialog: false,
+    dialog2: false,
     dialogDelete: false,
+    dialogDelete2: false,
     headers: [
       {
-        text: 'Назва блоку',
+        text: 'Додайте новий пісню',
         align: 'start',
         sortable: false,
         value: 'name'
@@ -370,16 +364,6 @@ export default {
       { text: 'Дані', value: 'content' },
       { text: 'Дії', value: 'actions', sortable: false }
     ],
-    blocks: [],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-      content: ''
-    },
-    defaultItem: {
-      name: '',
-      content: ''
-    },
     headers2: [
       {
         text: 'Посилання з Youtube',
@@ -391,39 +375,45 @@ export default {
       { text: 'Дії', value: 'actions', sortable: false }
     ],
     linksYoutube: [],
-    youtubeLink: [],
+    blocks: [],
+    editedIndex: -1,
     editedIndex2: -1,
+    editedItem: {
+      name: '',
+      content: ''
+    },
     editedItem2: {
       link: ''
     },
     defaultItem2: {
       link: ''
     },
-    dialog2: false,
-    dialogDelete2: false
+    defaultItem: {
+      name: '',
+      content: ''
+    }
   }),
   computed: {
     ...mapGetters([
-      'SONGS'
+      'WEEK'
     ]),
-    song () {
-      let result = {}
-      this.SONGS.map((item) => {
-        if (item.id === this.$route.query.song) {
-          result = item
-        }
-      })
-      return result
-    },
     formTitle () {
-      return this.editedIndex === -1 ? 'Новий блок' : 'Редагувати'
+      return this.editedIndex === -1 ? 'Нова пісня' : 'Редагувати'
     }
   },
   watch: {
-    dialog: 'closeOnFalse',
-    dialogDelete: 'closeOnFalse',
-    dialog2: 'closeOnFalse',
-    dialogDelete2: 'closeOnFalse'
+    dialog (val) {
+      val || this.close()
+    },
+    dialog2 (val) {
+      val || this.close2()
+    },
+    dialogDelete (val) {
+      val || this.closeDelete()
+    },
+    dialogDelete2 (val) {
+      val || this.closeDelete2()
+    }
   },
   mounted () {
     this.initialize()
@@ -433,147 +423,129 @@ export default {
     ...mapActions([
       'bindCountDocument'
     ]),
-    closeOnFalse (val) {
-      if (!val) {
-        this.close()
-      }
-    },
     submit () {
-      //* Разбить текст на блоки - вынести в отдельный функционал*//
-      // if (this.textSong) {
-      //   this.parseTextSong = parseTextSong(this.textSong)
-      //   /*eslint-disable */
-      //   console.log('parseTextSong', this.parseTextSong)
-      // }
       const data = {
-        singer: this.singer,
-        nameSong: this.nameSong,
-        category: this.category,
-        language: this.language,
-        youtubeLink: this.youtubeLink,
+        datetime: this.datetime,
+        youtubeLink: this.linksYoutube,
         note: this.note,
         description: this.description,
         blocks: this.blocks
+      }
+      if (this.datetime === null || this.category === null || this.language === null || this.blocks.length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Помилка',
+          text: 'Заповніть всі поля!'
+        })
+        return
       }
 
       // console.log(data)
       this.addSong(data)
     },
     initialize () {
-      this.blocks = this.song.blocks
-      this.seen = false
-      this.singer = this.song.singer
-      this.nameSong = this.song.nameSong
-      this.category = this.song.category
-      this.language = this.song.language
-      this.youtubeLink = this.song.youtubeLink
-      this.note = this.song.note
-      this.description = this.song.description
+      this.week = this.WEEK
     },
     async addSong (songData) {
-      Swal.fire({
-        title: 'Идет загрузка...',
-        text: '',
-        imageUrl: '352.gif',
-        showConfirmButton: false
-      })
-
-      const createdAt = Date.now()
-      const seen = false
-      const {
-        nameSong, category, language, youtubeLink, note, description, blocks
-      } = songData
-
       try {
-        const docRef = this.$fireStore.doc(`songs/${this.song.id}`)
-        await docRef.update({
-          id: this.song.id,
+        const createdAt = Date.now()
+        const seen = false
+        const datetime = songData.datetime
+        const youtubeLink = songData.youtubeLink
+        const note = songData.note
+        const description = songData.description
+        const blocks = songData.blocks
+
+        const docRef = await this.$fireStore.collection('week').add({
           createdAt,
           seen,
-          nameSong,
-          category,
-          language,
+          datetime,
           youtubeLink,
           note,
           description,
           blocks
         })
 
+        const docAdded = await docRef
+        await this.$fireStore.doc('week/' + `${docAdded.id}`).update({ id: `${docAdded.id}` })
+
         Swal.close()
 
-        await Swal.fire({
+        Swal.fire({
           position: 'top-end',
           type: 'success',
-          title: 'Пісня змінена',
+          title: 'Додано!',
           showConfirmButton: false,
           timer: 2000
         })
-        await this.$router.push({ name: 'song', query: { song: this.song.id } })
-      } catch (error) {
-        // Обробка помилки
-        // eslint-disable-next-line no-console
-        console.error('Помилка при збереженні пісні:', error)
 
-        Swal.close()
-
-        await Swal.fire({
-          position: 'top-end',
+        await this.$router.push({ name: 'index' })
+      } catch (err) {
+        // Обробка помилок
+        Swal.fire({
           type: 'error',
-          title: 'Помилка при збереженні пісні',
-          showConfirmButton: false,
-          timer: 2000
+          title: 'Помилка!',
+          text: 'Виникла помилка при додаванні пісні. Спробуйте ще раз.'
         })
-
-        // Ви можете також повернути помилку для подальшого оброблення, якщо це необхідно.
-        return error
       }
     },
+
     editItem (item) {
       this.editedIndex = this.blocks.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
     editItem2 (item) {
-      this.editedIndex2 = this.youtubeLink.indexOf(item)
+      this.editedIndex2 = this.linksYoutube.indexOf(item)
       this.editedItem2 = Object.assign({}, item)
       this.dialog2 = true
     },
-
-    deleteItemFromArray (item, arrayName) {
-      const index = this[arrayName].indexOf(item)
-      if (index !== -1) {
-        this[arrayName].splice(index, 1)
-      }
+    deleteItem (item) {
+      this.editedIndex = this.blocks.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
+    },
+    deleteItem2 (item) {
+      this.editedIndex2 = this.linksYoutube.indexOf(item)
+      this.editedItem2 = Object.assign({}, item)
+      this.dialogDelete2 = true
     },
     deleteItemConfirm () {
       this.blocks.splice(this.editedIndex, 1)
       this.closeDelete()
     },
     deleteItemConfirm2 () {
-      this.youtubeLink.splice(this.editedIndex2, 1)
+      this.linksYoutube.splice(this.editedIndex2, 1)
       this.closeDelete2()
     },
-
-    closeDialog (dialogName, editedItemName, defaultItemName, editedIndexName) {
-      this[dialogName] = false
+    close () {
+      this.dialog = false
       this.$nextTick(() => {
-        this[editedItemName] = Object.assign({}, this[defaultItemName])
-        this[editedIndexName] = -1
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
       })
     },
-    close () {
-      this.closeDialog('dialog', 'editedItem', 'defaultItem', 'editedIndex')
-    },
     close2 () {
-      this.closeDialog('dialog2', 'editedItem2', 'defaultItem2', 'editedIndex2')
+      this.dialog2 = false
+      this.$nextTick(() => {
+        this.editedItem2 = Object.assign({}, this.defaultItem2)
+        this.editedIndex2 = -1
+      })
     },
     closeDelete () {
-      this.closeDialog('dialogDelete', 'editedItem', 'defaultItem', 'editedIndex')
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
     },
     closeDelete2 () {
-      this.closeDialog('dialogDelete2', 'editedItem2', 'defaultItem2', 'editedIndex2')
+      this.dialogDelete2 = false
+      this.$nextTick(() => {
+        this.editedItem2 = Object.assign({}, this.defaultItem2)
+        this.editedIndex2 = -1
+      })
     },
-
     saveNewBlock () {
       if (this.editedIndex > -1) {
         Object.assign(this.blocks[this.editedIndex], this.editedItem)
@@ -584,14 +556,14 @@ export default {
     },
     saveNewBlock2 () {
       if (this.editedIndex2 > -1) {
-        Object.assign(this.youtubeLink[this.editedIndex2], this.editedItem2)
+        Object.assign(this.linksYoutube[this.editedIndex2], this.editedItem2)
       } else {
-        this.youtubeLink.push(this.editedItem2)
+        this.linksYoutube.push(this.editedItem2)
       }
       this.close2()
     },
     cancel () {
-      this.$router.push({ name: 'songs' })
+      this.$router.push({ name: 'index' })
     }
   }
 }

@@ -297,14 +297,19 @@ export default {
         },
         {
           icon: 'mdi-calendar',
-          title: 'Календар',
-          to: '/plannerCalendar'
-        },
-        {
-          icon: 'mdi-account-group',
-          title: 'Служителі',
-          to: '/users'
+          title: 'Тиждень',
+          to: '/playListWeek'
         }
+        // {
+        //   icon: 'mdi-calendar',
+        //   title: 'Календар',
+        //   to: '/plannerCalendar'
+        // },
+        // {
+        //   icon: 'mdi-account-group',
+        //   title: 'Служителі',
+        //   to: '/users'
+        // }
         // {
         //   icon: 'mdi-import-variant',
         //   title: 'Імпорт з тексту',

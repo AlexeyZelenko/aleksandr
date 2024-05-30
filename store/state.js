@@ -14,5 +14,6 @@ export default () => ({
   plannerCalendar: {
     songs: [],
     users: []
-  }
+  },
+  week: []
 })

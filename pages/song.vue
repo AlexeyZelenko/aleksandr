@@ -11,13 +11,23 @@
 
     <v-card
       class="mx-auto my-12 pa-4"
-      max-width="374"
+      max-width="980"
       color="background"
     >
       <v-card-title>
         <span class="text1--text text--secondary">Назва пісні:</span>
         <span class="text1--text px-1 font-weight-bold">{{ song.nameSong }}</span>
         <v-spacer />
+        <v-btn
+          outlined
+          color="indigo"
+          class="ma-2 white--text"
+          fab
+          small
+          @click.stop="copySongId(song.id)"
+        >
+          ID
+        </v-btn>
         <v-row v-if="User_Entrance">
           <v-icon
             v-if="!song.activeStar"
@@ -51,7 +61,7 @@
           <v-hover>
             <template v-slot:default="{ hover }">
               <div
-                :class="`elevation-${hover ? 24 : 6}`"
+                :class="`elevation-${hover ? 24 : 8}`"
                 class="mx-auto transition-swing"
               >
                 <v-expansion-panel-header>
@@ -61,16 +71,16 @@
                 </v-expansion-panel-header>
 
                 <v-expansion-panel-content>
-                  <v-textarea
-                    v-model="item.content"
-                    class="text1--text"
-                    style="text-align: left"
-                    disabled
-                    auto-grow
-                    outlined
-                    rows="1"
-                    row-height="15"
-                  />
+                  <v-container class="fill-height">
+                    <v-textarea
+                      v-model="item.content"
+                      class="text2--text"
+                      :class="fontSize"
+                      auto-grow
+                      outlined
+                      readonly
+                    />
+                  </v-container>
                 </v-expansion-panel-content>
               </div>
             </template>
@@ -202,6 +212,20 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <!--    <v-container>-->
+    <!--      <v-btn @click="fontSize = 'small'">-->
+    <!--        - -->
+    <!--      </v-btn>-->
+    <!--      <v-btn @click="fontSize = 'medium'">-->
+    <!--        Середній-->
+    <!--      </v-btn>-->
+    <!--      <v-btn @click="fontSize = 'large'">-->
+    <!--        +-->
+    <!--      </v-btn>-->
+    <!--      <div :class="fontSize">-->
+    <!--        Змінити розмір шрифту тексту..-->
+    <!--      </div>-->
+    <!--    </v-container>-->
   </div>
 </template>
 
@@ -217,6 +241,7 @@ export default {
   },
   data () {
     return {
+      fontSize: 'medium',
       panel: [],
       activeStar: false,
       readonly: true,
@@ -325,6 +350,23 @@ export default {
     editSong () {
       this.$router.push({ name: 'editSong', query: { song: this.song.id } })
     },
+    copySongId (id) {
+      const el = document.createElement('textarea')
+      el.value = id
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+
+      Swal.fire({
+        icon: 'success',
+        position: 'top-end',
+        type: 'success',
+        title: 'ID пісні скопійовано!',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    },
     removeSong () {
       this.deleteSong(this.song.id)
       this.$router.push({ name: 'index' })
@@ -397,6 +439,8 @@ export default {
 .song-card {
   width: 100%;
 
+  textarea {}
+
   &--container {
     text-align: left;
   }
@@ -418,5 +462,14 @@ export default {
     margin: 0 auto;
     border-radius: 5px;
   }
+}
+.small {
+  font-size: 16px;
+}
+.medium {
+  font-size: 18px;
+}
+.large {
+  font-size: 20px;
 }
 </style>

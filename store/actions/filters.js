@@ -14,6 +14,10 @@ export default {
       const ref2 = this.$fireStore.collection('calendar')
       const eventDocuments = await bindFirestoreRef('Events', ref2, { wait: true })
       commit('CALENDAR_EVENTS', eventDocuments)
+
+      const ref3 = this.$fireStore.collection('week')
+      const eventDocuments2 = await bindFirestoreRef('Events', ref3, { wait: true })
+      commit('WEEK_EVENTS', eventDocuments2)
     } catch (error) {
       // Обробка помилок
       // eslint-disable-next-line no-console

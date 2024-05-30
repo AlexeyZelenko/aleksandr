@@ -16,32 +16,18 @@
         color="background"
       >
         <h3 class="text1--text">
-          Редагувати пісню
+          Редагувати
         </h3>
         <v-form fast-fail @submit.prevent="submit">
           <v-text-field
-            v-model="nameSong"
-            label="- Назва пісні -"
-            :rules="nameSongRules"
-          />
-
-          <v-select
-            v-model="category"
-            chips
-            label="- Тема -"
-            :items="['Поклоніння', 'Хвала', 'Інше']"
-            variant="outlined"
-          />
-          <v-select
-            v-model="language"
-            chips
-            label="- Мова -"
-            :items="['UA', 'RU', 'EN']"
-            variant="outlined"
+            v-model="datetime"
+            label="- Дата -"
+            :rules="datetimeRules"
           />
 
           <template>
             <v-data-table
+              class="my-10"
               :headers="headers2"
               :items="youtubeLink"
               hide-default-footer
@@ -165,6 +151,7 @@
           <template>
             <v-data-table
               v-if="blocks && blocks.length"
+              class="my-10"
               :headers="headers"
               :items="blocks"
               hide-default-footer
@@ -184,7 +171,7 @@
                   color="background"
                   flat
                 >
-                  <v-toolbar-title>Блок</v-toolbar-title>
+                  <v-toolbar-title>Пісня</v-toolbar-title>
                   <v-divider
                     class="mx-4"
                     inset
@@ -222,7 +209,15 @@
                             >
                               <v-text-field
                                 v-model="editedItem.name"
-                                label="Назва блоку"
+                                label="Назва пісні"
+                              />
+                            </v-col>
+                            <v-col
+                              width="100%"
+                            >
+                              <v-text-field
+                                v-model="editedItem.id"
+                                label="id пісні"
                               />
                             </v-col>
                             <v-col
@@ -230,7 +225,7 @@
                             >
                               <v-textarea
                                 v-model="editedItem.content"
-                                label="техт/акорди/ноти"
+                                label="примітки"
                               />
                             </v-col>
                           </v-col>
@@ -327,17 +322,14 @@ import Swal from 'sweetalert2'
 export default {
   name: 'EditSong',
   data: () => ({
-    singer: null,
-    nameSong: null,
-    nameSongRules: [
+    datetime: null,
+    datetimeRules: [
       (value) => {
         if (/[^0-9]/.test(value)) { return true }
 
         return 'Назва пісні не повина мати цифри'
       }
     ],
-    category: null,
-    language: null,
     note: null,
     description: null,
     breadcrumbs: [
@@ -348,21 +340,21 @@ export default {
         to: { name: 'index' }
       },
       {
-        text: 'Пісні',
+        text: 'Тиждень',
         exact: true,
         to: { name: 'index' }
       },
       {
-        text: 'Редагувати пісню',
+        text: 'Редагувати',
         disabled: true,
-        to: { name: 'addSong' }
+        to: { name: 'editPlayListWeek' }
       }
     ],
     dialog: false,
     dialogDelete: false,
     headers: [
       {
-        text: 'Назва блоку',
+        text: 'Назва пісні',
         align: 'start',
         sortable: false,
         value: 'name'
@@ -404,19 +396,19 @@ export default {
   }),
   computed: {
     ...mapGetters([
-      'SONGS'
+      'WEEK'
     ]),
-    song () {
+    week () {
       let result = {}
-      this.SONGS.map((item) => {
-        if (item.id === this.$route.query.song) {
+      this.WEEK.map((item) => {
+        if (item.id === this.$route.query.week) {
           result = item
         }
       })
       return result
     },
     formTitle () {
-      return this.editedIndex === -1 ? 'Новий блок' : 'Редагувати'
+      return this.editedIndex === -1 ? 'Нова пісня' : 'Редагувати'
     }
   },
   watch: {
@@ -428,6 +420,8 @@ export default {
   mounted () {
     this.initialize()
     this.bindCountDocument()
+    // eslint-disable-next-line no-console
+    console.log('WEEK', this.WEEK)
   },
   methods: {
     ...mapActions([
@@ -447,9 +441,7 @@ export default {
       // }
       const data = {
         singer: this.singer,
-        nameSong: this.nameSong,
-        category: this.category,
-        language: this.language,
+        datetime: this.datetime,
         youtubeLink: this.youtubeLink,
         note: this.note,
         description: this.description,
@@ -460,39 +452,34 @@ export default {
       this.addSong(data)
     },
     initialize () {
-      this.blocks = this.song.blocks
+      this.blocks = this.week.blocks
       this.seen = false
-      this.singer = this.song.singer
-      this.nameSong = this.song.nameSong
-      this.category = this.song.category
-      this.language = this.song.language
-      this.youtubeLink = this.song.youtubeLink
-      this.note = this.song.note
-      this.description = this.song.description
+      this.datetime = this.week.datetime
+      this.youtubeLink = this.week.youtubeLink
+      this.note = this.week.note
+      this.description = this.week.description
     },
     async addSong (songData) {
-      Swal.fire({
-        title: 'Идет загрузка...',
-        text: '',
-        imageUrl: '352.gif',
-        showConfirmButton: false
-      })
+      // Swal.fire({
+      //   title: 'Завантаження...',
+      //   text: '',
+      //   imageUrl: '352.gif',
+      //   showConfirmButton: false
+      // })
 
       const createdAt = Date.now()
       const seen = false
       const {
-        nameSong, category, language, youtubeLink, note, description, blocks
+        datetime, youtubeLink, note, description, blocks
       } = songData
 
       try {
-        const docRef = this.$fireStore.doc(`songs/${this.song.id}`)
+        const docRef = this.$fireStore.doc(`week/${this.week.id}`)
         await docRef.update({
-          id: this.song.id,
+          id: this.week.id,
           createdAt,
           seen,
-          nameSong,
-          category,
-          language,
+          datetime,
           youtubeLink,
           note,
           description,
@@ -502,13 +489,14 @@ export default {
         Swal.close()
 
         await Swal.fire({
+          icon: 'success',
           position: 'top-end',
           type: 'success',
           title: 'Пісня змінена',
           showConfirmButton: false,
           timer: 2000
         })
-        await this.$router.push({ name: 'song', query: { song: this.song.id } })
+        await this.$router.push({ name: 'playListWeek' })
       } catch (error) {
         // Обробка помилки
         // eslint-disable-next-line no-console
@@ -591,7 +579,7 @@ export default {
       this.close2()
     },
     cancel () {
-      this.$router.push({ name: 'songs' })
+      this.$router.push({ name: 'playListWeek' })
     }
   }
 }

@@ -18,5 +18,6 @@ export default {
   listUsers: s => s.listUsers,
   infoUser: s => s.infoUser,
   userId: s => s.userId,
-  eventsCalendar: s => s.eventsCalendar
+  eventsCalendar: s => s.eventsCalendar,
+  WEEK: s => s.week
 }

@@ -29,7 +29,7 @@
             v-model="category"
             chips
             label="- Тема -"
-            :items="['Поклоніння', 'Прославління', 'Хвала', 'Інше']"
+            :items="['Поклоніння', 'Хвала', 'Інше']"
             variant="outlined"
             :rules="[rules.required]"
           />
