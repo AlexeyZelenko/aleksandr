@@ -10,16 +10,16 @@
     >
       <v-list>
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in filteredItems"
           :key="i"
           :to="item.to"
           router
           exact
         >
-          <v-list-item-action>
+          <v-list-item-action v-if="item.show">
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
-          <v-list-item-content>
+          <v-list-item-content v-if="item.show">
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
@@ -288,17 +288,20 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Головна',
-          to: '/'
-        },
-        {
-          icon: 'mdi-plus',
-          title: 'Додати',
-          to: '/addSong'
+          to: '/',
+          show: true
         },
         {
           icon: 'mdi-calendar',
           title: 'Тиждень',
-          to: '/playListWeek'
+          to: '/playListWeek',
+          show: true
+        },
+        {
+          icon: 'mdi-plus',
+          title: 'Додати',
+          to: '/addSong',
+          show: false
         }
         // {
         //   icon: 'mdi-calendar',
@@ -341,6 +344,14 @@ export default {
       'GET_ADMIN_ENTRANCE',
       'User_Entrance'
     ]),
+    filteredItems () {
+      return this.items.map((item) => {
+        if (item.title === 'Додати') {
+          item.show = this.User_Entrance
+        }
+        return item
+      }).filter(item => item.show)
+    },
     getUserName () {
       return this.$fireAuthObj().currentUser.displayName
     },

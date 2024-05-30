@@ -18,6 +18,25 @@
         <span class="text1--text text--secondary">Назва пісні:</span>
         <span class="text1--text px-1 font-weight-bold">{{ song.nameSong }}</span>
         <v-spacer />
+        <div v-if="User_Entrance">
+          <v-icon
+            v-if="!song.activeStar"
+            color="grey lighten-1"
+            class="mx-4"
+            @click.stop="addToFavorite(song.id)"
+          >
+            mdi-heart-outline
+          </v-icon>
+
+          <v-icon
+            v-else
+            color="yellow darken-3"
+            class="mx-4"
+            @click.stop="deleteFavorite(song.id)"
+          >
+            mdi-heart
+          </v-icon>
+        </div>
         <v-btn
           outlined
           color="indigo"
@@ -28,23 +47,6 @@
         >
           ID
         </v-btn>
-        <v-row v-if="User_Entrance">
-          <v-icon
-            v-if="!song.activeStar"
-            color="grey lighten-1"
-            @click.stop="addToFavorite(song.id)"
-          >
-            mdi-heart-outline
-          </v-icon>
-
-          <v-icon
-            v-else
-            color="yellow darken-3"
-            @click.stop="deleteFavorite(song.id)"
-          >
-            mdi-heart
-          </v-icon>
-        </v-row>
       </v-card-title>
 
       <v-divider class="mx-4" />
@@ -192,7 +194,9 @@
         </v-btn>
       </div>
 
-      <v-card-actions>
+      <v-card-actions
+        v-if="User_Entrance"
+      >
         <v-btn
           color="orange"
           text

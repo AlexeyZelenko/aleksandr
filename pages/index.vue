@@ -1,6 +1,8 @@
 <template>
   <div class="home-song-page">
-    <v-fab-transition>
+    <v-fab-transition
+      v-if="User_Entrance"
+    >
       <v-btn
         color="pink"
         dark

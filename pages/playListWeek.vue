@@ -10,7 +10,7 @@
             <div>
               <span>{{ card.datetime }}</span>
               <v-btn class="mx-2" icon @click.stop="editWeek(card.id)">
-                <v-icon dark>
+                <v-icon v-if="User_Entrance" dark>
                   mdi-pencil
                 </v-icon>
               </v-btn>
@@ -18,6 +18,7 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card
+              :style="{ border: 'none', boxShadow: 'none' }"
               max-width="600"
               class="mx-auto my-5"
               outline
@@ -114,7 +115,7 @@
                 </v-list-item>
               </v-list>
             </v-card>
-            <div class="text-center my-5">
+            <div v-if="User_Entrance" class="text-center my-5">
               <v-btn
                 rounded
                 color="primary"
@@ -128,7 +129,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
-    <v-fab-transition>
+    <v-fab-transition v-if="User_Entrance">
       <v-btn
         class="my-10"
         to="/addPlayListWeek"
