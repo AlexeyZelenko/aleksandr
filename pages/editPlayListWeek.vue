@@ -420,8 +420,6 @@ export default {
   mounted () {
     this.initialize()
     this.bindCountDocument()
-    // eslint-disable-next-line no-console
-    console.log('WEEK', this.WEEK)
   },
   methods: {
     ...mapActions([
@@ -433,14 +431,7 @@ export default {
       }
     },
     submit () {
-      //* Разбить текст на блоки - вынести в отдельный функционал*//
-      // if (this.textSong) {
-      //   this.parseTextSong = parseTextSong(this.textSong)
-      //   /*eslint-disable */
-      //   console.log('parseTextSong', this.parseTextSong)
-      // }
       const data = {
-        singer: this.singer,
         datetime: this.datetime,
         youtubeLink: this.youtubeLink,
         note: this.note,
@@ -448,7 +439,6 @@ export default {
         blocks: this.blocks
       }
 
-      // console.log(data)
       this.addSong(data)
     },
     initialize () {
@@ -492,7 +482,7 @@ export default {
           icon: 'success',
           position: 'top-end',
           type: 'success',
-          title: 'Пісня змінена',
+          title: 'Зміни збережені',
           showConfirmButton: false,
           timer: 2000
         })
@@ -500,19 +490,18 @@ export default {
       } catch (error) {
         // Обробка помилки
         // eslint-disable-next-line no-console
-        console.error('Помилка при збереженні пісні:', error)
+        console.error('Помилка при збереженні:', error)
 
         Swal.close()
 
         await Swal.fire({
           position: 'top-end',
           type: 'error',
-          title: 'Помилка при збереженні пісні',
+          title: 'Помилка при збереженні',
           showConfirmButton: false,
           timer: 2000
         })
 
-        // Ви можете також повернути помилку для подальшого оброблення, якщо це необхідно.
         return error
       }
     },
