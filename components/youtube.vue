@@ -8,14 +8,9 @@
       <vue-plyr>
         <div
           class="plyr__video-embed"
-        >
-          <iframe
-            :src="item.extractVideoId"
-            allowfullscreen
-            allowtransparency
-            allow="autoplay"
-          />
-        </div>
+          data-plyr-provider="youtube"
+          :data-plyr-embed-id="item.extractVideoId"
+        />
       </vue-plyr>
     </div>
   </div>
