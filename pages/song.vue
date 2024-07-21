@@ -97,100 +97,112 @@
         :links="song.youtubeLink"
       />
 
-      <v-expansion-panels>
-        <v-expansion-panel>
-          <v-expansion-panel-header v-slot="{ open }">
-            <v-row no-gutters>
-              <v-col cols="4">
-                Додати до календаря:
-              </v-col>
-              <v-col
-                cols="8"
-                class="text--secondary"
-              >
-                <v-fade-transition leave-absolute>
-                  <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>
-                  <v-row
-                    v-else
-                    no-gutters
-                    style="width: 100%"
-                  >
-                    <v-col cols="12">
-                      {{ trip.start }}
-                    </v-col>
-                  </v-row>
-                </v-fade-transition>
-              </v-col>
-            </v-row>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-row
-              justify="space-around"
-              no-gutters
-            >
-              <v-col cols="9">
-                <v-menu
-                  ref="startMenu"
-                  :close-on-content-click="false"
-                  :return-value.sync="trip.start"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="trip.start"
-                      label="Дата виконання"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.startMenu.isActive = false"
-                    >
-                      Відмінити
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.startMenu.save(null)"
-                    >
-                      Видалити
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.startMenu.save(date); addToCalendar()"
-                    >
-                      Зберегти
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <!--      <v-expansion-panels>-->
+      <!--        <v-expansion-panel>-->
+      <!--          <v-expansion-panel-header v-slot="{ open }">-->
+      <!--            <v-row no-gutters>-->
+      <!--              <v-col cols="4">-->
+      <!--                Додати до календаря:-->
+      <!--              </v-col>-->
+      <!--              <v-col-->
+      <!--                cols="8"-->
+      <!--                class="text&#45;&#45;secondary"-->
+      <!--              >-->
+      <!--                <v-fade-transition leave-absolute>-->
+      <!--                  <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>-->
+      <!--                  <v-row-->
+      <!--                    v-else-->
+      <!--                    no-gutters-->
+      <!--                    style="width: 100%"-->
+      <!--                  >-->
+      <!--                    <v-col cols="12">-->
+      <!--                      {{ trip.start }}-->
+      <!--                    </v-col>-->
+      <!--                  </v-row>-->
+      <!--                </v-fade-transition>-->
+      <!--              </v-col>-->
+      <!--            </v-row>-->
+      <!--          </v-expansion-panel-header>-->
+      <!--          <v-expansion-panel-content>-->
+      <!--            <v-row-->
+      <!--              justify="space-around"-->
+      <!--              no-gutters-->
+      <!--            >-->
+      <!--              <v-col cols="9">-->
+      <!--                <v-menu-->
+      <!--                  ref="startMenu"-->
+      <!--                  :close-on-content-click="false"-->
+      <!--                  :return-value.sync="trip.start"-->
+      <!--                  offset-y-->
+      <!--                  min-width="290px"-->
+      <!--                >-->
+      <!--                  <template v-slot:activator="{ on, attrs }">-->
+      <!--                    <v-text-field-->
+      <!--                      v-model="trip.start"-->
+      <!--                      label="Дата виконання"-->
+      <!--                      prepend-icon="mdi-calendar"-->
+      <!--                      readonly-->
+      <!--                      v-bind="attrs"-->
+      <!--                      v-on="on"-->
+      <!--                    />-->
+      <!--                  </template>-->
+      <!--                  <v-date-picker-->
+      <!--                    v-model="date"-->
+      <!--                    no-title-->
+      <!--                    scrollable-->
+      <!--                  >-->
+      <!--                    <v-spacer />-->
+      <!--                    <v-btn-->
+      <!--                      text-->
+      <!--                      color="primary"-->
+      <!--                      @click="$refs.startMenu.isActive = false"-->
+      <!--                    >-->
+      <!--                      Відмінити-->
+      <!--                    </v-btn>-->
+      <!--                    <v-btn-->
+      <!--                      text-->
+      <!--                      color="primary"-->
+      <!--                      @click="$refs.startMenu.save(null)"-->
+      <!--                    >-->
+      <!--                      Видалити-->
+      <!--                    </v-btn>-->
+      <!--                    <v-btn-->
+      <!--                      text-->
+      <!--                      color="primary"-->
+      <!--                      @click="$refs.startMenu.save(date); addToCalendar()"-->
+      <!--                    >-->
+      <!--                      Зберегти-->
+      <!--                    </v-btn>-->
+      <!--                  </v-date-picker>-->
+      <!--                </v-menu>-->
+      <!--              </v-col>-->
+      <!--            </v-row>-->
+      <!--          </v-expansion-panel-content>-->
+      <!--        </v-expansion-panel>-->
+      <!--      </v-expansion-panels>-->
 
-      <div class="text-center d-flex align-center justify-space-around">
+      <div
+        style="flex-direction: column;"
+        class="text-center d-flex align-center justify-space-around"
+      >
+        <p class="pa-6 my-0">
+          ВКЛАДКИ:
+        </p>
         <v-checkbox
           v-model="readonly"
-          label="Зафіксувати"
+          label="Зафіксувати вкладки"
         />
-        <v-btn @click="all">
-          Всі
+        <v-btn
+          style="width: 200px; margin: 5px auto;"
+          @click="all"
+        >
+          Відкрити всі вкладки
         </v-btn>
-        <v-btn @click="none">
-          Закрити
+        <v-btn
+          style="width: 200px; margin: 5px auto;"
+          @click="none"
+        >
+          Закрити всі вкладки
         </v-btn>
       </div>
 
@@ -254,7 +266,8 @@ export default {
       date: null,
       trip: {
         start: null
-      }
+      },
+      show: false
     }
   },
   computed: {
