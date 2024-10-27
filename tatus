@@ -1,0 +1,207 @@
+[33mcommit c98aa8f5f0cd8271b09b61c161c6ab835d9c5c7c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: AlexeyZelenko <zelenkooleksii75@gmail.com>
+Date:   Wed May 26 13:52:03 2021 +0300
+
+    1.0.1
+
+[1mdiff --git a/assets/LogoBlk.png b/assets/LogoBlk.png[m
+[1mdeleted file mode 100644[m
+[1mindex 9859e16..0000000[m
+Binary files a/assets/LogoBlk.png and /dev/null differ
+[1mdiff --git a/layouts/default.vue b/layouts/default.vue[m
+[1mindex c73243a..0383d49 100644[m
+[1m--- a/layouts/default.vue[m
+[1m+++ b/layouts/default.vue[m
+[36m@@ -75,7 +75,7 @@[m
+     >[m
+       <v-list>[m
+         <v-list-item[m
+[31m-          v-for="(item, i) in items2"[m
+[32m+[m[32m          v-for="(item, i) in items"[m
+           :key="i"[m
+           :to="item.to"[m
+           router[m
+[36m@@ -101,30 +101,6 @@[m
+         justify="space-around"[m
+       >[m
+         &copy; {{ new Date().getFullYear() }}[m
+[31m-        <a[m
+[31m-          style="text-decoration: none"[m
+[31m-          href="https://www.instagram.com/nask_official/"[m
+[31m-        >[m
+[31m-          <v-icon[m
+[31m-            aria-hidden="true">mdi-instagram</v-icon>[m
+[31m-        </a>[m
+[31m-        <a[m
+[31m-          style="text-decoration: none"[m
+[31m-          href="https://www.instagram.com/nask_official/"[m
+[31m-        >[m
+[31m-          <v-icon[m
+[31m-            aria-hidden="true">mdi-youtube</v-icon>[m
+[31m-        </a>[m
+[31m-        <a[m
+[31m-          style="text-decoration: none"[m
+[31m-          href="https://jmlabel.one/nask"[m
+[31m-        >[m
+[31m-          <img[m
+[31m-            style="height: 36px; color: white"[m
+[31m-            src="@/assets/LogoBlk.png"[m
+[31m-            alt=""[m
+[31m-          >[m
+[31m-        </a>[m
+       </v-row>[m
+     </v-footer>[m
+   </v-app>[m
+[36m@@ -144,12 +120,17 @@[m [mexport default {[m
+           to: '/'[m
+         },[m
+         {[m
+[31m-          icon: 'mdi-bookmark-music',[m
+[32m+[m[32m          icon: 'mdi-axe',[m
+[32m+[m[32m          title: 'Вирубка фруктових дерев',[m
+[32m+[m[32m          to: '/trees'[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m          icon: 'mdi-tree',[m
+           title: 'Тріска для копчення',[m
+[31m-          to: '/video'[m
+[32m+[m[32m          to: '/chip'[m
+         },[m
+         {[m
+[31m-          icon: 'mdi-video',[m
+[32m+[m[32m          icon: 'mdi-van-utility',[m
+           title: 'Вантажоперевезення',[m
+           to: '/inspire'[m
+         },[m
+[1mdiff --git a/nuxt.config.js b/nuxt.config.js[m
+[1mindex 29fb5a5..163bfe1 100644[m
+[1m--- a/nuxt.config.js[m
+[1m+++ b/nuxt.config.js[m
+[36m@@ -7,7 +7,7 @@[m [mexport default {[m
+   // Global page headers (https://go.nuxtjs.dev/config-head)[m
+   head: {[m
+     titleTemplate: '%s',[m
+[31m-    title: 'NASK',[m
+[32m+[m[32m    title: 'Олександр',[m
+     meta: [[m
+       { charset: 'utf-8' },[m
+       { name: 'viewport', content: 'width=device-width, initial-scale=1' },[m
+[36m@@ -51,12 +51,12 @@[m [mexport default {[m
+       '@nuxtjs/firebase',[m
+       {[m
+         config: {[m
+[31m-          apiKey: 'AIzaSyBc7u10MhozydZgZBd7NxcE6eD30HryL_U',[m
+[31m-          authDomain: 'nusk-9e136.firebaseapp.com',[m
+[31m-          projectId: 'nusk-9e136',[m
+[31m-          storageBucket: 'nusk-9e136.appspot.com',[m
+[31m-          messagingSenderId: '364628197447',[m
+[31m-          appId: '1:364628197447:web:a945a1b2198600ec81f162'[m
+[32m+[m[32m          apiKey: 'AIzaSyCbqbD8YMtX8uoJHsEgwKk4UvYwLPODYk4',[m
+[32m+[m[32m          authDomain: 'oleksandr-3787c.firebaseapp.com',[m
+[32m+[m[32m          projectId: 'oleksandr-3787c',[m
+[32m+[m[32m          storageBucket: 'oleksandr-3787c.appspot.com',[m
+[32m+[m[32m          messagingSenderId: '623016667362',[m
+[32m+[m[32m          appId: '1:623016667362:web:26fb4984975eff32d456bb'[m
+         },[m
+         services: {[m
+           database: true,[m
+[1mdiff --git a/package.json b/package.json[m
+[1mindex ab4aaee..83ca8b4 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -1,5 +1,5 @@[m
+ {[m
+[31m-  "name": "name-nask",[m
+[32m+[m[32m  "name": "oleksandr",[m
+   "version": "1.0.0",[m
+   "private": true,[m
+   "scripts": {[m
+[36m@@ -30,6 +30,6 @@[m
+     "eslint-plugin-nuxt": "^1.0.0",[m
+     "fibers": "^5.0.0",[m
+     "sass": "^1.32.0",[m
+[31m-    "sass-loader": "^7.3.1"[m
+[32m+[m[32m    "sass-loader": "^10.1.1"[m
+   }[m
+ }[m
+[1mdiff --git a/pages/about.vue b/pages/about.vue[m
+[1mindex 7a9a3b3..587ae19 100644[m
+[1m--- a/pages/about.vue[m
+[1m+++ b/pages/about.vue[m
+[36m@@ -7,50 +7,12 @@[m
+         dark[m
+         max-width="400"[m
+       >[m
+[31m-        <v-card-title>[m
+[31m-          <v-icon[m
+[31m-            large[m
+[31m-            left[m
+[31m-          >[m
+[31m-            mdi-twitter[m
+[31m-          </v-icon>[m
+[31m-          <span class="title font-weight-light">Twitter</span>[m
+[31m-        </v-card-title>[m
+[31m-[m
+         <v-card-text class="headline font-weight-bold">[m
+[31m-          "Turns out semicolon-less style is easier and safer in TS because most gotcha edge cases are type invalid as well."[m
+[32m+[m[32m          "Бог не на боці великих батальйонів, а на стороні кращих стрільців."[m
+[32m+[m[32m        </v-card-text>[m
+[32m+[m[32m        <v-card-text class="headline font-weight-bold">[m
+[32m+[m[32m          "Якість - це коли все робиш правильно, навіть якщо ніхто не дивиться."[m
+         </v-card-text>[m
+[31m-[m
+[31m-        <v-card-actions>[m
+[31m-          <v-list-item class="grow">[m
+[31m-            <v-list-item-avatar color="grey darken-3">[m
+[31m-              <v-img[m
+[31m-                class="elevation-6"[m
+[31m-                alt=""[m
+[31m-                src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"[m
+[31m-              ></v-img>[m
+[31m-            </v-list-item-avatar>[m
+[31m-[m
+[31m-            <v-list-item-content>[m
+[31m-              <v-list-item-title>Evan You</v-list-item-title>[m
+[31m-            </v-list-item-content>[m
+[31m-[m
+[31m-            <v-row[m
+[31m-              align="center"[m
+[31m-              justify="end"[m
+[31m-            >[m
+[31m-              <v-icon class="mr-1">[m
+[31m-                mdi-heart[m
+[31m-              </v-icon>[m
+[31m-              <span class="subheading mr-2">256</span>[m
+[31m-              <span class="mr-1">·</span>[m
+[31m-              <v-icon class="mr-1">[m
+[31m-                mdi-share-variant[m
+[31m-              </v-icon>[m
+[31m-              <span class="subheading">45</span>[m
+[31m-            </v-row>[m
+[31m-          </v-list-item>[m
+[31m-        </v-card-actions>[m
+       </v-card>[m
+     </template>[m
+   </div>[m
+[1mdiff --git a/pages/chip.vue b/pages/chip.vue[m
+[1mnew file mode 100644[m
+[1mindex 0000000..bd0e7e8[m
+[1m--- /dev/null[m
+[1m+++ b/pages/chip.vue[m
+[36m@@ -0,0 +1,87 @@[m
+[32m+[m[32m<template>[m
+[32m+[m[32m  <div>[m
+[32m+[m[32m    <template>[m
+[32m+[m[32m      <v-container>[m
+[32m+[m[32m        <v-row justify="space-around">[m
+[32m+[m[32m          <v-card width="400">[m
+[32m+[m[32m            <v-img[m
+[32m+[m[32m              height="200px"[m
+[32m+[m[32m              src="https://drive.google.com/uc?export=view&id=1JC9cFNcurkiOYjl3-_7C25MRGnZFWEWz"[m
+[32m+[m[32m            >[m
+[32m+[m[32m              <v-card-title[m
+[32m+[m[32m                class="white--text mt-8"[m
+[32m+[m[32m              >[m
+[32m+[m[32m                <p[m
+[32m+[m[32m                  class="ml-3"[m
+[32m+[m[

@@ -13,6 +13,8 @@
     "deploy hosting": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "@nuxt/bridge": "^3.3.1",
+    "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/firebase": "^6.1.1",
     "@nuxtjs/pwa": "^3.0.2",
     "@nuxtjs/style-resources": "1.0.0",
@@ -26,7 +28,7 @@
     "vue-plyr": "^7.0.0",
     "vue-svg-loader": "0.11.0",
     "vue-sweetalert2": "^4.1.1",
-    "vue-youtube": "^1.4.0",
+    "vue-youtube-embed": "^2.2.2",
     "vuexfire": "^3.2.4"
   },
   "devDependencies": {

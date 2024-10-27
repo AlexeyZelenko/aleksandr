@@ -17,15 +17,15 @@
     </v-fab-transition>
 
     <v-app-bar
-      dark
+      style="background: #b0bec5"
       color="appbar2"
       class="my-2"
     >
-      <v-toolbar-title>
-        <div class="text1--text mb-2">
-          Список пісень
-        </div>
-      </v-toolbar-title>
+      <!--      <v-toolbar-title>-->
+      <!--                <div class="text1&#45;&#45;text mb-2">-->
+      <!--                  Список пісень-->
+      <!--                </div>-->
+      <!--      </v-toolbar-title>-->
 
       <div class="home-song-page--search__desktop">
         <v-text-field

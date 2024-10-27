@@ -433,6 +433,22 @@ export default {
     ...mapActions([
       'bindCountDocument'
     ]),
+    async notifyNewSong (song) {
+      // eslint-disable-next-line
+      console.log('notifyNewSong', song)
+      try {
+        const response = await this.$axios.post('https://tgbot-hhtwnffr3q-uc.a.run.app/notify', {
+          songTitle: song.nameSong,
+          youtubeLink: song.youtubeLink[0].link,
+          songId: song.songId
+        })
+        // eslint-disable-next-line
+        console.log('Уведомление успешно отправлено боту:', response.data)
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error('Ошибка отправки уведомления боту:', error)
+      }
+    },
     submit () {
       const data = {
         singer: this.singer,
@@ -502,6 +518,21 @@ export default {
           showConfirmButton: false,
           timer: 2000
         })
+
+        const song = {
+          songId: docAdded.id,
+          createdAt,
+          seen,
+          nameSong,
+          category,
+          language,
+          youtubeLink,
+          note,
+          description,
+          blocks
+        }
+        console.log('Document written with ID: ', song)
+        await this.notifyNewSong(song)
 
         await this.$router.push({ name: 'index' })
       } catch (err) {

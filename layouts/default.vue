@@ -291,12 +291,12 @@ export default {
           to: '/',
           show: true
         },
-        {
-          icon: 'mdi-calendar',
-          title: 'Тиждень',
-          to: '/playListWeek',
-          show: true
-        },
+        // {
+        //   icon: 'mdi-calendar',
+        //   title: 'Тиждень',
+        //   to: '/playListWeek',
+        //   show: true
+        // },
         {
           icon: 'mdi-plus',
           title: 'Додати',
