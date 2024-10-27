@@ -531,6 +531,7 @@ export default {
           description,
           blocks
         }
+        // eslint-disable-next-line
         console.log('Document written with ID: ', song)
         await this.notifyNewSong(song)
 

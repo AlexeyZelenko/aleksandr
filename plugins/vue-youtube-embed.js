@@ -1,6 +1,5 @@
+// plugins/vue-youtube-embed.js
 import Vue from 'vue'
-import VueYoutubeEmbed from 'vue-youtube-embed'
+import VueYouTubeEmbed from 'vue-youtube-embed'
 
-if (process.client) {
-  Vue.use(VueYoutubeEmbed)
-}
+Vue.use(VueYouTubeEmbed)
