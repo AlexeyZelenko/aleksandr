@@ -1,87 +1,50 @@
 <template>
   <div class="song-card">
-    <v-breadcrumbs
-      v-if="song?.nameSong"
-      :items="breadcrumbs"
-    >
+    <v-breadcrumbs v-if="song?.nameSong" :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
 
-    <v-card
-      class="mx-auto my-12 pa-4"
-      max-width="980"
-      color="background"
-    >
+    <v-card class="mx-auto my-12 pa-4" max-width="980" color="background">
       <v-card-title>
-        <span class="text1--text text--secondary">Назва пісні:</span>
         <span class="text1--text px-1 font-weight-bold">{{ song.nameSong }}</span>
         <v-spacer />
-        <div v-if="User_Entrance">
-          <v-icon
-            v-if="!song.activeStar"
-            color="grey lighten-1"
-            class="mx-4"
-            @click.stop="addToFavorite(song.id)"
-          >
-            mdi-heart-outline
-          </v-icon>
-
-          <v-icon
-            v-else
-            color="yellow darken-3"
-            class="mx-4"
-            @click.stop="deleteFavorite(song.id)"
-          >
-            mdi-heart
-          </v-icon>
+        <div v-if="User_Entrance" class="icon-container">
+          <v-btn icon class="icon-button" @click.stop="toggleFavorite(song.id)">
+            <v-icon :color="song.activeStar ? 'yellow darken-3' : 'grey lighten-1'">
+              {{ song.activeStar ? 'mdi-heart' : 'mdi-heart-outline' }}
+            </v-icon>
+          </v-btn>
+          <v-btn icon outlined color="indigo" class="icon-button" @click.stop="copySongId(song.id)">
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
         </div>
-        <v-btn
-          outlined
-          color="indigo"
-          class="ma-2 white--text"
-          fab
-          small
-          @click.stop="copySongId(song.id)"
-        >
-          ID
-        </v-btn>
       </v-card-title>
 
       <v-divider class="mx-4" />
 
-      <v-expansion-panels
-        v-model="panel"
-        :readonly="readonly"
-        multiple
-      >
-        <v-expansion-panel
-          v-for="item in song.blocks"
-          :key="item.content"
-        >
+      <!-- Вкладки с текстом песни -->
+      <v-expansion-panels v-model="panel" multiple>
+        <v-expansion-panel v-for="(item, index) in song.blocks" :key="index">
           <v-hover>
             <template v-slot:default="{ hover }">
-              <div
-                :class="`elevation-${hover ? 24 : 8}`"
-                class="mx-auto transition-swing"
-              >
+              <div :class="`elevation-${hover ? 24 : 8}`" class="mx-auto transition-swing">
                 <v-expansion-panel-header>
-                  <strong style="color: orangered">
-                    {{ item.name }}
-                  </strong>
+                  <strong style="color: orangered">{{ item.name }}</strong>
                 </v-expansion-panel-header>
 
                 <v-expansion-panel-content>
-                  <v-container class="fill-height">
-                    <v-textarea
-                      v-model="item.content"
-                      class="text2--text"
-                      :class="fontSize"
-                      auto-grow
-                      outlined
-                      readonly
-                    />
+                  <v-container class="fill-height pa-0">
+                    <!-- Используем div с поддержкой изменения размера шрифта -->
+                    <div
+                      class="formatted-text"
+                      :style="{ fontSize: fontSize + 'px', lineHeight: lineHeight }"
+                    >
+                      <span v-for="(line, index) in item.content.split('\n')" :key="index">
+                        {{ line }}<br>
+                      </span>
+                    </div>
                   </v-container>
                 </v-expansion-panel-content>
               </div>
@@ -92,156 +55,55 @@
 
       <v-divider class="mx-4 px-4" />
 
-      <Youtube-video
-        v-if="song && song.youtubeLink?.length > 0"
-        :links="song.youtubeLink"
-      />
+      <Youtube-video v-if="song && song.youtubeLink?.length > 0" :links="song.youtubeLink" />
 
-      <!--      <v-expansion-panels>-->
-      <!--        <v-expansion-panel>-->
-      <!--          <v-expansion-panel-header v-slot="{ open }">-->
-      <!--            <v-row no-gutters>-->
-      <!--              <v-col cols="4">-->
-      <!--                Додати до календаря:-->
-      <!--              </v-col>-->
-      <!--              <v-col-->
-      <!--                cols="8"-->
-      <!--                class="text&#45;&#45;secondary"-->
-      <!--              >-->
-      <!--                <v-fade-transition leave-absolute>-->
-      <!--                  <span v-if="open">Виберіть коли ви хочете заспівати цю пісню?</span>-->
-      <!--                  <v-row-->
-      <!--                    v-else-->
-      <!--                    no-gutters-->
-      <!--                    style="width: 100%"-->
-      <!--                  >-->
-      <!--                    <v-col cols="12">-->
-      <!--                      {{ trip.start }}-->
-      <!--                    </v-col>-->
-      <!--                  </v-row>-->
-      <!--                </v-fade-transition>-->
-      <!--              </v-col>-->
-      <!--            </v-row>-->
-      <!--          </v-expansion-panel-header>-->
-      <!--          <v-expansion-panel-content>-->
-      <!--            <v-row-->
-      <!--              justify="space-around"-->
-      <!--              no-gutters-->
-      <!--            >-->
-      <!--              <v-col cols="9">-->
-      <!--                <v-menu-->
-      <!--                  ref="startMenu"-->
-      <!--                  :close-on-content-click="false"-->
-      <!--                  :return-value.sync="trip.start"-->
-      <!--                  offset-y-->
-      <!--                  min-width="290px"-->
-      <!--                >-->
-      <!--                  <template v-slot:activator="{ on, attrs }">-->
-      <!--                    <v-text-field-->
-      <!--                      v-model="trip.start"-->
-      <!--                      label="Дата виконання"-->
-      <!--                      prepend-icon="mdi-calendar"-->
-      <!--                      readonly-->
-      <!--                      v-bind="attrs"-->
-      <!--                      v-on="on"-->
-      <!--                    />-->
-      <!--                  </template>-->
-      <!--                  <v-date-picker-->
-      <!--                    v-model="date"-->
-      <!--                    no-title-->
-      <!--                    scrollable-->
-      <!--                  >-->
-      <!--                    <v-spacer />-->
-      <!--                    <v-btn-->
-      <!--                      text-->
-      <!--                      color="primary"-->
-      <!--                      @click="$refs.startMenu.isActive = false"-->
-      <!--                    >-->
-      <!--                      Відмінити-->
-      <!--                    </v-btn>-->
-      <!--                    <v-btn-->
-      <!--                      text-->
-      <!--                      color="primary"-->
-      <!--                      @click="$refs.startMenu.save(null)"-->
-      <!--                    >-->
-      <!--                      Видалити-->
-      <!--                    </v-btn>-->
-      <!--                    <v-btn-->
-      <!--                      text-->
-      <!--                      color="primary"-->
-      <!--                      @click="$refs.startMenu.save(date); addToCalendar()"-->
-      <!--                    >-->
-      <!--                      Зберегти-->
-      <!--                    </v-btn>-->
-      <!--                  </v-date-picker>-->
-      <!--                </v-menu>-->
-      <!--              </v-col>-->
-      <!--            </v-row>-->
-      <!--          </v-expansion-panel-content>-->
-      <!--        </v-expansion-panel>-->
-      <!--      </v-expansion-panels>-->
-
-      <div
-        style="flex-direction: column;"
-        class="text-center d-flex align-center justify-space-around"
-      >
-        <p class="pa-6 my-0">
-          ВКЛАДКИ:
-        </p>
-        <v-checkbox
-          v-model="readonly"
-          label="Зафіксувати вкладки"
+      <!-- Управление вкладками: открытие/закрытие всех вкладок -->
+      <v-row class="my-4 align-center justify-center">
+        <v-switch
+          v-model="allPanelsOpen"
+          label="Відкрити/Закрити всі вкладки"
+          @change="toggleAllPanels"
         />
-        <v-btn
-          style="width: 200px; margin: 5px auto;"
-          @click="all"
-        >
-          Відкрити всі вкладки
-        </v-btn>
-        <v-btn
-          style="width: 200px; margin: 5px auto;"
-          @click="none"
-        >
-          Закрити всі вкладки
-        </v-btn>
-      </div>
+      </v-row>
 
-      <v-card-actions
-        v-if="User_Entrance"
-      >
-        <v-btn
-          color="orange"
-          text
-          outlined
-          @click.stop="editSong()"
-        >
-          Редагувати
+      <v-card-actions v-if="User_Entrance">
+        <v-btn color="orange" text outlined @click.stop="editSong()">
+          <v-icon left>
+            mdi-pencil
+          </v-icon> Редагувати
         </v-btn>
-        <v-divider class="mx-4 px-4" />
-        <v-btn
-          color="orange"
-          text
-          outlined
-          @click.stop="removeSong()"
-        >
-          Видалити
+        <v-divider vertical />
+        <v-btn color="orange" text outlined @click.stop="removeSong()">
+          <v-icon left>
+            mdi-delete
+          </v-icon> Видалити
         </v-btn>
       </v-card-actions>
     </v-card>
-    <!--    <v-container>-->
-    <!--      <v-btn @click="fontSize = 'small'">-->
-    <!--        - -->
-    <!--      </v-btn>-->
-    <!--      <v-btn @click="fontSize = 'medium'">-->
-    <!--        Середній-->
-    <!--      </v-btn>-->
-    <!--      <v-btn @click="fontSize = 'large'">-->
-    <!--        +-->
-    <!--      </v-btn>-->
-    <!--      <div :class="fontSize">-->
-    <!--        Змінити розмір шрифту тексту..-->
-    <!--      </div>-->
-    <!--    </v-container>-->
+
+    <!-- Изменение размера шрифта -->
+    <v-container class="text-center">
+      <v-row>
+        <v-col>
+          <v-btn icon @click="decreaseFontSize">
+            <v-icon>mdi-minus</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-btn icon @click="resetFontSize">
+            <v-icon>mdi-format-size</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-btn icon @click="increaseFontSize">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <div :style="{ fontSize: fontSize + 'px' }">
+        Змінити розмір шрифту тексту..
+      </div>
+    </v-container>
   </div>
 </template>
 
@@ -257,8 +119,9 @@ export default {
   },
   data () {
     return {
-      fontSize: 'medium',
-      panel: [],
+      fontSize: 18, // Начальный размер шрифта
+      lineHeight: '1.4', // Межстрочный интервал для улучшенного отображения текста
+      panel: [], // Текущие открытые вкладки
       activeStar: false,
       readonly: true,
       loading: false,
@@ -267,15 +130,12 @@ export default {
       trip: {
         start: null
       },
-      show: false
+      show: false,
+      allPanelsOpen: false // Состояние переключателя для открытия/закрытия всех вкладок
     }
   },
   computed: {
-    ...mapGetters([
-      'SONGS',
-      'infoUser',
-      'User_Entrance'
-    ]),
+    ...mapGetters(['SONGS', 'infoUser', 'User_Entrance']),
     breadcrumbs () {
       return [
         {
@@ -300,69 +160,29 @@ export default {
       })
       result.activeStar = !!(this.infoUser.listFavoriteSongs && this.infoUser.listFavoriteSongs.includes(result.id))
       return result
-    },
-    getTime () {
-      // Исходная дата в числовом формате
-      const timestamp = this.date
-
-      // Создаем объект Date из числовой метки времени
-      const date = new Date(timestamp)
-      const today = new Date()
-
-      // Извлекаем нужные компоненты даты
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1 // Месяцы в JavaScript начинаются с 0, поэтому добавляем 1
-      const day = date.getDate()
-      const hours = today.getHours()
-      const minutes = today.getMinutes()
-      const seconds = today.getSeconds()
-
-      // Форматируем дату в удобочитаемый вид (например, "гггг-мм-дд чч:мм:сс")
-      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-    },
-    extractVideoId () {
-      // Регулярное выражение для извлечения ID из ссылки YouTube
-      const regex = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?feature=player_embedded&v=))(.*?)(?:\?t=|&t=|&start=|&index=|&list=|$|\n)/
-
-      const match = this.song.youtubeLink.match(regex)
-
-      if (match && match[1]) {
-        return match[1]
-      } else {
-        return null
-      }
     }
   },
   mounted () {
-    this.bindCountDocument()
-    this.all()
+    this.none() // Все вкладки закрыты по умолчанию
   },
   methods: {
-    ...mapActions([
-      'bindCountDocument',
-      'deleteSong',
-      'ADD_TO_FAVORITE',
-      'REMOVE_FROM_FAVORITE'
-    ]),
-    ...mapMutations([
-      'SET_EVENT_CALENDAR'
-    ]),
+    ...mapActions(['bindCountDocument', 'deleteSong', 'ADD_TO_FAVORITE', 'REMOVE_FROM_FAVORITE']),
+    ...mapMutations(['SET_EVENT_CALENDAR']),
     all () {
       if (this.song.blocks) {
-        this.panel = [...Array(this.song.blocks.length).keys()].map((k, i) => i)
+        this.panel = this.song.blocks.map((_, index) => index)
       }
     },
-    // Reset the panel
     none () {
       this.panel = []
     },
-    addToFavorite (id) {
-      this.ADD_TO_FAVORITE(id)
-      this.activeStar = !this.activeStar
-    },
-    deleteFavorite () {
-      this.REMOVE_FROM_FAVORITE(this.song.id)
-      this.activeStar = !this.activeStar
+    toggleFavorite (id) {
+      if (this.song.activeStar) {
+        this.REMOVE_FROM_FAVORITE(id)
+      } else {
+        this.ADD_TO_FAVORITE(id)
+      }
+      this.song.activeStar = !this.song.activeStar
     },
     editSong () {
       this.$router.push({ name: 'editSong', query: { song: this.song.id } })
@@ -388,66 +208,34 @@ export default {
       this.deleteSong(this.song.id)
       this.$router.push({ name: 'index' })
     },
-    async addToCalendar () {
-      const event = {
-        id: this.song.id,
-        name: this.song.nameSong,
-        category: this.song.category,
-        start: this.getTime,
-        end: '',
-        color: 'orange',
-        timed: false,
-        order: '',
-        type: 'song'
+    increaseFontSize () {
+      this.fontSize += 2
+    },
+    decreaseFontSize () {
+      this.fontSize = Math.max(this.fontSize - 2, 12)
+    },
+    resetFontSize () {
+      this.fontSize = 18
+    },
+    toggleAllPanels () {
+      if (this.allPanelsOpen) {
+        // Открываем все панели
+        this.all()
+      } else {
+        // Закрываем все панели
+        this.none()
       }
-
-      Swal.fire({
-        title: 'Завантаження...',
-        text: '',
-        imageUrl: '352.gif',
-        showConfirmButton: false
-      })
-
-      const createdAt = Date.now()
-      const seen = false
-      const { name, category, start, end, color, timed, order, id, type } = event
-      const description = ''
-
-      const docRef = await this.$fireStore.collection('calendar').add({
-        createdAt,
-        name,
-        seen,
-        category,
-        start,
-        end,
-        color,
-        timed,
-        order,
-        idSong: id,
-        description,
-        type
-      })
-
-      try {
-        const docAdded = await docRef
-        await this.$fireStore.doc(`calendar/${docAdded.id}`).update({ id: docAdded.id })
-      } catch (err) {
-        return err
-      }
-
-      Swal.close()
-
-      Swal.fire({
-        position: 'top-end',
-        type: 'success',
-        title: 'Пісня додана до календаря.',
-        showConfirmButton: false,
-        timer: 2000
-      })
-
-      await this.$router.push({ name: 'plannerCalendar' })
     }
-
+  },
+  watch: {
+    // Следим за состоянием переключателя и обновляем массив открытых вкладок
+    allPanelsOpen (newValue) {
+      if (newValue) {
+        this.all() // Открыть все вкладки
+      } else {
+        this.none() // Закрыть все вкладки
+      }
+    }
   }
 }
 </script>
@@ -455,38 +243,37 @@ export default {
 <style lang="scss">
 .song-card {
   width: 100%;
+}
 
-  textarea {}
+.icon-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; // Устанавливаем расстояние между иконками
+}
 
-  &--container {
-    text-align: left;
+.icon-button {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1); // Небольшой эффект увеличения при наведении
+    background-color: rgba(0, 0, 0, 0.05); // Изменение цвета фона при наведении
+  }
+
+  &:active {
+    transform: scale(0.95); // Легкий эффект уменьшения при клике
   }
 }
-.descriptions {
-  padding: 10px;
-  border-radius: 5px;
-}
-.song-information {
-  flex-basis: 25%;
-  box-shadow: 0 0 8px 0 #e0e0e0;
-  padding: $padding*2;
-  margin-bottom: $margin*2;
-  border-radius: 5px;
 
-  iframe {
-    max-width: 100%;
-    max-height: 400px;
-    margin: 0 auto;
-    border-radius: 5px;
-  }
+.formatted-text {
+  text-align: left; /* Выравнивание текста для аккуратного отображения */
+  line-height: 1.4; /* Уменьшенный межстрочный интервал для компактного размещения текста */
 }
-.small {
-  font-size: 16px;
+
+.elevation-24 {
+  transition: box-shadow 0.3s ease;
 }
-.medium {
-  font-size: 18px;
-}
-.large {
-  font-size: 20px;
+
+.elevation-8 {
+  transition: box-shadow 0.3s ease;
 }
 </style>

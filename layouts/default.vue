@@ -117,16 +117,15 @@
 
       <!--ВХОД ЧЕРЕЗ ГУГЛ АККАУНТ-->
       <div style="margin: 5px">
-        <v-btn
+        <v-icon
           v-if="!User_Entrance"
-          rounded
-          color="button1"
-          style="color: white; position: relative; z-index: 10000;"
+          left
           @click="signInWithGoogle"
         >
-          Вхід
-        </v-btn>
+          mdi-login
+        </v-icon>
       </div>
+
       <!--Отображение пользователя-->
       <div style="margin: 5px; z-index: 102; cursor: pointer">
         <div
