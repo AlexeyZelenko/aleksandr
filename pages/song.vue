@@ -26,7 +26,7 @@
 
       <!-- Вкладки с текстом песни -->
       <v-expansion-panels v-model="panel" multiple>
-        <v-expansion-panel v-for="(item, index) in song.blocks" :key="index">
+        <v-expansion-panel v-for="(item, panelIndex) in song.blocks" :key="panelIndex">
           <v-hover>
             <template v-slot:default="{ hover }">
               <div :class="`elevation-${hover ? 24 : 8}`" class="mx-auto transition-swing">
@@ -36,12 +36,8 @@
 
                 <v-expansion-panel-content>
                   <v-container class="fill-height pa-0">
-                    <!-- Используем div с поддержкой изменения размера шрифта -->
-                    <div
-                      class="formatted-text"
-                      :style="{ fontSize: fontSize + 'px', lineHeight: lineHeight }"
-                    >
-                      <span v-for="(line, index) in item.content.split('\n')" :key="index">
+                    <div class="formatted-text" :style="{ fontSize: fontSize + 'px', lineHeight: lineHeight }">
+                      <span v-for="(line, lineIndex) in item.content.split('\n')" :key="lineIndex">
                         {{ line }}<br>
                       </span>
                     </div>
@@ -59,11 +55,7 @@
 
       <!-- Управление вкладками: открытие/закрытие всех вкладок -->
       <v-row class="my-4 align-center justify-center">
-        <v-switch
-          v-model="allPanelsOpen"
-          label="Відкрити/Закрити всі вкладки"
-          @change="toggleAllPanels"
-        />
+        <v-switch v-model="allPanelsOpen" label="Відкрити/Закрити всі вкладки" @change="toggleAllPanels" />
       </v-row>
 
       <v-card-actions v-if="User_Entrance">
@@ -104,12 +96,57 @@
         Змінити розмір шрифту тексту..
       </div>
     </v-container>
+
+    <!-- Загрузка аудиофайлов и Нотатки для песни -->
+    <v-card v-if="User_Entrance" class="mx-auto my-12 pa-4" max-width="980" color="background">
+      <v-card-title>
+        <span class="font-weight-bold">Додати аудіофайли:</span>
+      </v-card-title>
+
+      <!-- Поле для загрузки аудиофайлов -->
+      <v-file-input
+        v-model="audioFile"
+        label="Завантажити аудіофайл"
+        accept="audio/*"
+        prepend-icon="mdi-music-note-plus"
+        @change="uploadAudio"
+      />
+
+      <!-- Список аудиофайлов -->
+      <div v-if="audioFiles.length" class="my-4">
+        <v-divider class="my-2" />
+        <div v-for="(audio, audioIndex) in audioFiles" :key="audioIndex" class="mb-4">
+          <v-card class="mx-auto pa-4" color="grey lighten-4">
+            <v-card-title>
+              <span class="font-weight-bold">Аудіофайл {{ audioIndex + 1 }}:</span>
+              <v-spacer />
+              <v-btn color="red" icon @click="removeAudio(audioIndex)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider class="my-2" />
+            <audio :src="audio.url" controls />
+          </v-card>
+        </div>
+      </div>
+
+      <v-divider class="mx-4 my-4" />
+
+      <v-card-title>
+        <span class="font-weight-bold">Нотатки:</span>
+      </v-card-title>
+      <v-textarea v-model="userNote" label="Ваші Нотатки до пісні" outlined rows="5" />
+      <v-btn class="my-4" color="primary" @click="saveNote">
+        Зберегти Нотатки
+      </v-btn>
+    </v-card>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Swal from 'sweetalert2'
+import 'firebase/firestore'
 
 export default {
   layout: 'back_catalog',
@@ -119,9 +156,12 @@ export default {
   },
   data () {
     return {
-      fontSize: 18, // Начальный размер шрифта
-      lineHeight: '1.4', // Межстрочный интервал для улучшенного отображения текста
-      panel: [], // Текущие открытые вкладки
+      audioFile: null,
+      audioFiles: [],
+      userNote: '',
+      fontSize: 18,
+      lineHeight: '1.4',
+      panel: [],
       activeStar: false,
       readonly: true,
       loading: false,
@@ -131,7 +171,7 @@ export default {
         start: null
       },
       show: false,
-      allPanelsOpen: false // Состояние переключателя для открытия/закрытия всех вкладок
+      allPanelsOpen: false
     }
   },
   computed: {
@@ -162,8 +202,16 @@ export default {
       return result
     }
   },
-  mounted () {
-    this.none() // Все вкладки закрыты по умолчанию
+  watch: {
+    song: {
+      handler (newSong) {
+        if (newSong && newSong.id) {
+          this.loadNote()
+          this.loadAudio()
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     ...mapActions(['bindCountDocument', 'deleteSong', 'ADD_TO_FAVORITE', 'REMOVE_FROM_FAVORITE']),
@@ -219,21 +267,95 @@ export default {
     },
     toggleAllPanels () {
       if (this.allPanelsOpen) {
-        // Открываем все панели
         this.all()
       } else {
-        // Закрываем все панели
         this.none()
       }
-    }
-  },
-  watch: {
-    // Следим за состоянием переключателя и обновляем массив открытых вкладок
-    allPanelsOpen (newValue) {
-      if (newValue) {
-        this.all() // Открыть все вкладки
-      } else {
-        this.none() // Закрыть все вкладки
+    },
+    async uploadAudio () {
+      if (!this.audioFile) {
+        return
+      }
+
+      try {
+        const storageRef = this.$fireStorage.ref(`songs/${this.song.id}/audio/${this.audioFile.name}`)
+        const snapshot = await storageRef.put(this.audioFile)
+        const audioUrl = await snapshot.ref.getDownloadURL()
+
+        // Добавляем новый аудиофайл в список аудиофайлов
+        this.audioFiles.push({ name: this.audioFile.name, url: audioUrl })
+
+        await this.$fireStore.collection('songs').doc(this.song.id).update({
+          audioFiles: this.audioFiles
+        })
+
+        this.audioFile = null
+
+        Swal.fire('Успіх!', 'Аудіофайл завантажено!', 'success')
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося завантажити аудіофайл', 'error')
+      }
+    },
+    async removeAudio (index) {
+      const audioToRemove = this.audioFiles[index]
+      if (!audioToRemove) {
+        return
+      }
+
+      try {
+        // Удаление файла из Firebase Storage
+        const storageRef = this.$fireStorage.refFromURL(audioToRemove.url)
+        await storageRef.delete()
+
+        // Удаление ссылки из Firestore и локального состояния
+        this.audioFiles.splice(index, 1)
+
+        await this.$fireStore.collection('songs').doc(this.song.id).update({
+          audioFiles: this.audioFiles
+        })
+
+        Swal.fire('Успіх!', 'Аудіофайл видалено!', 'success')
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося видалити аудіофайл', 'error')
+      }
+    },
+    async saveNote () {
+      if (!this.song || !this.song.id) {
+        return
+      }
+      try {
+        await this.$fireStore.collection('songs').doc(this.song.id).update({
+          userNote: this.userNote
+        })
+        Swal.fire('Успіх!', 'Нотатки збережені!', 'success')
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося зберегти Нотатки', 'error')
+      }
+    },
+    async loadNote () {
+      if (!this.song.id) {
+        return
+      }
+      try {
+        const doc = await this.$fireStore.collection('songs').doc(this.song.id).get()
+        if (doc.exists && doc.data().userNote) {
+          this.userNote = doc.data().userNote
+        }
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося завантажити Нотатки', 'error')
+      }
+    },
+    async loadAudio () {
+      if (!this.song.id) {
+        return
+      }
+      try {
+        const doc = await this.$fireStore.collection('songs').doc(this.song.id).get()
+        if (doc.exists && doc.data().audioFiles) {
+          this.audioFiles = doc.data().audioFiles
+        }
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося завантажити аудіофайли', 'error')
       }
     }
   }

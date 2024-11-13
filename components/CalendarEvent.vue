@@ -157,7 +157,6 @@ export default {
         // Navigate to the calendar
         this.$router.push({ name: 'plannerCalendar' })
       } catch (err) {
-        console.error(err)
         Swal.fire({
           icon: 'error',
           title: 'Помилка',
