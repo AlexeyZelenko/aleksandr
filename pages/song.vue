@@ -1,5 +1,5 @@
 <template>
-  <div class="song-card">
+  <div v-if="song && song.nameSong" class="song-card">
     <v-breadcrumbs v-if="song?.nameSong" :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
@@ -65,7 +65,7 @@
           </v-icon> Редагувати
         </v-btn>
         <v-divider vertical />
-        <v-btn color="orange" text outlined @click.stop="removeSong()">
+        <v-btn color="orange" text outlined style="margin: 0 20px" @click.stop="removeSong()">
           <v-icon left>
             mdi-delete
           </v-icon> Видалити
@@ -357,6 +357,29 @@ export default {
       } catch (error) {
         Swal.fire('Помилка!', 'Не вдалося завантажити аудіофайли', 'error')
       }
+    },
+    async fetchSong () {
+      try {
+        const songId = this.$route.query.song
+        const doc = await this.$fireStore.collection('songs').doc(songId).get()
+        if (doc.exists) {
+          this.song = doc.data()
+        }
+      } catch (error) {
+        Swal.fire('Помилка!', 'Не вдалося завантажити пісню', 'error')
+      }
+    }
+  },
+  mounted () {
+    this.bindCountDocument()
+    this.all()
+  },
+  created () {
+    // eslint-disable-next-line
+    console.log('>>>>>Song ID from query:', this.$route.query.song)
+    if (!this.song || !this.song.id) {
+      // Здесь вызовите метод, который загружает конкретную песню из Firestore или другого источника
+      this.fetchSong()
     }
   }
 }
